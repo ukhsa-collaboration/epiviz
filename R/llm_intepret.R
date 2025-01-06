@@ -33,6 +33,7 @@
 llm_interpret <- function(input,
                           word_limit = 100,
                           prompt_extension = NULL) {
+                            
   # Retrieve environment variables
   provider <- Sys.getenv("LLM_PROVIDER")
   api_key <- Sys.getenv("LLM_API_KEY")
