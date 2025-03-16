@@ -1,20 +1,21 @@
 #' Age Sex Pyramid using grouped data
 #'
 #' @param df Data frame which has the following columns with names given below
-#'              age_group: char type>> age group can be given as ranges (e.g. "0-4","5-18", "19-64", "65+")
-#'              sex: char type>> must be coded as "Female" and "Male"
-#'              value: num type>> numerical value used for pyramid (can be proportion or cases)
-#'              Optional (set conf_limits parameter to TRUE if error bars are required):
-#'                lowercl: num type>> lower confidence limits for value
-#'                uppercl: num type>> upper confidence limits for value
+#' \describe{
+#'   \item{age_group}{Character type. Age group can be given as ranges (e.g. "0-4","5-18", "19-64", "65+")}
+#'   \item{sex}{Character type. Must be coded as "Female" and "Male"}
+#'   \item{value}{Numeric type. Numerical value used for pyramid (can be proportion or cases)}
+#'   \item{lowercl}{Optional. Numeric type. Lower confidence limits for value (required if conf_limits=TRUE)}
+#'   \item{uppercl}{Optional. Numeric type. Upper confidence limits for value (required if conf_limits=TRUE)}
+#' }
 #'
-#' @param colours List of colours for the genders in HEX format in the order Female, Male
-#'                Default values for parameter: c("#003B5C", "#007C91")
-#' @param x_breaks Number of ticks on X axis (default is 20)
-#' @param y_title  Title that  appears on the X axis in as a string
-#' @param text_size Text size can be modified by providing this number (default set to 15)
-#' @param conf_limits Boolean variable (True - if error bars are required).
-#'                    If set to True: the data frame should include the lowercl and uppercl columns
+#' @param colours List of colours for the genders in HEX format in the order Female, Male.
+#'                Default values: c("#003B5C", "#007C91")
+#' @param x_breaks Number of ticks on X axis. Default is 20.
+#' @param y_title Title that appears on the Y axis as a string.
+#' @param text_size Text size can be modified by providing this number. Default is 15.
+#' @param conf_limits Boolean variable. If TRUE, error bars are displayed.
+#'                    If TRUE, the data frame should include the lowercl and uppercl columns.
 #'
 #' @return Returns an age-sex pyramid as a ggplot object
 #'
@@ -48,7 +49,8 @@ agesex_pyramid_grouped <- function(df,
     #order age bands
     # Remove "<" and "+" from agebands, then take strings starting with one or more digits and arrange them
     arrange(as.integer(sub("^(\\d+).*", "\\1", sub("[<+]", "", age_group)))) |>
-    mutate(age_group = factor(age_group, levels = unique(df$age_group)[length(unique(df$age_group)):1])) |>
+    # Use the unique age groups in their original order (not reversed)
+    mutate(age_group = factor(age_group, levels = unique(df$age_group))) |>
     na.omit()
 
 

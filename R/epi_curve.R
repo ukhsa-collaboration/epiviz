@@ -5,7 +5,7 @@
 #'
 #' @param dynamic Logical indicating whether to produce a dynamic (plotly) output.
 #' Default is \code{FALSE}, which will return a static ggplot output.
-#' @param params A named list containing arguements used to create the plot.
+#' @param params A named list containing arguments used to create the plot.
 #' \describe{
 #'    \item{df}{A data frame containing data used to create the epi curve.}
 #'    \item{date_var}{character, Name of the variable in \code{df} containing the dates used
@@ -89,7 +89,7 @@
 #'    used if not provided.}
 #'    \item{y_axis_n_breaks}{Scales y-axis with approximately n breaks. Cannot be used
 #'    if \code{y_axis_break_labels} is also provided.}
-#'    \item{show_gridlines}{Logical to show chart gridlines. Default = \code{TRUE}.}
+#'    \item{show_gridlines}{Logical to show chart gridlines. Default = \code{FALSE}.}
 #'    \item{show_axislines}{Logical to show chart axis lines. Default = \code{TRUE}.}
 #'    \item{legend_title}{Text used for legend title.}
 #'    \item{legend_pos}{Position of the legend. Permitted values = c("top","bottom","right","left")}
@@ -383,7 +383,7 @@ epi_curve <- function(
                           x_axis_break_labels = NULL,
                           y_axis_break_labels = NULL,
                           y_axis_n_breaks = NULL,
-                          show_gridlines = TRUE,
+                          show_gridlines = FALSE,
                           show_axislines = TRUE,
                           legend_title = "",
                           legend_pos = "right",
@@ -432,7 +432,7 @@ epi_curve <- function(
   if(!exists('x_axis_label_font_size',where=params)) params$x_axis_label_font_size <- 9
   if(!exists('y_axis_label_font_size',where=params)) params$y_axis_label_font_size <- 9
   if(!exists('x_axis_reverse',where=params)) params$x_axis_reverse <- FALSE
-  if(!exists('show_gridlines',where=params)) params$show_gridlines <- TRUE
+  if(!exists('show_gridlines',where=params)) params$show_gridlines <- FALSE
   if(!exists('show_axislines',where=params)) params$show_axislines <- TRUE
   if(!exists('legend_title',where=params)) params$legend_title <- ""
   if(!exists('legend_pos',where=params)) params$legend_pos <- "right"
@@ -1333,8 +1333,8 @@ epi_curve <- function(
           #traceorder = "grouped+reversed",
           title=list(text = legend_title, font = list(size = legend_title_font_size)),
           font=list(size = legend_font_size)
-          )
         )
+      )
 
 
   # return base plot

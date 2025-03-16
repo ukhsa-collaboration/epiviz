@@ -8,12 +8,13 @@ line charts.}
 line_chart(
   dynamic = FALSE,
   base = NULL,
-  params = list(dfr, x, y, ci = NULL, lower = NULL, upper = NULL, error_colour =
+  params = list(df, x, y, ci = NULL, lower = NULL, upper = NULL, error_colour =
     c("#f2c75c"), group_var, line_colour = c("blue"), line_type = "solid", width = 1,
     title = NULL, x_label = NULL, x_label_angle = NULL, y_label = NULL, y_label_angle =
     NULL, y_percent = FALSE, st_theme = NULL, add_points = FALSE, show_gridlines = FALSE,
     show_axislines = TRUE, legend_title = NULL, legend_position = NULL, hline = NULL,
-    hline_colour = "red", hline_label = NULL)
+    hline_colour = "red", hline_label = NULL),
+  ...
 )
 }
 \arguments{
@@ -24,13 +25,13 @@ If \code{FALSE}, a static ggplot2 object will be returned.}
 
 \item{params}{A list containing the following elements:
 \itemize{
-\item \code{dfr} A data frame containing the data to be plotted.
-\item \code{x} A character string specifying the name of the column in \code{dfr} to be used for the x-axis.
-\item \code{y} A character string specifying the name of the column in \code{dfr} to be used for the y-axis.
-\item \code{group_var} A character string specifying the name of the column in \code{dfr} to be used for grouping the data.
-\item \code{ci} Optional. A character string specifying the column in \code{dfr} for confidence intervals.
-\item \code{lower} Optional. A character string specifying the column in \code{dfr} for lower bounds of confidence intervals.
-\item \code{upper} Optional. A character string specifying the column in \code{dfr} for upper bounds of confidence intervals.
+\item \code{df} A data frame containing the data to be plotted.
+\item \code{x} A character string specifying the name of the column in \code{df} to be used for the x-axis.
+\item \code{y} A character string specifying the name of the column in \code{df} to be used for the y-axis.
+\item \code{group_var} A character string specifying the name of the column in \code{df} to be used for grouping the data.
+\item \code{ci} Optional. A character string specifying the column in \code{df} for confidence intervals.
+\item \code{lower} Optional. A character string specifying the column in \code{df} for lower bounds of confidence intervals.
+\item \code{upper} Optional. A character string specifying the column in \code{df} for upper bounds of confidence intervals.
 \item \code{error_colour} The color for error bars. Default is \verb{#f2c75c}.
 \item \code{line_colour} List of colours for lines. Default is \code{blue}.
 \item \code{line_type} Line type for single graph, or list of line types
@@ -45,6 +46,10 @@ Permissable values: "solid", "dotted", "dashed", "longdash", "dotdash"
 \item \code{st_theme} Optional. A ggplot2 theme object to customize the style of the plot.
 \item \code{add_points} Optional. A logical value. If \code{TRUE}, points will be added to the line chart.
 }}
+
+\item{...}{Additional arguments passed to \code{geom_line} for static (ggplot2) plots
+or to \code{plot_ly}/\code{add_trace} for dynamic (Plotly) plots, allowing custom
+styling of the lines (e.g., \code{alpha}, \code{size}, \code{marker}, etc.).}
 }
 \value{
 A plotly or ggplot2 object representing the line chart.
@@ -80,7 +85,7 @@ summarised_df <- as.data.frame(summarised_df)
 
  # Create params list
  params <- list(
-   dfr = summarised_df,  # Ensure this is correctly referencing the data frame
+   df = summarised_df,  # Ensure this is correctly referencing the data frame
    x = "specimen_date", # Ensure this matches the column name exactly
    y = "count",         # Ensure this matches the column name exactly
    group_var = "organism_species_name",  # Ensure this matches the column name exactly
@@ -115,7 +120,7 @@ result <- epiviz::line_chart(params = params, dynamic = FALSE)
 
  # Create params list
  params <- list(
-   dfr = summarised_df,  # Ensure this is correctly referencing the data frame
+   df = summarised_df,  # Ensure this is correctly referencing the data frame
    x = "specimen_date", # Ensure this matches the column name exactly
    y = "count",         # Ensure this matches the column name exactly
    group_var = "organism_species_name",  # Ensure this matches the column name exactly

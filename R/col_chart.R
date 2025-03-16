@@ -1,35 +1,44 @@
 #' Column Chart
 #'
-#' @param df the dataframe containing the data to be plotted
-#' @param base a ggplot instance or NULL if creating a new plot
-#' @param x the x value column name to be plotted
-#' @param y the y value column name to be plotted
-#' @param group_var the variable used to group the bars i.e. region if plotting by region
-#' @param fill the colour with which to fill the columns
-#' @param y_axis either "y1" for the primary y-axis or "y2" for the secondary y-axis.
-#' @param position the positions of the bars to be plotted i.e."dodge", "stack" etc
-#' @param ci indicator for using ribbon or error bar geom (if required), enter 'e' for error bar, enter any other value for ribbon
-#' @param lower lower value for error \ ribbon geom (mandatory if ci argument passed)
-#' @param upper upper upper value for error \ ribbon geom (mandatory if ci argument passed)
-#' @param error_colour if not plotting by group this is the colour of the error bars or ribbon
-#' @param h_line will display a horizontal line if valid inter passed
-#' @param y_label for provision of an y axis label
-#' @param x_label for provision of an x axis label
-#' @param x_label_angle to adjust the x axis label by the degrees of the integer provided
-#' @param y_label_angle to adjust the y axis label by the degrees of the integer provided
-#' @param x_labels_reverse enter an argument of any value i.e. 'y' to reverse the x labeling order when using categorical data
-#' @param y_min_limit set the limit on the y axis scaling by proving an integer
-#' @param y_max_limit set the limit on the x axis scaling by proving an integer
-#' @param x_axis_breaks modify the x axis breaks by providing an integer
-#' @param legend_pos modify the position of the legend (where applicable) with appropriate value i.e. bottom (default position), top, right, left
-#' @param remove_gridlines enter an argument of any value i.e. 'y' to remove the grid lines
-#' @param percent enter an argument of any value i.e. 'y' to include the % symbol for y axis labels
-#' @param cap_text enter text for a caption to appear below plot
-#' @param no_shift If no shift should be applied to the secondary y-axis
+#' Creates a column chart using either ggplot2 (static) or plotly (dynamic).
 #'
+#' @param dynamic Logical indicating whether to produce a dynamic (plotly) output.
+#'   Default is FALSE, which will return a static ggplot output.
+#' @param base A base ggplot object to add the column chart to. Default is NULL.
+#' @param params A named list containing arguments used to create the plot:
+#'   \itemize{
+#'     \item df: The dataframe containing the data to be plotted
+#'     \item x: The x value column name to be plotted
+#'     \item y: The y value column name to be plotted
+#'     \item group_var: The variable used to group the bars i.e. region if plotting by region
+#'     \item fill: The colour with which to fill the columns
+#'     \item y_axis: Either "y1" for primary y-axis or "y2" for secondary y-axis
+#'     \item position: The positions of the bars to be plotted i.e."dodge", "stack" etc
+#'     \item ci: Indicator for using ribbon or error bar geom (if required), enter 'e' for error bar, enter any other value for ribbon
+#'     \item lower: Lower value for error/ribbon geom (mandatory if ci argument passed)
+#'     \item upper: Upper value for error/ribbon geom (mandatory if ci argument passed)
+#'     \item error_colour: If not plotting by group this is the colour of the error bars or ribbon
+#'     \item h_line: Will display a horizontal line if valid integer passed
+#'     \item y_label: For provision of an y axis label
+#'     \item x_label: For provision of an x axis label
+#'     \item x_label_angle: To adjust the x axis label by the degrees of the integer provided
+#'     \item y_label_angle: To adjust the y axis label by the degrees of the integer provided
+#'     \item x_labels_reverse: Enter an argument of any value i.e. 'y' to reverse the x labeling order
+#'     \item y_min_limit: Set the limit on the y axis scaling by proving an integer
+#'     \item y_max_limit: Set the limit on the x axis scaling by proving an integer
+#'     \item x_axis_breaks: Modify the x axis breaks by providing an integer
+#'     \item legend_pos: Modify the position of the legend (where applicable)
+#'     \item remove_gridlines: Enter an argument of any value i.e. 'y' to remove grid lines
+#'     \item percent: Enter an argument of any value i.e. 'y' to include the % symbol
+#'     \item cap_text: Enter text for a caption to appear below plot
+#'     \item no_shift: If no shift should be applied to the secondary y-axis
+#'   }
+#' @param ... Additional arguments passed to geom_col for static (ggplot2) plots
+#'   or to plot_ly/add_trace for dynamic (Plotly) plots, allowing custom
+#'   styling of the columns (e.g., alpha, width, marker, etc.).
 #' @import assertthat
 #'
-#' @return a ggplot instance
+#' @return A ggplot or plotly object depending on the value of dynamic parameter
 #' @export
 #'
 #' @examples
@@ -39,54 +48,118 @@
 #'  group_by(organism_species_name) |>
 #'  summarise(Count=n())
 #'
-#' col_chart(data,
-#'           x="organism_species_name",
-#'           y="Count"
-#' )
+#' col_chart(params = list(
+#'   df = data,
+#'   x = "organism_species_name",
+#'   y = "Count"
+#' ))
 #' }
+col_chart <- function(
+    dynamic = FALSE,
+    base = NULL,
+    params = list(
+      df = NULL,
+      x = NULL,
+      y = NULL, 
+      group_var = NULL,
+      fill = "blue",
+      y_axis = "y1",
+      position = "dodge",
+      ci = NULL,
+      lower = NULL,
+      upper = NULL,
+      error_colour = "red",
+      h_line = NULL,
+      y_label = NULL,
+      x_label = NULL,
+      x_label_angle = NULL,
+      y_label_angle = NULL,
+      x_labels_reverse = NULL,
+      y_min_limit = NULL, 
+      y_max_limit = NULL,
+      x_axis_breaks = NULL,
+      legend_pos = "bottom",
+      remove_gridlines = NULL,
+      percent = NULL,
+      cap_text = NULL,
+      no_shift = FALSE
+    ),
+    ...  # Add ellipsis parameter
+) {
+  # Set Arial font
+  set_Arial()
 
-col_chart <- function(df,
-                      base = NULL,
-                      x = NULL,
-                      y = NULL,
-                      group_var = NULL,
-                      fill = "blue",
-                      y_axis = "y1",
-                      position = "dodge",
-                      ci = NULL,
-                      lower = NULL,
-                      upper = NULL,
-                      error_colour = "red",
-                      h_line = NULL,
-                      y_label = NULL,
-                      x_label = NULL,
-                      x_label_angle = NULL,
-                      y_label_angle = NULL,
-                      x_labels_reverse = NULL,
-                      y_min_limit = NULL,
-                      y_max_limit= NULL,
-                      x_axis_breaks = NULL,
-                      legend_pos = "bottom",
-                      remove_gridlines = NULL,
-                      percent = NULL,
-                      cap_text = NULL,
-                      no_shift = FALSE
-){
+  # Filter out plotly-specific parameters from ellipsis for ggplot
+  dots <- list(...)
+  plotly_params <- c("opacity", "hoverlabel", "showlegend")
+  ggplot_dots <- dots[!names(dots) %in% plotly_params]
+  
+  # Where relevant, assign defaults to any parameters not specified by the user
+  if(!exists('df',where=params)) stop("A data frame argument is required")
+  if(!exists('x',where=params)) stop('Please include argument data frame variable for x axis, ie x = "variable_name"')
+  if(!exists('y',where=params)) stop('Please include argument data frame variable for y axis, ie y = "variable_name"')
+  if(!exists('fill',where=params)) params$fill <- "blue"
+  if(!exists('y_axis',where=params)) params$y_axis <- "y1"
+  if(!exists('position',where=params)) params$position <- "dodge"
+  if(!exists('error_colour',where=params)) params$error_colour <- "red"
+  if(!exists('legend_pos',where=params)) params$legend_pos <- "bottom"
+  if(!exists('no_shift',where=params)) params$no_shift <- FALSE
 
-  # check for any missing mandatory arguments
-  if (missing(df)) stop("A data frame argument is required")
-  if (missing(x)) stop('Please inlcude argument data frame variable for x axis, ie x = "variable_name"')
-  if (missing(y)) stop('Please include argument data frame variable for y axis, ie y = "variable_name"')
+  # Check that the data frame provided is not empty, else stop
+  assertthat::assert_that(not_empty(params$df))
 
-
+  # Assign variables from params list for easier referencing
+  df <- params$df
+  x <- params$x
+  y <- params$y
+  group_var <- params$group_var
+  fill <- params$fill
+  y_axis <- params$y_axis
+  position <- params$position
+  ci <- params$ci
+  lower <- params$lower
+  upper <- params$upper
+  error_colour <- params$error_colour
+  h_line <- params$h_line
+  y_label <- params$y_label
+  x_label <- params$x_label
+  x_label_angle <- params$x_label_angle
+  y_label_angle <- params$y_label_angle
+  x_labels_reverse <- params$x_labels_reverse
+  y_min_limit <- params$y_min_limit
+  y_max_limit <- params$y_max_limit
+  x_axis_breaks <- params$x_axis_breaks
+  legend_pos <- params$legend_pos
+  remove_gridlines <- params$remove_gridlines
+  percent <- params$percent
+  cap_text <- params$cap_text
+  no_shift <- params$no_shift
 
   # Check that the data frame provided is not empty, else stop
   assertthat::assert_that(not_empty(df))
 
-
-
   if (is.null(base)) {
-    base <- ggplot2::ggplot()
+    base <- ggplot2::ggplot() + theme_minimal() + # Change to minimal theme
+        theme(
+      axis.title.x = element_text(size = 10, face = "bold"),
+      axis.title.y = element_text(size = 10, face = "bold"),
+      axis.text = element_text(size = 10),
+      legend.position = legend_pos,
+      legend.title = element_blank(),
+      legend.text = element_text(size = 10),
+      panel.grid = element_blank(),  # Remove grid lines by default
+      axis.line = element_line(color = "black", linewidth = 0.5),  # Add axis lines in black
+      plot.title = element_text(size = 14, face = "bold", hjust = 0.5),  # Center-align and bold title
+      plot.caption = element_text(size = 10, hjust = 0),  # Left-align caption
+      plot.margin = margin(t = 10, r = 10, b = 10, l = 10)  # Add consistent margins
+    )
+  # Add gridlines back if remove_gridlines is not specified
+  if(is.null(remove_gridlines)) {
+    base <- base + theme(
+      panel.grid.major = element_line(color = "grey90", linewidth = 0.2),
+      panel.grid.minor = element_line(color = "grey95", linewidth = 0.1)
+    )
+  }
   }
 
   # If user wants to plot on the secondary y-axis
@@ -154,23 +227,30 @@ col_chart <- function(df,
   }
 
   # if group variable not provided build plot accordingly
-  if(missing(group_var)){
-
-    base <- base + geom_col(data = df, aes(x = .data[[x]], y =  .data[[y]], fill = fill), position = position)
-
-  } else if (!missing(group_var) && missing(fill)) {
-    base <- base + geom_col(data = df, aes(x = .data[[x]], y =  .data[[y]], fill = .data[[group_var]]), position = position)
-  } else if (!missing(group_var) && !missing(fill)) {
-    base <- base + geom_col(data = df, aes(x = .data[[x]], y =  .data[[y]], group = .data[[group_var]], fill = .data[[group_var]]), position = position) #+scale_fill_manual(values = fill)
+  if(is.null(group_var)){
+    base <- base + geom_col(data = df, 
+                           aes(x = .data[[x]], y = .data[[y]]), 
+                           fill = fill,  # Move fill outside aes()
+                           position = position,
+                           !!!ggplot_dots)  # Pass filtered aesthetics
+  } else if (!is.null(group_var) && is.null(fill)) {
+    base <- base + geom_col(data = df, 
+                           aes(x = .data[[x]], y = .data[[y]], fill = .data[[group_var]]), 
+                           position = position,
+                           !!!ggplot_dots)  # Pass filtered aesthetics
+  } else if (!is.null(group_var) && !is.null(fill)) {
+    base <- base + geom_col(data = df, 
+                           aes(x = .data[[x]], y = .data[[y]], 
+                               group = .data[[group_var]], fill = .data[[group_var]]), 
+                           position = position,
+                           !!!ggplot_dots)  # Pass filtered aesthetics
   }
 
-
-
   # confidence interval; ribbon \ error bar
-  if(!(missing(ci)) && missing(group_var)){
+  if(!is.null(ci) && is.null(group_var)){
 
-    # continue if  arguments for ci and bounds are provided
-    ifelse(!(missing(lower)) && !(missing(upper)),
+    # continue if arguments for ci and bounds are provided
+    ifelse(!is.null(lower) && !is.null(upper),
 
            # continue if type geom required is error else ribbon
            ifelse(ci == 'e',
@@ -184,13 +264,12 @@ col_chart <- function(df,
 
            )
 
-
   }
 
-  if(!(missing(ci)) && !missing(group_var)){
+  if(!is.null(ci) && !is.null(group_var)){
 
-    # continue if  arguments for ci and bounds are provided
-    ifelse(!(missing(lower)) && !(missing(upper)),
+    # continue if arguments for ci and bounds are provided
+    ifelse(!is.null(lower) && !is.null(upper),
 
            # continue if type geom required is error else ribbon
            ifelse(ci == 'e',
@@ -208,42 +287,36 @@ col_chart <- function(df,
 
            )}
 
-
-
   # apply horizontal line if h_line argument exists
-  if(!(missing(h_line))){
+  if(!is.null(h_line)){
 
     base <- base + ggplot2::geom_hline(yintercept = h_line, linetype = "dashed", colour = "black")
 
   }
 
-  # Theme settings
-  base <- base + ggplot2::theme(legend.title=element_blank(), legend.position = legend_pos,
-                                axis.text.x = element_text(angle  = x_label_angle, vjust = 0.5))
+  # Theme settings - Update to match age_sex_pyramid style
+  base <- base + 
+    theme_minimal() +  # Use minimal theme as base
+    theme(
+      axis.title.x = element_text(size = 12, face = "bold"),
+      axis.title.y = element_text(size = 12, face = "bold"),
+      axis.text = element_text(size = 12),
+      legend.position = legend_pos,
+      legend.title = element_blank(),
+      legend.text = element_text(size = 12),
+      panel.grid = element_blank(),  # Remove grid lines
+      axis.line = element_line(color = "black"),  # Add axis lines in black
+      axis.text.x = element_text(angle = x_label_angle, vjust = 0.5)
+    )
 
-
-  # Set styling
-  base <- base + ggplot2::theme(text = element_text(size=12, family="Arial"),
-                                axis.title.x = element_text(face="bold"),
-                                axis.title.y = element_text(face="bold")
-  )
-
-  #remove major y grid lines
-  if(!(missing(remove_gridlines))){
-
-    base <-   base + ggplot2::theme(panel.grid.major.y = element_blank())
-
-  }
-
-
+  # Remove old theme settings that are now handled above
 
   #append percentage labels
-  if(!(missing(percent))){
+  if(!is.null(percent)){
 
     base <- base + ggplot2::scale_y_continuous(labels = function(x) paste0(x, "%"))
 
   }
-
 
   if(y_axis == "y2") {
     current_y_axis_name <- ggplot_build(base)$layout$panel_params[[1]]$y$name
@@ -253,16 +326,109 @@ col_chart <- function(df,
   }
 
   # Apply x label using arguments provided
-  if(!(missing(x_label))){
+  if(!is.null(x_label)){
 
     base <- base + ggplot2::labs(x = x_label)
 
   }
 
-  if(!(missing(cap_text))){
+  if(!is.null(cap_text)){
 
     base  <- base  + ggplot2::labs(caption = cap_text)
 
+  }
+
+  if (dynamic) {
+    # produce plotly graph if 'dynamic' is set to TRUE
+    
+    # Extract plotly-specific parameters from the ellipsis
+    plotly_params <- list(...)
+    
+    # Create a new plotly object directly instead of converting from ggplot
+    p <- plotly::plot_ly()
+    
+    # Handle grouped vs non-grouped plotting
+    if(is.null(group_var)) {
+      # Single group plotting
+      p <- plotly::add_bars(p,
+                      data = df,
+                      x = df[[x]],
+                      y = df[[y]],
+                      marker = list(color = fill),
+                      name = y)
+    } else {
+      # Multiple group plotting
+      unique_groups <- unique(df[[group_var]])
+      
+      for(i in seq_along(unique_groups)) {
+        group_data <- df[df[[group_var]] == unique_groups[i],]
+        
+        p <- plotly::add_bars(p,
+                        data = group_data,
+                        x = group_data[[x]],
+                        y = group_data[[y]],
+                        name = as.character(unique_groups[i]),
+                        marker = if(!is.null(fill)) list(color = fill[i]) else list())
+      }
+    }
+
+    # Apply plotly-specific parameters
+    if(length(plotly_params) > 0) {
+      # Apply opacity if provided
+      if("opacity" %in% names(plotly_params)) {
+        p <- plotly::style(p, opacity = plotly_params$opacity)
+      }
+      
+      # Apply hoverlabel if provided
+      if("hoverlabel" %in% names(plotly_params)) {
+        p <- plotly::style(p, hoverlabel = plotly_params$hoverlabel)
+      }
+      
+      # Apply showlegend if provided
+      if("showlegend" %in% names(plotly_params)) {
+        p <- plotly::layout(p, showlegend = plotly_params$showlegend)
+      }
+    }
+
+    # Define fonts
+    title_font <- list(
+      family = "Arial",
+      size = 12,
+      color = "black")
+
+    # Add basic layout with standard formatting
+    p <- plotly::layout(p,
+                  # Title and axis labels
+                  xaxis = list(
+                    title = list(text = x_label %||% x, font = title_font),
+                    showgrid = FALSE,  # Remove grid lines
+                    showline = TRUE,   # Show axis line
+                    linewidth = 1,     # Axis line width
+                    ticks = "outside", # Show ticks
+                    ticklen = 3,       # Tick length
+                    tickformat = ",",  # Use commas for thousands without 'k' suffix
+                    tickfont = list(family = "Arial", size = 10)
+                  ),
+                  yaxis = list(
+                    title = list(text = y_label %||% y, font = title_font),
+                    showgrid = FALSE,  # Remove grid lines
+                    showline = TRUE,   # Show axis line
+                    zeroline = FALSE,  # Don't show zero line
+                    linewidth = 1,     # Axis line width
+                    ticks = "outside", # Show ticks
+                    ticklen = 3,       # Tick length
+                    tickformat = ",",  # Use commas for thousands without 'k' suffix
+                    tickfont = list(family = "Arial", size = 10)
+                  ),
+                  # Set margins
+                  margin = list(l = 50, r = 50, b = 50, t = 30),
+                  # Paper and plot background
+                  paper_bgcolor = "white",
+                  plot_bgcolor = "white"
+    )
+
+    # Return plotly object
+    return(p)
   }
 
   return(base)

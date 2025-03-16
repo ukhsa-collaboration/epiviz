@@ -8,115 +8,114 @@
 #' @param base A base ggplot or plotly object that the output will be applied to. If
 #' \code{dynamic = TRUE} then \code{base} must be a plotly object, and if \code{dynamic = FALSE}
 #' then \code{base} must be a ggplot object.
-#' @param params A named list containing arguements used to create the plot.
-#' ' \describe{
-#'    \item{df}{A data frame containing values used to create the point chart.}
-#'    \item{x}{Name of the variable in \code{df} used to populate the x-axis.}
-#'    \item{y}{Name of the variable in \code{df} used to populate the y-axis.}
-#'    \item{point_shape}{Shape of the plotted points. Permitted values of \code{c('circle',
-#'    'triangle','square','plus','square cross','asterisk','diamond')}. When \code{group_var}
-#'    is provided, point shapes will be automatically assigned based on group.}
-#'    \item{point_size}{Size of the plotted point symbols. If supplied as a number, all points
-#'    will be plotted with this size. If supplied as the name of a numeric variable
-#'    within \code{df}, then the size of each point will be relative to the value of
-#'    that numeric variable in the manner of a bubble chart.}
-#'    \item{point_colours}{Colour of the points to be plotted (default = "blue").
-#'    When \code{group_var} is provided, \code{point_colours} can be set as a
-#'    character vector to define colours for each group.}
-#'    \item{point_labels}{Name of a variable in df containing text labels to plot against
-#'    each point on the chart. If not provided the no labels will be applied. If \code{dynamic
-#'    = TRUE} then \code{point_labels} will be applied as hover-labels, and \code{point_labels}
-#'    will accept html to format the output labels.}
-#'    \item{point_labels_size}{Font size of \code{point_labels} on output chart
-#'    when \code{dynamic = FALSE}.}
-#'    \item{point_labels_hjust}{Horizontal justification of \code{point_labels} on output chart
-#'    when \code{dynamic = FALSE}. Permitted values = c(0, 0.5, 1) for left, centre,
-#'    and right justified respectively.}
-#'    \item{point_labels_vjust}{Vertical justification of \code{point_labels} on output chart
-#'    when \code{dynamic = FALSE}. Permitted values = c(0, 0.5, 1) for bottom, middle,
-#'    and top justified respectively.}
-#'    \item{point_labels_nudge_x}{Horizontal adjustment to nudge \code{point_labels} by
-#'    when \code{dynamic = FALSE}. Useful for offsetting text from points.}
-#'    \item{point_labels_nudge_y}{Vertical adjustment to nudge \code{point_labels} by
-#'    when \code{dynamic = FALSE}. Useful for offsetting text from points.}
-#'    \item{group_var}{Name of the variable in df used to define separate groups of points
-#'    in the chart.}
-#'    \item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals be
-#'    be plotted with each point as errorbars, and if \code{ci = "ribbon"} then confidence
-#'    intervals will be added to the chart as a ribbon plot for each group. If \code{ci} is
-#'    provided, then \code{ci_upper} and \code{ci_lower} must also be provided.}
-#'    \item{ci_upper}{Name of the variable in df used as the upper confidence limit for
-#'    each point. Mandatory when \code{ci} is provided.}
-#'    \item{ci_lower}{Name of the variable in df used as the lower confidence limit for
-#'    each point. Mandatory when \code{ci} is provided.}
-#'    \item{ci_legend}{Logical indicating whether a separate legend should be included
-#'    in the chart for confidence interval parameters. Only applies when \code{group_var}
-#'    is provided. Defaults to \code{FALSE}.}
-#'    \item{ci_legend_title}{Text to use as title for separate legend when \code{ci_legend = TRUE}.}
-#'    \item{ci_colours}{Colour(s) used for plotting confidence intervals. When \code{ci =
-#'    "errorbar"} this will determine the colour of the plotted errorbars, when \code{ci =
-#'    "ribbon"} this will determine the colour of the plotted ribbons.}
-#'    \item{errorbar_width}{Horizontal width of the plotted error bars when \code{ci =
-#'    "errorbar"}.}
-#'    \item{y_sec_axis}{Logical to indicate whether data should be plotted on the
-#'    secondary (right) y-axis. Default = \code{FALSE}.}
-#'    \item{y_sec_axis_no_shift}{Forces the secondary y-axis scale to begin at 0. Default = \code{TRUE}.}
-#'    \item{y_sec_axis_percent_full}{Forces the secondary y-axis scale to range from 0-100%
-#'    when \code{y_percent = TRUE}}
-#'    \item{chart_title}{Text to use as chart title.}
-#'    \item{chart_title_size}{Font size of chart title.}
-#'    \item{chart_title_colour}{Font colour of chart title.}
-#'    \item{chart_footer}{Text to use as chart footer.}
-#'    \item{chart_footer_size}{Font size of chart footer.}
-#'    \item{chart_footer_colour}{Font colour of chart footer.}
-#'    \item{x_axis_title}{Text used for x-axis title. Defaults to name of x-variable if
-#'    not stated.}
-#'    \item{y_axis_title}{Text used for y-axis title. Defaults to name of y-variable if
-#'    not stated.}
-#'    \item{x_axis_label_angle}{Angle for x-axis label text.}
-#'    \item{y_axis_label_angle}{Angle for y-axis label text.}
-#'    \item{x_axis_reverse}{Reverses x-axis scale if \code{x_axis_reverse = TRUE}.}
-#'    \item{y_percent}{Converts y-axis to percentage scale if \code{y_percent = TRUE}.}
-#'    \item{x_limit_min}{Lower limit for the x-axis. Default used if not provided.}
-#'    \item{x_limit_max}{Upper limit for the x-axis. Default used if not provided.}
-#'    \item{y_limit_min}{Lower limit for the y-axis. Default used if not provided.}
-#'    \item{y_limit_max}{Upper limit for the y-axis. Default used if not provided.}
-#'    \item{x_axis_break_labels}{Vector of values to use for x-axis breaks. Defaults used if not provided.}
-#'    \item{y_axis_break_labels}{Vector of values to use for y-axis breaks. Defaults used if not provided.}
-#'    \item{x_axis_n_breaks}{Scales x-axis with approximately n breaks. Cannot be provided
-#'    if \code{x_axis_break_labels} is provided.}
-#'    \item{y_axis_n_breaks}{Scales y-axis with approximately n breaks. Cannot be used
-#'    if \code{y_axis_break_labels} is also provided.}
-#'    \item{x_axis_date_breaks}{A string giving the distance between breaks like "2 weeks", or "10 years".
-#'    Valid specifications are 'sec', 'min', 'hour', 'day', 'week', 'month' or 'year', optionally followed
-#'    by 's'. Matches ggplot scale_date() conventions (see https://ggplot2.tidyverse.org/reference/scale_date.html).
-#'    Cannot be used if \code{y_axis_break_labels} is also provided.}
-#'    \item{st_theme}{Name of a ggplot theme to be applied to a static plot. Can only be provided
-#'    when \code{dynamic = FALSE}}
-#'    \item{show_gridlines}{Logical to show chart gridlines. Default = \code{TRUE}.}
-#'    \item{show_axislines}{Logical to show chart axis lines. Default = \code{TRUE}.}
-#'    \item{legend_title}{Text used for legend title.}
-#'    \item{legend_pos}{Position of the legend. Permitted values = c("top","bootom","right","left")}
-#'    \item{point_size_legend}{Include a legend for \code{point_size}. Default = \code{FALSE}}
-#'    \item{point_size_legend_title}{Text used for point legend title.}
-#'    \item{hline}{Adds horizontal line across the chart at the corresponding y-value. Multiple
-#'    values may be provided as a vector to add multiple horizontal lines.}
-#'    \item{hline_colour}{Colour of the horizontal lines if \code{hline} is provided. A vector of colours
-#'    can be provided to colour individual hlines if multiple hlines have been provided.}
-#'    \item{hline_width}{Numerical width of the horizontal lines if \code{hline} is provided. A vector of numerical widths
-#'    can be provided for individual hlines if multiple hlines have been provided.}
-#'    \item{hline_type}{Line style of the horizontal lines if \code{hline} is provided. A vector of line styles
-#'    can be provided to style hlines if multiple hlines have been provided. Permitted values = c("solid", "dotted",
-#'    "dashed", "longdash", "dotdash").}
-#'    \item{hline_label}{Text to label the horizontal lines if \code{hline} is provided. A vector of text strings
-#'    can be provided to label individual hlines if multiple hlines have been provided.}
-#'    \item{hline_label_colour}{Colour of the horizontal line labels if \code{hline_labels} is provided.
-#'    A vector of colours can be provided to colour individual hline_labels if multiple hline_labels have been provided.}
-#'
-#'
-#'  }
-#'
-#'
+#' @param params A named list containing arguments used to create the plot.
+#' \describe{
+#'   \item{df}{A data frame containing values used to create the point chart.}
+#'   \item{x}{Name of the variable in \code{df} used to populate the x-axis.}
+#'   \item{y}{Name of the variable in \code{df} used to populate the y-axis.}
+#'   \item{point_shape}{Shape of the plotted points. Permitted values of \code{c('circle',
+#'   'triangle','square','plus','square cross','asterisk','diamond')}. When \code{group_var}
+#'   is provided, point shapes will be automatically assigned based on group.}
+#'   \item{point_size}{Size of the plotted point symbols. If supplied as a number, all points
+#'   will be plotted with this size. If supplied as the name of a numeric variable
+#'   within \code{df}, then the size of each point will be relative to the value of
+#'   that numeric variable in the manner of a bubble chart.}
+#'   \item{point_colours}{Colour of the points to be plotted (default = "blue").
+#'   When \code{group_var} is provided, \code{point_colours} can be set as a
+#'   character vector to define colours for each group.}
+#'   \item{point_labels}{Name of a variable in df containing text labels to plot against
+#'   each point on the chart. If not provided the no labels will be applied. If \code{dynamic
+#'   = TRUE} then \code{point_labels} will be applied as hover-labels, and \code{point_labels}
+#'   will accept html to format the output labels.}
+#'   \item{point_labels_size}{Font size of \code{point_labels} on output chart
+#'   when \code{dynamic = FALSE}.}
+#'   \item{point_labels_hjust}{Horizontal justification of \code{point_labels} on output chart
+#'   when \code{dynamic = FALSE}. Permitted values = c(0, 0.5, 1) for left, centre,
+#'   and right justified respectively.}
+#'   \item{point_labels_vjust}{Vertical justification of \code{point_labels} on output chart
+#'   when \code{dynamic = FALSE}. Permitted values = c(0, 0.5, 1) for bottom, middle,
+#'   and top justified respectively.}
+#'   \item{point_labels_nudge_x}{Horizontal adjustment to nudge \code{point_labels} by
+#'   when \code{dynamic = FALSE}. Useful for offsetting text from points.}
+#'   \item{point_labels_nudge_y}{Vertical adjustment to nudge \code{point_labels} by
+#'   when \code{dynamic = FALSE}. Useful for offsetting text from points.}
+#'   \item{group_var}{Name of the variable in df used to define separate groups of points
+#'   in the chart.}
+#'   \item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals be
+#'   be plotted with each point as errorbars, and if \code{ci = "ribbon"} then confidence
+#'   intervals will be added to the chart as a ribbon plot for each group. If \code{ci} is
+#'   provided, then \code{ci_upper} and \code{ci_lower} must also be provided.}
+#'   \item{ci_upper}{Name of the variable in df used as the upper confidence limit for
+#'   each point. Mandatory when \code{ci} is provided.}
+#'   \item{ci_lower}{Name of the variable in df used as the lower confidence limit for
+#'   each point. Mandatory when \code{ci} is provided.}
+#'   \item{ci_legend}{Logical indicating whether a separate legend should be included
+#'   in the chart for confidence interval parameters. Only applies when \code{group_var}
+#'   is provided. Defaults to \code{FALSE}.}
+#'   \item{ci_legend_title}{Text to use as title for separate legend when \code{ci_legend = TRUE}.}
+#'   \item{ci_colours}{Colour(s) used for plotting confidence intervals. When \code{ci =
+#'   "errorbar"} this will determine the colour of the plotted errorbars, when \code{ci =
+#'   "ribbon"} this will determine the colour of the plotted ribbons.}
+#'   \item{errorbar_width}{Horizontal width of the plotted error bars when \code{ci =
+#'   "errorbar"}.}
+#'   \item{y_sec_axis}{Logical to indicate whether data should be plotted on the
+#'   secondary (right) y-axis. Default = \code{FALSE}.}
+#'   \item{y_sec_axis_no_shift}{Forces the secondary y-axis scale to begin at 0. Default = \code{TRUE}.}
+#'   \item{y_sec_axis_percent_full}{Forces the secondary y-axis scale to range from 0-100%
+#'   when \code{y_percent = TRUE}}
+#'   \item{chart_title}{Text to use as chart title.}
+#'   \item{chart_title_size}{Font size of chart title.}
+#'   \item{chart_title_colour}{Font colour of chart title.}
+#'   \item{chart_footer}{Text to use as chart footer.}
+#'   \item{chart_footer_size}{Font size of chart footer.}
+#'   \item{chart_footer_colour}{Font colour of chart footer.}
+#'   \item{x_axis_title}{Text used for x-axis title. Defaults to name of x-variable if
+#'   not stated.}
+#'   \item{y_axis_title}{Text used for y-axis title. Defaults to name of y-variable if
+#'   not stated.}
+#'   \item{x_axis_label_angle}{Angle for x-axis label text.}
+#'   \item{y_axis_label_angle}{Angle for y-axis label text.}
+#'   \item{x_axis_reverse}{Reverses x-axis scale if \code{x_axis_reverse = TRUE}.}
+#'   \item{y_percent}{Converts y-axis to percentage scale if \code{y_percent = TRUE}.}
+#'   \item{x_limit_min}{Lower limit for the x-axis. Default used if not provided.}
+#'   \item{x_limit_max}{Upper limit for the x-axis. Default used if not provided.}
+#'   \item{y_limit_min}{Lower limit for the y-axis. Default used if not provided.}
+#'   \item{y_limit_max}{Upper limit for the y-axis. Default used if not provided.}
+#'   \item{x_axis_break_labels}{Vector of values to use for x-axis breaks. Defaults used if not provided.}
+#'   \item{y_axis_break_labels}{Vector of values to use for y-axis breaks. Defaults used if not provided.}
+#'   \item{x_axis_n_breaks}{Scales x-axis with approximately n breaks. Cannot be provided
+#'   if \code{x_axis_break_labels} is provided.}
+#'   \item{y_axis_n_breaks}{Scales y-axis with approximately n breaks. Cannot be used
+#'   if \code{y_axis_break_labels} is also provided.}
+#'   \item{x_axis_date_breaks}{A string giving the distance between breaks like "2 weeks", or "10 years".
+#'   Valid specifications are 'sec', 'min', 'hour', 'day', 'week', 'month' or 'year', optionally followed
+#'   by 's'. Matches ggplot scale_date() conventions (see https://ggplot2.tidyverse.org/reference/scale_date.html).
+#'   Cannot be used if \code{y_axis_break_labels} is also provided.}
+#'   \item{st_theme}{Name of a ggplot theme to be applied to a static plot. Can only be provided
+#'   when \code{dynamic = FALSE}}
+#'   \item{show_gridlines}{Logical to show chart gridlines. Default = \code{TRUE}.}
+#'   \item{show_axislines}{Logical to show chart axis lines. Default = \code{TRUE}.}
+#'   \item{legend_title}{Text used for legend title.}
+#'   \item{legend_pos}{Position of the legend. Permitted values = c("top","bootom","right","left")}
+#'   \item{point_size_legend}{Include a legend for \code{point_size}. Default = \code{FALSE}}
+#'   \item{point_size_legend_title}{Text used for point legend title.}
+#'   \item{hline}{Adds horizontal line across the chart at the corresponding y-value. Multiple
+#'   values may be provided as a vector to add multiple horizontal lines.}
+#'   \item{hline_colour}{Colour of the horizontal lines if \code{hline} is provided. A vector of colours
+#'   can be provided to colour individual hlines if multiple hlines have been provided.}
+#'   \item{hline_width}{Numerical width of the horizontal lines if \code{hline} is provided. A vector of numerical widths
+#'   can be provided for individual hlines if multiple hlines have been provided.}
+#'   \item{hline_type}{Line style of the horizontal lines if \code{hline} is provided. A vector of line styles
+#'   can be provided to style hlines if multiple hlines have been provided. Permitted values = c("solid", "dotted",
+#'   "dashed", "longdash", "dotdash").}
+#'   \item{hline_label}{Text to label the horizontal lines if \code{hline} is provided. A vector of text strings
+#'   can be provided to label individual hlines if multiple hlines have been provided.}
+#'   \item{hline_label_colour}{Colour of the horizontal line labels if \code{hline_labels} is provided.
+#'   A vector of colours can be provided to colour individual hline_labels if multiple hline_labels have been provided.}
+#' }
+#' @param ... Additional arguments passed to \code{geom_point} for static (ggplot2) plots
+#'   or to \code{add_trace} for dynamic (Plotly) plots, allowing custom styling of the points
+#'   (e.g., \code{alpha}, \code{stroke}, \code{marker}, etc.).
 #'
 #' @import dplyr
 #' @import grDevices
@@ -131,8 +130,6 @@
 #' @examples
 #'
 #' \dontrun{
-#'
-#'
 #'
 #' # Example 1: Basic point chart.
 #'
@@ -163,8 +160,6 @@
 #' )
 #'
 #' chart_detections_per_month
-#'
-#'
 #'
 #' # Example 2: Point chart with error bars and threshold line.
 #' library(epiviz)
@@ -219,9 +214,6 @@
 #' }
 #' shinyApp(ui, server)
 #'
-#'
-#'
-#'
 #' # Example 3: Point chart with grouped data and confidence ribbon.
 #' library(epiviz)
 #'
@@ -264,7 +256,6 @@
 #'   hline_label_colour = c("blue","red")
 #' )
 #'
-#'
 #' # Create static and dynamic charts
 #' static_chart <- point_chart(params = species_params, dynamic = FALSE)
 #' dynamic_chart <- point_chart(params = species_params, dynamic = TRUE)
@@ -281,9 +272,6 @@
 #'   output$dynamic_chart <- renderPlotly(dynamic_chart)
 #' }
 #' shinyApp(ui, server)
-#'
-#'
-#'
 #'
 #' # Example 4: Point chart as bubble chart
 #' library(epiviz)
@@ -303,7 +291,6 @@
 #'            '<br>In London: ',detections_london,
 #'            '<br><i>% in London: ',percent_london,'</i>'
 #'          ))
-#'
 #'
 #' # Define parameters list for point_chart() function.
 #' species_region_params <- list(
@@ -354,8 +341,6 @@
 #' }
 #' shinyApp(ui, server)
 #'
-#'
-#'
 #' # Example 5: Point chart with additional overlayed chart on secondary y-axis
 #' library(epiviz)
 #'
@@ -399,7 +384,6 @@
 #'                             params = over65_params,
 #'                             dynamic = FALSE)
 #'
-#'
 #' # Legends are not currently implemented for static charts with a supplied
 #' #  base chart, so add legend manually using dummy data and an invisible geom_point()
 #' over65_chart <- over65_chart +
@@ -414,7 +398,6 @@
 #'   theme(legend.position="top")
 #'
 #' over65_chart
-#'
 #'
 #' }
 #'
@@ -479,7 +462,8 @@ point_chart <- function(
                           hline_type = "dashed",
                           hline_label = NULL,
                           hline_label_colour = "black"
-                        )
+                        ),
+                        ...
                   ) {
 
 
@@ -809,7 +793,8 @@ point_chart <- function(
                         ),
           color = point_colours[[1]],
           shape = point_shape,
-          size = point_size
+          size = point_size,
+          ...
         )
 
     } else {
@@ -823,7 +808,8 @@ point_chart <- function(
                         size = .data[[point_size]]
                         ),
           color = point_colours[[1]],
-          shape = point_shape
+          shape = point_shape,
+          ...
         )
 
 
@@ -847,7 +833,8 @@ point_chart <- function(
             colour = factor(.data[[group_var]]),
             shape = factor(.data[[group_var]]),
           ),
-          size = point_size
+          size = point_size,
+          ...
         )
 
     } else {
@@ -863,7 +850,8 @@ point_chart <- function(
             colour = factor(.data[[group_var]]),
             shape = factor(.data[[group_var]]),
             size = .data[[point_size]]
-          )
+          ),
+          ...
         )
 
     }
@@ -1293,7 +1281,8 @@ point_chart <- function(
           # leverage 'text' and 'customdata' fields to include ci limits in default hover labels
           text = text_upper,
           customdata = text_lower,
-          hovertemplate = paste0(hoverlabels,"<extra></extra>") # Remove tooltip for ungrouped data
+          hovertemplate = paste0(hoverlabels,"<extra></extra>"), # Remove tooltip for ungrouped data
+          ...
         )
 
     } else {
@@ -1377,7 +1366,8 @@ point_chart <- function(
             text = text_upper,
             customdata = text_lower,
             legendgrouptitle = list(text = legend_title),
-            hovertemplate = hoverlabels
+            hovertemplate = hoverlabels,
+            ...
           )
 
       }

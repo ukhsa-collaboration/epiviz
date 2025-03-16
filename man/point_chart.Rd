@@ -25,7 +25,8 @@ point_chart(
      show_axislines = TRUE, legend_title = "",
     legend_pos = "right", point_size_legend = FALSE, point_size_legend_title = "", hline
     = NULL, hline_colour = "black", hline_width = 0.5, hline_type = "dashed", hline_label
-    = NULL, hline_label_colour = "black")
+    = NULL, hline_label_colour = "black"),
+  ...
 )
 }
 \arguments{
@@ -36,13 +37,13 @@ Default is \code{FALSE}, which will return a static ggplot output.}
 \code{dynamic = TRUE} then \code{base} must be a plotly object, and if \code{dynamic = FALSE}
 then \code{base} must be a ggplot object.}
 
-\item{params}{A named list containing arguements used to create the plot.
-' \describe{
+\item{params}{A named list containing arguments used to create the plot.
+\describe{
 \item{df}{A data frame containing values used to create the point chart.}
 \item{x}{Name of the variable in \code{df} used to populate the x-axis.}
 \item{y}{Name of the variable in \code{df} used to populate the y-axis.}
 \item{point_shape}{Shape of the plotted points. Permitted values of \code{c('circle',
-   'triangle','square','plus','square cross','asterisk','diamond')}. When \code{group_var}
+  'triangle','square','plus','square cross','asterisk','diamond')}. When \code{group_var}
 is provided, point shapes will be automatically assigned based on group.}
 \item{point_size}{Size of the plotted point symbols. If supplied as a number, all points
 will be plotted with this size. If supplied as the name of a numeric variable
@@ -53,7 +54,7 @@ When \code{group_var} is provided, \code{point_colours} can be set as a
 character vector to define colours for each group.}
 \item{point_labels}{Name of a variable in df containing text labels to plot against
 each point on the chart. If not provided the no labels will be applied. If \code{dynamic
-   = TRUE} then \code{point_labels} will be applied as hover-labels, and \code{point_labels}
+  = TRUE} then \code{point_labels} will be applied as hover-labels, and \code{point_labels}
 will accept html to format the output labels.}
 \item{point_labels_size}{Font size of \code{point_labels} on output chart
 when \code{dynamic = FALSE}.}
@@ -82,10 +83,10 @@ in the chart for confidence interval parameters. Only applies when \code{group_v
 is provided. Defaults to \code{FALSE}.}
 \item{ci_legend_title}{Text to use as title for separate legend when \code{ci_legend = TRUE}.}
 \item{ci_colours}{Colour(s) used for plotting confidence intervals. When \code{ci =
-   "errorbar"} this will determine the colour of the plotted errorbars, when \code{ci =
-   "ribbon"} this will determine the colour of the plotted ribbons.}
+  "errorbar"} this will determine the colour of the plotted errorbars, when \code{ci =
+  "ribbon"} this will determine the colour of the plotted ribbons.}
 \item{errorbar_width}{Horizontal width of the plotted error bars when \code{ci =
-   "errorbar"}.}
+  "errorbar"}.}
 \item{y_sec_axis}{Logical to indicate whether data should be plotted on the
 secondary (right) y-axis. Default = \code{FALSE}.}
 \item{y_sec_axis_no_shift}{Forces the secondary y-axis scale to begin at 0. Default = \code{TRUE}.}
@@ -140,8 +141,11 @@ can be provided to style hlines if multiple hlines have been provided. Permitted
 can be provided to label individual hlines if multiple hlines have been provided.}
 \item{hline_label_colour}{Colour of the horizontal line labels if \code{hline_labels} is provided.
 A vector of colours can be provided to colour individual hline_labels if multiple hline_labels have been provided.}
-
 }}
+
+\item{...}{Additional arguments passed to \code{geom_point} for static (ggplot2) plots
+or to \code{add_trace} for dynamic (Plotly) plots, allowing custom styling of the points
+(e.g., \code{alpha}, \code{stroke}, \code{marker}, etc.).}
 }
 \value{
 A ggplot or plotly object.
@@ -153,8 +157,6 @@ point charts.
 \examples{
 
 \dontrun{
-
-
 
 # Example 1: Basic point chart.
 
@@ -185,8 +187,6 @@ chart_detections_per_month <- point_chart(
 )
 
 chart_detections_per_month
-
-
 
 # Example 2: Point chart with error bars and threshold line.
 library(epiviz)
@@ -241,9 +241,6 @@ server <- function(input, output, session) {
 }
 shinyApp(ui, server)
 
-
-
-
 # Example 3: Point chart with grouped data and confidence ribbon.
 library(epiviz)
 
@@ -286,7 +283,6 @@ species_params <- list(
   hline_label_colour = c("blue","red")
 )
 
-
 # Create static and dynamic charts
 static_chart <- point_chart(params = species_params, dynamic = FALSE)
 dynamic_chart <- point_chart(params = species_params, dynamic = TRUE)
@@ -303,9 +299,6 @@ server <- function(input, output, session) {
   output$dynamic_chart <- renderPlotly(dynamic_chart)
 }
 shinyApp(ui, server)
-
-
-
 
 # Example 4: Point chart as bubble chart
 library(epiviz)
@@ -325,7 +318,6 @@ london_detections <- epiviz::lab_data |>
            '<br>In London: ',detections_london,
            '<br><i>\% in London: ',percent_london,'</i>'
          ))
-
 
 # Define parameters list for point_chart() function.
 species_region_params <- list(
@@ -376,8 +368,6 @@ server <- function(input, output, session) {
 }
 shinyApp(ui, server)
 
-
-
 # Example 5: Point chart with additional overlayed chart on secondary y-axis
 library(epiviz)
 
@@ -421,7 +411,6 @@ over65_chart <- point_chart(base = base_chart,
                             params = over65_params,
                             dynamic = FALSE)
 
-
 # Legends are not currently implemented for static charts with a supplied
 #  base chart, so add legend manually using dummy data and an invisible geom_point()
 over65_chart <- over65_chart +
@@ -436,7 +425,6 @@ over65_chart <- over65_chart +
   theme(legend.position="top")
 
 over65_chart
-
 
 }
 
