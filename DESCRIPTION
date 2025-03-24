@@ -1,5 +1,5 @@
 Package: epiviz
-Title: Data Visualisation Functions for Epidemiological Data Science Products
+Title: Data Visualisation Functions for Epidemiological Data Science Products.
 Version: 0.1.0
 Authors@R: 
     c(person(given="Harshana", family="Liyanage", email="harshana.liyanage@ukhsa.gov.uk", role = c("aut","cre"),
