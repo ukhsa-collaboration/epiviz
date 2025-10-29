@@ -10,7 +10,4 @@ articles:
   line-chart: line-chart.html
   llm-interpret: llm-interpret.html
   point-chart: point-chart.html
-last_built: 2025-10-16T21:02Z
-urls:
-  reference: https://harshanal.github.io/epiviz/reference
-  article: https://harshanal.github.io/epiviz/articles
+last_built: 2025-10-29T22:18Z

@@ -4,107 +4,76 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Age-sex pyramids • epiviz</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Age-sex pyramids">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Age-sex pyramids">
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">epiviz</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9006</span>
-      </span>
-    </div>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
+    <a class="navbar-brand me-2" href="../index.html">epiviz</a>
 
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/age-sex-pyramid.html">Age-sex pyramids</a>
-    </li>
-    <li>
-      <a href="../articles/col-chart.html">Column charts</a>
-    </li>
-    <li>
-      <a href="../articles/epi-curve.html">Epidemic curves</a>
-    </li>
-    <li>
-      <a href="../articles/epi-map.html">Epidemiological maps</a>
-    </li>
-    <li>
-      <a href="../articles/getting-started.html">Getting started with epiviz</a>
-    </li>
-    <li>
-      <a href="../articles/line-chart.html">Line charts</a>
-    </li>
-    <li>
-      <a href="../articles/llm-interpret.html">LLM interpretation</a>
-    </li>
-    <li>
-      <a href="../articles/point-chart.html">Point charts</a>
-    </li>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/age-sex-pyramid.html">Age-sex pyramids</a></li>
+    <li><a class="dropdown-item" href="../articles/col-chart.html">Column charts</a></li>
+    <li><a class="dropdown-item" href="../articles/epi-curve.html">Epidemic curves</a></li>
+    <li><a class="dropdown-item" href="../articles/epi-map.html">Epidemiological maps</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started with epiviz</a></li>
+    <li><a class="dropdown-item" href="../articles/line-chart.html">Line charts</a></li>
+    <li><a class="dropdown-item" href="../articles/llm-interpret.html">LLM interpretation</a></li>
+    <li><a class="dropdown-item" href="../articles/point-chart.html">Point charts</a></li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ukhsa-collaboration/epiviz/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+      </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
+</nav><div class="container template-article">
 
 
 
-      </header><link href="age-sex-pyramid_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<link href="age-sex-pyramid_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
 <script src="age-sex-pyramid_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="age-sex-pyramid_files/plotly-binding-4.11.0/plotly.js"></script><script src="age-sex-pyramid_files/typedarray-0.1/typedarray.min.js"></script><link href="age-sex-pyramid_files/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
 <script src="age-sex-pyramid_files/crosstalk-1.2.2/js/crosstalk.min.js"></script><link href="age-sex-pyramid_files/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
 <script src="age-sex-pyramid_files/plotly-main-2.11.1/plotly-latest.min.js"></script><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Age-sex pyramids</h1>
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Age-sex pyramids</h1>
             
       
-
-      <div class="hidden name"><code>age-sex-pyramid.Rmd</code></div>
-
+      <small class="dont-index">Source: <a href="https://github.com/ukhsa-collaboration/epiviz/blob/HEAD/vignettes/age-sex-pyramid.Rmd" class="external-link"><code>vignettes/age-sex-pyramid.Rmd</code></a></small>
+      <div class="d-none name"><code>age-sex-pyramid.Rmd</code></div>
     </div>
 
     
@@ -124,7 +93,7 @@ output to their workflows.</p>
 <h2 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">epiviz</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ukhsa-collaboration/epiviz" class="external-link">epiviz</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -248,7 +217,7 @@ uncertainty.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <div class="plotly html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:768px;height:576px;"></div>
-<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"visdat":{"29ab46bc9561c":["function () ","plotlyVisDat"]},"cur_data":"29ab46bc9561c","attrs":{"29ab46bc9561c":{"showlegend":true,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Male","marker":{"color":"pink"},"orientation":"h","customdata":[72,45,50,91,195,317,433,470,534,303],"hovertemplate":"Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","inherit":true},"29ab46bc9561c.1":{"showlegend":true,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Female","marker":{"color":"blue"},"orientation":"h","hovertemplate":"Age group: %{y}<br> Value: %{x}<extra><\/extra>","inherit":true},"29ab46bc9561c.2":{"showlegend":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Male CI","marker":{"color":"#ffffff00","line":{"colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 90.6720840446579<\/i><br><i>Lower: 56.3355656901883<\/i><extra><\/extra>","5-14<br><i>Upper: 60.2135404969588<\/i><br><i>Lower: 32.8233087882345<\/i><extra><\/extra>","15-24<br><i>Upper: 65.9187666643368<\/i><br><i>Lower: 37.1109637374619<\/i><extra><\/extra>","25-34<br><i>Upper: 111.727834916548<\/i><br><i>Lower: 73.2675234968311<\/i><extra><\/extra>","35-44<br><i>Upper: 224.37403023126<\/i><br><i>Lower: 168.589697280545<\/i><extra><\/extra>","45-54<br><i>Upper: 353.888466061628<\/i><br><i>Lower: 283.060423461971<\/i><extra><\/extra>","55-64<br><i>Upper: 475.770021626732<\/i><br><i>Lower: 393.171047091185<\/i><extra><\/extra>","65-74<br><i>Upper: 514.475273858592<\/i><br><i>Lower: 428.463929917693<\/i><extra><\/extra>","75-84<br><i>Upper: 581.273692096513<\/i><br><i>Lower: 489.66275388012<\/i><extra><\/extra>","85+<br><i>Upper: 339.110212249025<\/i><br><i>Lower: 269.839912688357<\/i><extra><\/extra>"],"textposition":"none","hovertemplate":"%{text}","error_x":{"type":"data","symmetric":false,"color":"red","thickness":1,"arrayminus":[-15.664434309811675,-12.176691211765544,-12.889036262538141,-17.732476503168925,-26.410302719455331,-33.939576538028973,-39.82895290881487,-41.536070082306935,-44.33724611988049,-33.160087311643224],"array":[-18.672084044657936,-15.213540496958807,-15.918766664336829,-20.727834916547678,-29.374030231259923,-36.888466061628208,-42.770021626731648,-44.475273858592459,-47.2736920965134,-36.110212249025267]},"inherit":true},"29ab46bc9561c.3":{"showlegend":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Female CI","marker":{"color":"#ffffff00","line":{"colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 64.7805985929183<\/i><br><i>Lower: 36.2504697488291<\/i><extra><\/extra>","5-14<br><i>Upper: 49.8391744892362<\/i><br><i>Lower: 25.2139574173152<\/i><extra><\/extra>","15-24<br><i>Upper: 68.1910817408729<\/i><br><i>Lower: 38.8360872004612<\/i><extra><\/extra>","25-34<br><i>Upper: 134.765103292135<\/i><br><i>Lower: 92.2204535325584<\/i><extra><\/extra>","35-44<br><i>Upper: 151.105905051103<\/i><br><i>Lower: 105.874177850924<\/i><extra><\/extra>","45-54<br><i>Upper: 187.879506629589<\/i><br><i>Lower: 137.091109613433<\/i><extra><\/extra>","55-64<br><i>Upper: 179.255384103383<\/i><br><i>Lower: 129.71717525173<\/i><extra><\/extra>","65-74<br><i>Upper: 258.53028252417<\/i><br><i>Lower: 198.428420936259<\/i><extra><\/extra>","75-84<br><i>Upper: 305.261037337755<\/i><br><i>Lower: 239.692260252802<\/i><extra><\/extra>","85+<br><i>Upper: 252.138120455058<\/i><br><i>Lower: 192.821441863834<\/i><extra><\/extra>"],"textposition":"none","hovertemplate":"%{text}","error_x":{"type":"data","symmetric":false,"color":"red","thickness":1,"arrayminus":[12.74953025117086,10.786042582684772,13.163912799538764,19.779546467441605,21.125822149075717,23.908890386566895,23.282824748270144,28.571579063741353,31.307739747198355,28.178558136165918],"array":[15.780598592918295,13.839174489236193,16.191081740872889,22.765103292135393,24.105905051103093,26.879506629589002,26.255384103382625,31.53028252416982,34.261037337755283,31.138120455058157]},"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Sex","xaxis":{"domain":[0,1],"automargin":true,"title":{"text":"Number of detections","font":{"size":12}},"tickfont":{"size":12},"zeroline":true,"showgrid":false,"showline":true,"linecolor":"black","tickmode":"array","tickvals":[-600,-400,-200,-0,200,400,600],"ticktext":["600","400","200","0","200","400","600"],"range":[-610.33737670133905,610.33737670133905]},"yaxis":{"domain":[0,1],"automargin":true,"title":{"text":"Age group (years)","font":{"size":12}},"tickfont":{"size":12},"zeroline":true,"showgrid":false,"showline":true,"linecolor":"black","type":"category","categoryorder":"array","categoryarray":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"]},"barmode":"overlay","font":{"family":"Arial"},"hoverlabel":{"bgcolor":"white","font":{"size":12}},"showlegend":true,"legend":{"orientation":"h","xanchor":"center","x":0.5,"y":-0.20000000000000001},"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"showlegend":true,"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Male","marker":{"color":"pink","line":{"color":"rgba(31,119,180,1)"}},"orientation":"h","customdata":[72,45,50,91,195,317,433,470,534,303],"hovertemplate":["Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>"],"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"showlegend":true,"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Female","marker":{"color":"blue","line":{"color":"rgba(255,127,14,1)"}},"orientation":"h","hovertemplate":["Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>"],"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"showlegend":false,"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Male CI","marker":{"color":"#ffffff00","line":{"color":"rgba(44,160,44,1)","colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 90.6720840446579<\/i><br><i>Lower: 56.3355656901883<\/i><extra><\/extra>","5-14<br><i>Upper: 60.2135404969588<\/i><br><i>Lower: 32.8233087882345<\/i><extra><\/extra>","15-24<br><i>Upper: 65.9187666643368<\/i><br><i>Lower: 37.1109637374619<\/i><extra><\/extra>","25-34<br><i>Upper: 111.727834916548<\/i><br><i>Lower: 73.2675234968311<\/i><extra><\/extra>","35-44<br><i>Upper: 224.37403023126<\/i><br><i>Lower: 168.589697280545<\/i><extra><\/extra>","45-54<br><i>Upper: 353.888466061628<\/i><br><i>Lower: 283.060423461971<\/i><extra><\/extra>","55-64<br><i>Upper: 475.770021626732<\/i><br><i>Lower: 393.171047091185<\/i><extra><\/extra>","65-74<br><i>Upper: 514.475273858592<\/i><br><i>Lower: 428.463929917693<\/i><extra><\/extra>","75-84<br><i>Upper: 581.273692096513<\/i><br><i>Lower: 489.66275388012<\/i><extra><\/extra>","85+<br><i>Upper: 339.110212249025<\/i><br><i>Lower: 269.839912688357<\/i><extra><\/extra>"],"textposition":["none","none","none","none","none","none","none","none","none","none"],"hovertemplate":["%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}"],"error_x":{"color":"red","type":"data","symmetric":false,"thickness":1,"arrayminus":[-15.664434309811675,-12.176691211765544,-12.889036262538141,-17.732476503168925,-26.410302719455331,-33.939576538028973,-39.82895290881487,-41.536070082306935,-44.33724611988049,-33.160087311643224],"array":[-18.672084044657936,-15.213540496958807,-15.918766664336829,-20.727834916547678,-29.374030231259923,-36.888466061628208,-42.770021626731648,-44.475273858592459,-47.2736920965134,-36.110212249025267]},"error_y":{"color":"rgba(44,160,44,1)"},"line":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"showlegend":false,"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Female CI","marker":{"color":"#ffffff00","line":{"color":"rgba(214,39,40,1)","colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 64.7805985929183<\/i><br><i>Lower: 36.2504697488291<\/i><extra><\/extra>","5-14<br><i>Upper: 49.8391744892362<\/i><br><i>Lower: 25.2139574173152<\/i><extra><\/extra>","15-24<br><i>Upper: 68.1910817408729<\/i><br><i>Lower: 38.8360872004612<\/i><extra><\/extra>","25-34<br><i>Upper: 134.765103292135<\/i><br><i>Lower: 92.2204535325584<\/i><extra><\/extra>","35-44<br><i>Upper: 151.105905051103<\/i><br><i>Lower: 105.874177850924<\/i><extra><\/extra>","45-54<br><i>Upper: 187.879506629589<\/i><br><i>Lower: 137.091109613433<\/i><extra><\/extra>","55-64<br><i>Upper: 179.255384103383<\/i><br><i>Lower: 129.71717525173<\/i><extra><\/extra>","65-74<br><i>Upper: 258.53028252417<\/i><br><i>Lower: 198.428420936259<\/i><extra><\/extra>","75-84<br><i>Upper: 305.261037337755<\/i><br><i>Lower: 239.692260252802<\/i><extra><\/extra>","85+<br><i>Upper: 252.138120455058<\/i><br><i>Lower: 192.821441863834<\/i><extra><\/extra>"],"textposition":["none","none","none","none","none","none","none","none","none","none"],"hovertemplate":["%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}"],"error_x":{"color":"red","type":"data","symmetric":false,"thickness":1,"arrayminus":[12.74953025117086,10.786042582684772,13.163912799538764,19.779546467441605,21.125822149075717,23.908890386566895,23.282824748270144,28.571579063741353,31.307739747198355,28.178558136165918],"array":[15.780598592918295,13.839174489236193,16.191081740872889,22.765103292135393,24.105905051103093,26.879506629589002,26.255384103382625,31.53028252416982,34.261037337755283,31.138120455058157]},"error_y":{"color":"rgba(214,39,40,1)"},"line":{"color":"rgba(214,39,40,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p class="caption">
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"visdat":{"140ac7f2d975":["function () ","plotlyVisDat"]},"cur_data":"140ac7f2d975","attrs":{"140ac7f2d975":{"showlegend":true,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Male","marker":{"color":"pink"},"orientation":"h","customdata":[72,45,50,91,195,317,433,470,534,303],"hovertemplate":"Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","inherit":true},"140ac7f2d975.1":{"showlegend":true,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Female","marker":{"color":"blue"},"orientation":"h","hovertemplate":"Age group: %{y}<br> Value: %{x}<extra><\/extra>","inherit":true},"140ac7f2d975.2":{"showlegend":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Male CI","marker":{"color":"#ffffff00","line":{"colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 90.6720840446579<\/i><br><i>Lower: 56.3355656901883<\/i><extra><\/extra>","5-14<br><i>Upper: 60.2135404969588<\/i><br><i>Lower: 32.8233087882345<\/i><extra><\/extra>","15-24<br><i>Upper: 65.9187666643368<\/i><br><i>Lower: 37.1109637374619<\/i><extra><\/extra>","25-34<br><i>Upper: 111.727834916548<\/i><br><i>Lower: 73.2675234968311<\/i><extra><\/extra>","35-44<br><i>Upper: 224.37403023126<\/i><br><i>Lower: 168.589697280545<\/i><extra><\/extra>","45-54<br><i>Upper: 353.888466061628<\/i><br><i>Lower: 283.060423461971<\/i><extra><\/extra>","55-64<br><i>Upper: 475.770021626732<\/i><br><i>Lower: 393.171047091185<\/i><extra><\/extra>","65-74<br><i>Upper: 514.475273858592<\/i><br><i>Lower: 428.463929917693<\/i><extra><\/extra>","75-84<br><i>Upper: 581.273692096513<\/i><br><i>Lower: 489.66275388012<\/i><extra><\/extra>","85+<br><i>Upper: 339.110212249025<\/i><br><i>Lower: 269.839912688357<\/i><extra><\/extra>"],"textposition":"none","hovertemplate":"%{text}","error_x":{"type":"data","symmetric":false,"color":"red","thickness":1,"arrayminus":[-15.664434309811675,-12.176691211765544,-12.889036262538141,-17.732476503168925,-26.410302719455331,-33.939576538028973,-39.82895290881487,-41.536070082306935,-44.33724611988049,-33.160087311643224],"array":[-18.672084044657936,-15.213540496958807,-15.918766664336829,-20.727834916547678,-29.374030231259923,-36.888466061628208,-42.770021626731648,-44.475273858592459,-47.2736920965134,-36.110212249025267]},"inherit":true},"140ac7f2d975.3":{"showlegend":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Female CI","marker":{"color":"#ffffff00","line":{"colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 64.7805985929183<\/i><br><i>Lower: 36.2504697488291<\/i><extra><\/extra>","5-14<br><i>Upper: 49.8391744892362<\/i><br><i>Lower: 25.2139574173152<\/i><extra><\/extra>","15-24<br><i>Upper: 68.1910817408729<\/i><br><i>Lower: 38.8360872004612<\/i><extra><\/extra>","25-34<br><i>Upper: 134.765103292135<\/i><br><i>Lower: 92.2204535325584<\/i><extra><\/extra>","35-44<br><i>Upper: 151.105905051103<\/i><br><i>Lower: 105.874177850924<\/i><extra><\/extra>","45-54<br><i>Upper: 187.879506629589<\/i><br><i>Lower: 137.091109613433<\/i><extra><\/extra>","55-64<br><i>Upper: 179.255384103383<\/i><br><i>Lower: 129.71717525173<\/i><extra><\/extra>","65-74<br><i>Upper: 258.53028252417<\/i><br><i>Lower: 198.428420936259<\/i><extra><\/extra>","75-84<br><i>Upper: 305.261037337755<\/i><br><i>Lower: 239.692260252802<\/i><extra><\/extra>","85+<br><i>Upper: 252.138120455058<\/i><br><i>Lower: 192.821441863834<\/i><extra><\/extra>"],"textposition":"none","hovertemplate":"%{text}","error_x":{"type":"data","symmetric":false,"color":"red","thickness":1,"arrayminus":[12.74953025117086,10.786042582684772,13.163912799538764,19.779546467441605,21.125822149075717,23.908890386566895,23.282824748270144,28.571579063741353,31.307739747198355,28.178558136165918],"array":[15.780598592918295,13.839174489236193,16.191081740872889,22.765103292135393,24.105905051103093,26.879506629589002,26.255384103382625,31.53028252416982,34.261037337755283,31.138120455058157]},"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Interactive grouped pyramid with CI","xaxis":{"domain":[0,1],"automargin":true,"title":{"text":"Number of detections","font":{"size":12}},"tickfont":{"size":12},"zeroline":true,"showgrid":false,"showline":true,"linecolor":"black","tickmode":"array","tickvals":[-600,-400,-200,-0,200,400,600],"ticktext":["600","400","200","0","200","400","600"],"range":[-610.33737670133905,610.33737670133905]},"yaxis":{"domain":[0,1],"automargin":true,"title":{"text":"Age group (years)","font":{"size":12}},"tickfont":{"size":12},"zeroline":true,"showgrid":false,"showline":true,"linecolor":"black","type":"category","categoryorder":"array","categoryarray":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"]},"barmode":"overlay","font":{"family":"Arial"},"hoverlabel":{"bgcolor":"white","font":{"size":12}},"showlegend":true,"legend":{"orientation":"h","xanchor":"center","x":0.5,"y":-0.20000000000000001},"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"showlegend":true,"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Male","marker":{"color":"pink","line":{"color":"rgba(31,119,180,1)"}},"orientation":"h","customdata":[72,45,50,91,195,317,433,470,534,303],"hovertemplate":["Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>","Age group: %{y}<br> Value: %{customdata}<extra><\/extra>"],"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"showlegend":true,"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"bar","name":"Female","marker":{"color":"blue","line":{"color":"rgba(255,127,14,1)"}},"orientation":"h","hovertemplate":["Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>","Age group: %{y}<br> Value: %{x}<extra><\/extra>"],"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"xaxis":"x","yaxis":"y","frame":null},{"showlegend":false,"x":[-72,-45,-50,-91,-195,-317,-433,-470,-534,-303],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Male CI","marker":{"color":"#ffffff00","line":{"color":"rgba(44,160,44,1)","colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 90.6720840446579<\/i><br><i>Lower: 56.3355656901883<\/i><extra><\/extra>","5-14<br><i>Upper: 60.2135404969588<\/i><br><i>Lower: 32.8233087882345<\/i><extra><\/extra>","15-24<br><i>Upper: 65.9187666643368<\/i><br><i>Lower: 37.1109637374619<\/i><extra><\/extra>","25-34<br><i>Upper: 111.727834916548<\/i><br><i>Lower: 73.2675234968311<\/i><extra><\/extra>","35-44<br><i>Upper: 224.37403023126<\/i><br><i>Lower: 168.589697280545<\/i><extra><\/extra>","45-54<br><i>Upper: 353.888466061628<\/i><br><i>Lower: 283.060423461971<\/i><extra><\/extra>","55-64<br><i>Upper: 475.770021626732<\/i><br><i>Lower: 393.171047091185<\/i><extra><\/extra>","65-74<br><i>Upper: 514.475273858592<\/i><br><i>Lower: 428.463929917693<\/i><extra><\/extra>","75-84<br><i>Upper: 581.273692096513<\/i><br><i>Lower: 489.66275388012<\/i><extra><\/extra>","85+<br><i>Upper: 339.110212249025<\/i><br><i>Lower: 269.839912688357<\/i><extra><\/extra>"],"textposition":["none","none","none","none","none","none","none","none","none","none"],"hovertemplate":["%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}"],"error_x":{"color":"red","type":"data","symmetric":false,"thickness":1,"arrayminus":[-15.664434309811675,-12.176691211765544,-12.889036262538141,-17.732476503168925,-26.410302719455331,-33.939576538028973,-39.82895290881487,-41.536070082306935,-44.33724611988049,-33.160087311643224],"array":[-18.672084044657936,-15.213540496958807,-15.918766664336829,-20.727834916547678,-29.374030231259923,-36.888466061628208,-42.770021626731648,-44.475273858592459,-47.2736920965134,-36.110212249025267]},"error_y":{"color":"rgba(44,160,44,1)"},"line":{"color":"rgba(44,160,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"showlegend":false,"x":[49,36,52,112,127,161,153,227,271,221],"y":["0-4","5-14","15-24","25-34","35-44","45-54","55-64","65-74","75-84","85+"],"type":"scatter","mode":"markers","name":"Female CI","marker":{"color":"#ffffff00","line":{"color":"rgba(214,39,40,1)","colour":"#ffffff00","width":0},"opacity":0},"text":["0-4<br><i>Upper: 64.7805985929183<\/i><br><i>Lower: 36.2504697488291<\/i><extra><\/extra>","5-14<br><i>Upper: 49.8391744892362<\/i><br><i>Lower: 25.2139574173152<\/i><extra><\/extra>","15-24<br><i>Upper: 68.1910817408729<\/i><br><i>Lower: 38.8360872004612<\/i><extra><\/extra>","25-34<br><i>Upper: 134.765103292135<\/i><br><i>Lower: 92.2204535325584<\/i><extra><\/extra>","35-44<br><i>Upper: 151.105905051103<\/i><br><i>Lower: 105.874177850924<\/i><extra><\/extra>","45-54<br><i>Upper: 187.879506629589<\/i><br><i>Lower: 137.091109613433<\/i><extra><\/extra>","55-64<br><i>Upper: 179.255384103383<\/i><br><i>Lower: 129.71717525173<\/i><extra><\/extra>","65-74<br><i>Upper: 258.53028252417<\/i><br><i>Lower: 198.428420936259<\/i><extra><\/extra>","75-84<br><i>Upper: 305.261037337755<\/i><br><i>Lower: 239.692260252802<\/i><extra><\/extra>","85+<br><i>Upper: 252.138120455058<\/i><br><i>Lower: 192.821441863834<\/i><extra><\/extra>"],"textposition":["none","none","none","none","none","none","none","none","none","none"],"hovertemplate":["%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}","%{text}"],"error_x":{"color":"red","type":"data","symmetric":false,"thickness":1,"arrayminus":[12.74953025117086,10.786042582684772,13.163912799538764,19.779546467441605,21.125822149075717,23.908890386566895,23.282824748270144,28.571579063741353,31.307739747198355,28.178558136165918],"array":[15.780598592918295,13.839174489236193,16.191081740872889,22.765103292135393,24.105905051103093,26.879506629589002,26.255384103382625,31.53028252416982,34.261037337755283,31.138120455058157]},"error_y":{"color":"rgba(214,39,40,1)"},"line":{"color":"rgba(214,39,40,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p class="caption">
 Interactive age-sex pyramid with 95% confidence intervals for
 Staphylococcus aureus detections in 2023.
 </p>
@@ -288,29 +257,22 @@ colour-blind friendly combinations).</li>
 consistent snapshot in time, especially for retrospective analyses.</li>
 </ol>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-      </div>
-
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Harshana Liyanage, Alex Bhattacharya, Liam Fitzpatrick, James Leatherland, Sudha Aurumugam, Jordan Worth, James Duke, Emma Parker.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Harshana Liyanage, Alex Bhattacharya, James Duke, Liam Fitzpatrick, James Leatherland, Jordan Worth, Emma Parker.</p>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
-
 
 
 
