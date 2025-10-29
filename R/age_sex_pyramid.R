@@ -1,6 +1,6 @@
 #' Generate an Age-Sex Pyramid
 #'
-#' This function creates an age-sex pyramid visualisation, either as a static ggplot or an interactive plotly chart.
+#' This function creates an age-sex pyramid visualization, either as a static ggplot or an interactive plotly chart.
 #' The function can take either a line list (ungrouped data) or already grouped data as input.
 #' When using a line list, the function processes the data, groups it by age and sex, and then generates the pyramid.
 #' If grouped data is provided, it directly creates the pyramid.
@@ -207,10 +207,6 @@ age_sex_pyramid <- function(
       }
     }else{
       # have been passed grouped data to function
-      # Map the column names from the user's data frame to the expected names
-      if (is.null(var_map$age_group) || is.null(var_map$sex) || is.null(var_map$value)) {
-        stop("For grouped data, var_map must include 'age_group', 'sex', and 'value'")
-      }
 
       .grp_df <- params$df |>
         select(age_group = any_of(var_map$age_group_var),
@@ -438,6 +434,5 @@ age_sex_pyramid <- function(
   return(p)
   }
 }
-
 
 
