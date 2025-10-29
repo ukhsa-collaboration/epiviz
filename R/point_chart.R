@@ -139,6 +139,8 @@
 #'
 #' \dontrun{
 #'
+#'
+#'
 #' # Example 1: Basic point chart.
 #'
 #' # Define a dataframe containing the number of detections per month from the
@@ -168,6 +170,8 @@
 #' )
 #'
 #' chart_detections_per_month
+#'
+#'
 #'
 #' # Example 2: Point chart with error bars and threshold line.
 #' library(epiviz)
@@ -222,6 +226,9 @@
 #' }
 #' shinyApp(ui, server)
 #'
+#'
+#'
+#'
 #' # Example 3: Point chart with grouped data and confidence ribbon.
 #' library(epiviz)
 #'
@@ -264,6 +271,7 @@
 #'   hline_label_colour = c("blue","red")
 #' )
 #'
+#'
 #' # Create static and dynamic charts
 #' static_chart <- point_chart(params = species_params, dynamic = FALSE)
 #' dynamic_chart <- point_chart(params = species_params, dynamic = TRUE)
@@ -280,6 +288,9 @@
 #'   output$dynamic_chart <- renderPlotly(dynamic_chart)
 #' }
 #' shinyApp(ui, server)
+#'
+#'
+#'
 #'
 #' # Example 4: Point chart as bubble chart
 #' library(epiviz)
@@ -299,6 +310,7 @@
 #'            '<br>In London: ',detections_london,
 #'            '<br><i>% in London: ',percent_london,'</i>'
 #'          ))
+#'
 #'
 #' # Define parameters list for point_chart() function.
 #' species_region_params <- list(
@@ -349,6 +361,8 @@
 #' }
 #' shinyApp(ui, server)
 #'
+#'
+#'
 #' # Example 5: Point chart with additional overlayed chart on secondary y-axis
 #' library(epiviz)
 #'
@@ -392,6 +406,7 @@
 #'                             params = over65_params,
 #'                             dynamic = FALSE)
 #'
+#'
 #' # Legends are not currently implemented for static charts with a supplied
 #' #  base chart, so add legend manually using dummy data and an invisible geom_point()
 #' over65_chart <- over65_chart +
@@ -406,6 +421,7 @@
 #'   theme(legend.position="top")
 #'
 #' over65_chart
+#'
 #'
 #' }
 #'
@@ -476,8 +492,7 @@ point_chart <- function(
                           hline_type = "dashed",
                           hline_label = NULL,
                           hline_label_colour = "black"
-                        ),
-                        ...
+                        )
                   ) {
 
 
@@ -863,8 +878,7 @@ point_chart <- function(
                         ),
           color = point_colours[[1]],
           shape = point_shape,
-          size = point_size,
-          ...
+          size = point_size
         )
 
     } else {
@@ -878,8 +892,7 @@ point_chart <- function(
                         size = .data[[point_size]]
                         ),
           color = point_colours[[1]],
-          shape = point_shape,
-          ...
+          shape = point_shape
         )
 
 
@@ -903,8 +916,7 @@ point_chart <- function(
             colour = factor(.data[[group_var]]),
             shape = factor(.data[[group_var]]),
           ),
-          size = point_size,
-          ...
+          size = point_size
         )
 
     } else {
@@ -920,8 +932,7 @@ point_chart <- function(
             colour = factor(.data[[group_var]]),
             shape = factor(.data[[group_var]]),
             size = .data[[point_size]]
-          ),
-          ...
+          )
         )
 
     }
@@ -1351,8 +1362,7 @@ point_chart <- function(
           # leverage 'text' and 'customdata' fields to include ci limits in default hover labels
           text = text_upper,
           customdata = text_lower,
-          hovertemplate = paste0(hoverlabels,"<extra></extra>"), # Remove tooltip for ungrouped data
-          ...
+          hovertemplate = paste0(hoverlabels,"<extra></extra>") # Remove tooltip for ungrouped data
         )
 
     } else {
@@ -1436,8 +1446,7 @@ point_chart <- function(
             text = text_upper,
             customdata = text_lower,
             legendgrouptitle = list(text = legend_title),
-            hovertemplate = hoverlabels,
-            ...
+            hovertemplate = hoverlabels
           )
 
       }
@@ -1489,7 +1498,6 @@ point_chart <- function(
 
 
 }
-
 
 
 

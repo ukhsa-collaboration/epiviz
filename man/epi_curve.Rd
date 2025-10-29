@@ -22,7 +22,7 @@ epi_curve(
     x_axis_label_font_size = 9, y_axis_label_font_size = 9, y_limit_min = NULL, 
     
     y_limit_max = NULL, x_axis_break_labels = NULL, y_axis_break_labels = NULL,
-    y_axis_n_breaks = NULL, show_gridlines = TRUE, show_axislines = TRUE, legend_title =
+    y_axis_n_breaks = NULL, show_gridlines = FALSE, show_axislines = TRUE, legend_title =
     "", legend_pos = "right", legend_font_size = 8, legend_title_font_size = 8, hline =
     NULL, hline_colour = "black", hline_width = 0.5, hline_type = "dashed", hline_label =
     NULL, hline_label_colour = "black", hover_labels = NULL)

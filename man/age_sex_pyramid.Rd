@@ -58,7 +58,7 @@ the function processes the line list data. Default is \code{FALSE}.}
 A ggplot or plotly object representing the age-sex pyramid, depending on the value of \code{dynamic}.
 }
 \description{
-This function creates an age-sex pyramid visualisation, either as a static ggplot or an interactive plotly chart.
+This function creates an age-sex pyramid visualization, either as a static ggplot or an interactive plotly chart.
 The function can take either a line list (ungrouped data) or already grouped data as input.
 When using a line list, the function processes the data, groups it by age and sex, and then generates the pyramid.
 If grouped data is provided, it directly creates the pyramid.

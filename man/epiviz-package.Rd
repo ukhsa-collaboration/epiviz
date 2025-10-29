@@ -27,7 +27,6 @@ Authors:
   \item James Duke \email{james.duke@ukhsa.gov.uk}
   \item Liam Fitzpatrick \email{liam.fitzpatrick@ukhsa.gov.uk}
   \item James Leatherland \email{james.leatherland@ukhsa.gov.uk}
-  \item Sudha Aurumugam \email{sudha.arumugam@ukhsa.gov.uk}
   \item Jordan Worth \email{jordan.worth@ukhsa.gov.uk}
   \item Emma Parker \email{emma.k.parker@ukhsa.gov.uk}
 }
