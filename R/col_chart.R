@@ -551,7 +551,35 @@ col_chart <- function(
   #   for base_gg() and base_plotly()
   base <- NULL
 
+  # Check that the data frame provided is not empty, else stop
+  assertthat::assert_that(not_empty(params$df))
 
+  # Assign variables from params list for easier referencing
+  df <- params$df
+  x <- params$x
+  y <- params$y
+  group_var <- params$group_var
+  fill <- params$fill
+  y_axis <- params$y_axis
+  position <- params$position
+  ci <- params$ci
+  lower <- params$lower
+  upper <- params$upper
+  error_colour <- params$error_colour
+  h_line <- params$h_line
+  y_label <- params$y_label
+  x_label <- params$x_label
+  x_label_angle <- params$x_label_angle
+  y_label_angle <- params$y_label_angle
+  x_labels_reverse <- params$x_labels_reverse
+  y_min_limit <- params$y_min_limit
+  y_max_limit <- params$y_max_limit
+  x_axis_breaks <- params$x_axis_breaks
+  legend_pos <- params$legend_pos
+  remove_gridlines <- params$remove_gridlines
+  percent <- params$percent
+  cap_text <- params$cap_text
+  no_shift <- params$no_shift
 
 
 
@@ -1587,6 +1615,7 @@ col_chart <- function(
     }
 
 
+  # Remove old theme settings that are now handled above
 
     ##### Build col_chart
 

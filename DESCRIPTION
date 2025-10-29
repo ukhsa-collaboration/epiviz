@@ -9,7 +9,6 @@ Authors@R:
     person(given="James", family="Duke", email="james.duke@ukhsa.gov.uk", role = c("aut")),
     person(given="Liam", family="Fitzpatrick", email="liam.fitzpatrick@ukhsa.gov.uk", role = c("aut")),
     person(given="James", family="Leatherland", email="james.leatherland@ukhsa.gov.uk", role = c("aut")),
-    person(given="Sudha", family="Aurumugam", email="sudha.arumugam@ukhsa.gov.uk", role = c("aut")),
     person(given="Jordan", family="Worth", email="jordan.worth@ukhsa.gov.uk", role = c("aut")),
     person(given="Emma", family="Parker", email="emma.k.parker@ukhsa.gov.uk", role = c("aut")))
 Description: The epiviz package provides a set of functions to produce frequently used static and interactive graphs in epidemiological data science products.
@@ -27,6 +26,7 @@ Suggests:
     rmarkdown
 Config/testthat/edition: 3
 Imports: 
+    grDevices,
     assertthat,
     classInt,
     dplyr,

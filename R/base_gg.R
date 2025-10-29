@@ -10,6 +10,7 @@
 #' environment(base_gg) <- environment()
 #' base <- base_gg()
 #' }
+#' @keywords internal
 base_gg <- function() {
 
 

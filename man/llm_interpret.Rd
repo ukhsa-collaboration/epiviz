@@ -7,7 +7,7 @@
 llm_interpret(input, word_limit = 100, prompt_extension = NULL)
 }
 \arguments{
-\item{input}{An input object, either a data frame or a ggplot object, representing the data or visualization to be interpreted.}
+\item{input}{An input object, either a data frame or a ggplot object, representing the data or visualisation to be interpreted.}
 
 \item{word_limit}{Integer. The desired word length for the response. Defaults to 100.}
 

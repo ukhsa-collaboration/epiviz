@@ -1,4 +1,6 @@
-url: https://harshanal.github.io/epiviz/
+url: ~
+template:
+  bootstrap: 5
 
 home:
   links:

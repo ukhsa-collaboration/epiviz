@@ -326,7 +326,6 @@ plotly_legend_pos <- function(x) {
 
 
 
-
 #' A function to generate a colour palette of n_pal hexcodes based upon an input
 #' colour (or colours) \code{x}
 #'

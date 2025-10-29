@@ -155,6 +155,18 @@ test_that("age_sex_pyramid works with dynamic output", {
     )
   )
   expect_true(inherits(p, "plotly"))
+  
+  # Test with pre-grouped data without confidence limits
+  p_no_ci <- age_sex_pyramid(
+    dynamic=TRUE,
+    params = list(
+      df = grouped_df,
+      var_map = list(age_group = 'age_group', sex = 'sex', value = 'value'),
+      grouped = TRUE,
+      conf_limits = FALSE
+    )
+  )
+  expect_true(inherits(p_no_ci, "plotly"))
 })
 
 

@@ -32,6 +32,39 @@ test_that("point_chart produces static chart", {
 })
 
 
+# basic line chart with custom arguments not included in params
+test_that("point_chart produces static chart", {
+  library(epiviz)
+  # Create test dataframe from epiviz::lab_data
+  data <- epiviz::lab_data |>
+    group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
+    summarise(detections = n()) |>
+    ungroup()
+
+  # Create params list
+  params <- list(
+    df = data,
+    x = "specimen_month",
+    y = "detections",
+    point_colours = "#007C91",
+    point_size = 3,
+    x_limit_min = "2022-01-01",
+    x_limit_max = "2023-12-31",
+    chart_title = "Detections per Month 2022-2023",
+    x_axis_title = "Month of detection",
+    y_axis_title = "Number of detections",
+    x_axis_date_breaks = "2 months"
+  )
+
+  # Create static point chart
+  result <- point_chart(params = params, dynamic = FALSE,
+                        alpha = 0.7) # Test passing alpha through ...)
+
+  # check that the output is a ggplot object
+  expect_true(inherits(result, "ggplot"))
+
+})
+
 
 
 

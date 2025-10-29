@@ -15,10 +15,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="data visualisation functions for epidemiological data science products">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Data Visualisation Functions for Epidemiological Data Science Products">
 <meta property="og:description" content="The epiviz package provides a set of functions to produce frequently used static and interactive graphs in epidemiological data science products.">
-<meta property="og:image" content="https://harshanal.github.io/epiviz/logo.png">
+<meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -43,10 +42,17 @@
       </span>
     </div>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">Reference</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -85,11 +91,21 @@
   <a href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav"></ul>
 </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="epiviz-">epiviz <a class="anchor" aria-label="anchor" href="#epiviz-"></a>
+</h1>
 </div>
 <!--/.navbar -->
 
@@ -102,31 +118,130 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><code>epiviz</code> provides easy-to-use data visualisation functions for R data science products. The package includes functions to create a range of static and interactive visualisations. Additionally, the package also provides helper functions that will allow converting line lists to aggregated data frames that are in the form ready to be consumed by the visualisation functions.</p>
+<p><code>epiviz</code> provides easy-to-use data visualisation functions for R data science products. The package includes functions to create a range of static and interactive visualisations. Each visualisation function can produce either a static (ggplot2) or dynamic (plotly/leaflet) output using the same set of parameters, allowing users to easily switch between visualisation types by simply changing the <code>dynamic</code> flag.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>epivis can be installed from GitHub used the following code.</p>
+<p>epiviz can be installed from GitHub using the following code:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'harshanal/epiviz'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Install epiviz</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'ukhsa-collaboration/epiviz'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># To install the development version</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"harshanal/epiviz@dev"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ukhsa-collaboration/epiviz@dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
-<p>Following functions are available in the current release of epiviz:</p>
+<p>The following visualisation functions are available in the current release of epiviz:</p>
 <ul>
 <li>
-<code><a href="reference/line_chart.html">line_chart()</a></code>: Line chart with options to add dual axes, threshold lines, confidence limits as ribbons/error bars.</li>
+<code><a href="reference/line_chart.html">line_chart()</a></code>: Creates line charts with options for grouping, dual axes, threshold lines, and confidence limits (as ribbons or error bars).</li>
 <li>
-<code>col_charts()</code>: Column chart with options to add dual axes, threshold lines, confidence limits as ribbons/error bars.</li>
+<code><a href="reference/point_chart.html">point_chart()</a></code>: Creates scatter/point charts with options for grouping, sizing points by values, custom shapes, and confidence intervals.</li>
 <li>
-<code><a href="reference/epi_map.html">epi_map()</a></code>: Epidemiological map with customisable maps adaptable for multiple administrative levels.</li>
+<code><a href="reference/col_chart.html">col_chart()</a></code>: Creates column charts with options for grouping, dual axes, threshold lines, and confidence limits (as ribbons or error bars).</li>
 <li>
-<code>agesex_pyramid()</code>: Age-sex pyramid with customisable age bands with the option to add error bars.</li>
+<code><a href="reference/epi_curve.html">epi_curve()</a></code>: Creates epidemic curves with options for different time periods, rolling averages, cumulative sums, and grouping by categories.</li>
+<li>
+<code><a href="reference/epi_map.html">epi_map()</a></code>: Creates choropleth maps with customisable colour scales, labels, and boundaries for different administrative levels.</li>
+<li>
+<code><a href="reference/age_sex_pyramid.html">age_sex_pyramid()</a></code>: Creates age-sex pyramids with customisable age bands and confidence intervals.</li>
 </ul>
+<p>All visualisation functions follow a consistent interface:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">function_name</span><span class="op">(</span></span>
+<span>  dynamic <span class="op">=</span> <span class="cn">FALSE</span>,  <span class="co"># Set to TRUE for interactive plotly/leaflet output</span></span>
+<span>  base <span class="op">=</span> <span class="cn">NULL</span>,      <span class="co"># Optional base plot to add to</span></span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>    <span class="co"># List of parameters controlling the visualisation</span></span>
+<span>    df <span class="op">=</span> <span class="va">data</span>,      <span class="co"># Data frame containing the data to visualise</span></span>
+<span>    <span class="va">...</span>             <span class="co"># Function-specific parameters</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="va">...</span>               <span class="co"># Additional arguments passed to underlying plotting functions</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
+</h3>
+<ul>
+<li>
+<strong>Consistent Interface</strong>: All functions use the same parameter structure, making it easy to learn and use the package.</li>
+<li>
+<strong>Static/Dynamic Flexibility</strong>: Switch between static (ggplot2) and interactive (plotly/leaflet) visualisations by changing a single parameter.</li>
+<li>
+<strong>Customisation Options</strong>: Extensive parameters for customising colours, labels, axes, legends, and more.</li>
+<li>
+<strong>Confidence Intervals</strong>: Support for displaying confidence intervals across different visualisation types.</li>
+<li>
+<strong>Grouping Support</strong>: Easily create grouped visualisations with appropriate legends.</li>
+<li>
+<strong>Dual Axes</strong>: Support for secondary y-axes in applicable chart types.</li>
+<li>
+<strong>Threshold Lines</strong>: Add horizontal reference lines to applicable chart types.</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="experimental-features">Experimental Features<a class="anchor" aria-label="anchor" href="#experimental-features"></a>
+</h2>
+<div class="section level3">
+<h3 id="llm-interpretation">LLM Interpretation<a class="anchor" aria-label="anchor" href="#llm-interpretation"></a>
+</h3>
+<p>The package includes an experimental function <code><a href="reference/llm_interpret.html">llm_interpret()</a></code> that uses Large Language Models (LLMs) to automatically interpret epidemiological data or visualisations. This function can:</p>
+<ul>
+<li>Generate narrative interpretations of data frames</li>
+<li>Describe and analyse ggplot visualisations</li>
+<li>Provide epidemiologically relevant observations</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example: Interpret a data frame</span></span>
+<span><span class="va">interpretation</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/llm_interpret.html">llm_interpret</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">summarised_df</span>,</span>
+<span>  word_limit <span class="op">=</span> <span class="fl">150</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Example: Interpret a ggplot visualisation</span></span>
+<span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/line_chart.html">line_chart</a></span><span class="op">(</span></span>
+<span>  dynamic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="va">summarised_df</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"specimen_date"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    group_var <span class="op">=</span> <span class="st">"organism_species_name"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">plot_interpretation</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/llm_interpret.html">llm_interpret</a></span><span class="op">(</span><span class="va">plot</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="supported-llm-providers">Supported LLM Providers<a class="anchor" aria-label="anchor" href="#supported-llm-providers"></a>
+</h4>
+<p>The function supports multiple LLM providers:</p>
+<ul>
+<li>
+<strong>OpenAI</strong>: Models like <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>o1-mini</code>
+</li>
+<li>
+<strong>Google Gemini</strong>: Models like <code>gemini-1.5-flash</code>
+</li>
+<li>
+<strong>Anthropic Claude</strong>: Models like <code>claude-1</code>
+</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="environment-variable-setup">Environment Variable Setup<a class="anchor" aria-label="anchor" href="#environment-variable-setup"></a>
+</h4>
+<p>To use the <code><a href="reference/llm_interpret.html">llm_interpret()</a></code> function, you need to set up the following environment variables:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># In your .Renviron file or before calling the function:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_PROVIDER <span class="op">=</span> <span class="st">"openai"</span><span class="op">)</span>  <span class="co"># Choose from: "openai", "gemini", "claude"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_API_KEY <span class="op">=</span> <span class="st">"your-api-key-here"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_MODEL <span class="op">=</span> <span class="st">"gpt-4o"</span><span class="op">)</span>  <span class="co"># Use an appropriate model for your chosen provider</span></span></code></pre></div>
+<p>You can set these environment variables in your <code>.Renviron</code> file for persistent configuration:</p>
+<pre><code># .Renviron file
+LLM_PROVIDER=openai
+LLM_API_KEY=your-api-key-here
+LLM_MODEL=gpt-4o</code></pre>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="package-data">Package data<a class="anchor" aria-label="anchor" href="#package-data"></a>
@@ -135,14 +250,77 @@
 <p>The Second Generation Surveillance System (SGSS) is a data asset held by the <a href="https://www.gov.uk/government/publications/securing-our-health-the-uk-health-security-agency/securing-our-health-the-uk-health-security-agency" class="external-link">UK Health Security Agency</a> (formerly Public Health England) which routinely and automatically collects laboratory data from across England.</p>
 <p>Laboratories return data on organisms isolated from samples such as the organism species, specimen type, sampling date and antimicrobial susceptibility testing results. These data are routinely used for public health surveillance and epidemiology in England.</p>
 </div>
+<div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<div class="section level3">
+<h3 id="line-chart">Line Chart<a class="anchor" aria-label="anchor" href="#line-chart"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a static line chart</span></span>
+<span><span class="fu"><a href="reference/line_chart.html">line_chart</a></span><span class="op">(</span></span>
+<span>  dynamic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="va">summarised_df</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"specimen_date"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    group_var <span class="op">=</span> <span class="st">"organism_species_name"</span>,</span>
+<span>    line_colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"green"</span>, <span class="st">"orange"</span><span class="op">)</span>,</span>
+<span>    line_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"solid"</span>, <span class="st">"dotted"</span>, <span class="st">"dashed"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert to an interactive plotly chart by changing dynamic to TRUE</span></span>
+<span><span class="fu"><a href="reference/line_chart.html">line_chart</a></span><span class="op">(</span></span>
+<span>  dynamic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="va">summarised_df</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"specimen_date"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    group_var <span class="op">=</span> <span class="st">"organism_species_name"</span>,</span>
+<span>    line_colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"green"</span>, <span class="st">"orange"</span><span class="op">)</span>,</span>
+<span>    line_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"solid"</span>, <span class="st">"dotted"</span>, <span class="st">"dashed"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+<div class="section level3">
+<h3 id="age-sex-pyramid">Age-Sex Pyramid<a class="anchor" aria-label="anchor" href="#age-sex-pyramid"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a static age-sex pyramid</span></span>
+<span><span class="fu"><a href="reference/age_sex_pyramid.html">age_sex_pyramid</a></span><span class="op">(</span></span>
+<span>  dynamic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="va">lab_data</span>,</span>
+<span>    var_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      date_of_birth <span class="op">=</span> <span class="st">'date_of_birth'</span>,</span>
+<span>      sex <span class="op">=</span> <span class="st">'sex'</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    grouped <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pink"</span>, <span class="st">"blue"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert to an interactive plotly chart by changing dynamic to TRUE</span></span>
+<span><span class="fu"><a href="reference/age_sex_pyramid.html">age_sex_pyramid</a></span><span class="op">(</span></span>
+<span>  dynamic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    df <span class="op">=</span> <span class="va">lab_data</span>,</span>
+<span>    var_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      date_of_birth <span class="op">=</span> <span class="st">'date_of_birth'</span>,</span>
+<span>      sex <span class="op">=</span> <span class="st">'sex'</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    grouped <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pink"</span>, <span class="st">"blue"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+</div>
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/harshanal/epiviz" class="external-link">Source code</a></li>
+<li><a href="https://github.com/ukhsa-collaboration/epiviz" class="external-link">Source code</a></li>
 </ul>
 </div>
 
@@ -180,17 +358,16 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://github.com/harshanal/epiviz/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/harshanal/epiviz/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/ukhsa-collaboration/epiviz/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ukhsa-collaboration/epiviz/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Harshana Liyanage, Alex Bhattacharya, Liam Fitzpatrick, James Leatherland, Sudha Aurumugam, Jordan Worth, James Duke, Emma Parker.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Harshana Liyanage, Alex Bhattacharya, Liam Fitzpatrick, James Leatherland, Jordan Worth, James Duke, Emma Parker.</p>
 </div>
 
 <div class="pkgdown">
@@ -198,7 +375,7 @@
 <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
 

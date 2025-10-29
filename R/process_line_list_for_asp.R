@@ -21,6 +21,8 @@
 #' @return A data frame that is aggregated by age group and sex, with columns for age group, sex, value (count),
 #' lower confidence limit, and upper confidence limit.
 #'
+#' @keywords internal
+#'
 #' @examples
 #' \dontrun{
 #'   df <- epiviz::lab_data

@@ -1,5 +1,5 @@
 ## This file prevents a R CMD Check Note about
-## no visible binding for global variable ‘*’
+## no visible binding for global variable 'dfr'
 ## Undefined global functions or variables
 
 utils::globalVariables(c(
@@ -41,7 +41,7 @@ utils::globalVariables(c(
   "map_footer_size", "map_footer_colour", "legend_pos",
 
   # For line_chart
-  "dfr", "x", "y", "group_var", "line_type", "st_theme", "line_colour",
+  "df", "x", "y", "group_var", "line_type", "st_theme", "line_colour",
   "width", "legend_title", "legend_position", "title", "x_label", "y_label",
   "x_label_angle", "y_label_angle", "show_gridlines", "show_axislines",
   "hline", "hline_colour", "hline_label", "y_percent", "add_points",
