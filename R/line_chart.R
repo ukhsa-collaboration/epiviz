@@ -203,7 +203,14 @@ line_chart <-  function(dynamic = FALSE,
 
   # default RColorBrewer color pallette
 
-
+  # Ensure we have a data frame parameter (support both `df` and `dfr`)
+  if (!exists("df", where = params) || is.null(params$df)) {
+    if (exists("dfr", where = params) && !is.null(params$dfr)) {
+      params$df <- params$dfr
+    } else {
+      stop("A data frame argument is required")
+    }
+  }
 
   ##### Checks and warnings
 
@@ -215,9 +222,9 @@ line_chart <-  function(dynamic = FALSE,
   if (!is.data.frame(params$df))
     stop("df is not a data frame object")
 
-  # Check dfr is empty
-  if (!assertthat::not_empty(params$dfr))
-    stop("dfr is empty")
+  # Check df is empty
+  if (!assertthat::not_empty(params$df))
+    stop("df is empty")
 
   # Check if x argument is is.null
   if ((is.null(params$x)) | !exists('x', where = params))
