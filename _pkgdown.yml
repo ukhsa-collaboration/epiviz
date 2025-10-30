@@ -5,7 +5,7 @@ template:
 home:
   links:
   - text: Source code
-    href: https://github.com/harshanal/epiviz
+    href: https://github.com/ukhsa-collaboration/epiviz
 
 reference:
   - title: "Visualisation functions"
@@ -16,7 +16,7 @@ reference:
       - epi_map
       - line_chart
       - point_chart
-  - title: "LLM interpretability"
+  - title: "LLM-assisted epidemiologic narrative"
     contents:
       - llm_interpret
   - title: "Data"
