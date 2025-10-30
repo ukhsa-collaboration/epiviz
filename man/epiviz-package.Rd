@@ -23,8 +23,8 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Alex Bhattacharya \email{alex.bhattacharya@ukhsa.gov.uk} (\href{https://orcid.org/0000-0003-3000-2771}{ORCID})
   \item James Duke \email{james.duke@ukhsa.gov.uk}
+  \item Alex Bhattacharya \email{alex.bhattacharya@ukhsa.gov.uk} (\href{https://orcid.org/0000-0003-3000-2771}{ORCID})
   \item Liam Fitzpatrick \email{liam.fitzpatrick@ukhsa.gov.uk}
   \item James Leatherland \email{james.leatherland@ukhsa.gov.uk}
   \item Jordan Worth \email{jordan.worth@ukhsa.gov.uk}
