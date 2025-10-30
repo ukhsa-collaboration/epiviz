@@ -23,12 +23,20 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Alex Bhattacharya \email{alex.bhattacharya@ukhsa.gov.uk} (\href{https://orcid.org/0000-0003-3000-2771}{ORCID})
   \item James Duke \email{james.duke@ukhsa.gov.uk}
+  \item Alex Bhattacharya \email{alex.bhattacharya@ukhsa.gov.uk} (\href{https://orcid.org/0000-0003-3000-2771}{ORCID})
   \item Liam Fitzpatrick \email{liam.fitzpatrick@ukhsa.gov.uk}
   \item James Leatherland \email{james.leatherland@ukhsa.gov.uk}
   \item Jordan Worth \email{jordan.worth@ukhsa.gov.uk}
   \item Emma Parker \email{emma.k.parker@ukhsa.gov.uk}
+}
+
+Other contributors:
+\itemize{
+  \item Jade Talbot \email{Jade.Talbot@ukhsa.gov.uk} (\href{https://orcid.org/0000-0001-6460-5170}{ORCID}) [contributor]
+  \item Karen Crawford \email{Karen.Crawford@ukhsa.gov.uk} [contributor]
+  \item Frederick Sloots \email{Frederick.Sloots@ukhsa.gov.uk} [contributor]
+  \item Charlie Turner \email{Charlie.Turner@ukhsa.gov.uk} [contributor]
 }
 
 }
