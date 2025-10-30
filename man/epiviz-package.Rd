@@ -31,5 +31,13 @@ Authors:
   \item Emma Parker \email{emma.k.parker@ukhsa.gov.uk}
 }
 
+Other contributors:
+\itemize{
+  \item Jade Talbot \email{Jade.Talbot@ukhsa.gov.uk} (\href{https://orcid.org/0000-0001-6460-5170}{ORCID}) [contributor]
+  \item Karen Crawford \email{Karen.Crawford@ukhsa.gov.uk} [contributor]
+  \item Frederick Sloots \email{Frederick.Sloots@ukhsa.gov.uk} [contributor]
+  \item Charlie Turner \email{Charlie.Turner@ukhsa.gov.uk} [contributor]
+}
+
 }
 \keyword{internal}

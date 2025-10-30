@@ -10,7 +10,13 @@ Authors@R:
     person(given="Liam", family="Fitzpatrick", email="liam.fitzpatrick@ukhsa.gov.uk", role = c("aut")),
     person(given="James", family="Leatherland", email="james.leatherland@ukhsa.gov.uk", role = c("aut")),
     person(given="Jordan", family="Worth", email="jordan.worth@ukhsa.gov.uk", role = c("aut")),
-    person(given="Emma", family="Parker", email="emma.k.parker@ukhsa.gov.uk", role = c("aut")))
+    person(given="Emma", family="Parker", email="emma.k.parker@ukhsa.gov.uk", role = c("aut")),
+    person(given="Jade", family="Talbot", email="Jade.Talbot@ukhsa.gov.uk", role = c("ctb"),
+           comment = c(ORCID = "0000-0001-6460-5170")),
+    person(given="Karen", family="Crawford", email="Karen.Crawford@ukhsa.gov.uk", role = c("ctb")),
+    person(given="Frederick", family="Sloots", email="Frederick.Sloots@ukhsa.gov.uk", role = c("ctb")),
+    person(given="Charlie", family="Turner", email="Charlie.Turner@ukhsa.gov.uk", role = c("ctb"))
+    )
 Description: The epiviz package provides a set of functions to produce frequently used static and interactive graphs in epidemiological data science products.
 License: MIT + file LICENSE
 Encoding: UTF-8
