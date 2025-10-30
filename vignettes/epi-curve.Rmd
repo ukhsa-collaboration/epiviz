@@ -1,18 +1,18 @@
 ---
-title: "Epidemic curves"
+title: "Epi curves"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Epidemic curves}
+  %\VignetteIndexEntry{Epi curves}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ## Introduction
 
-Epidemic curves (epi curves) are fundamental tools in epidemiological surveillance and outbreak investigation. They display the distribution of cases over time, helping identify the source, transmission patterns, and progression of disease outbreaks. The `epi_curve()` function supports various time periods, grouping options, rolling averages, cumulative lines, and both static and interactive visualizations.
+Epi curves are fundamental tools in epidemiological surveillance and outbreak investigation. They display the distribution of cases over time, helping identify the source, transmission patterns, and progression of disease outbreaks. The `epi_curve()` function supports various time periods, grouping options, rolling averages, cumulative lines, and both static and interactive visualizations.
 
 ## Prerequisites
 
@@ -33,13 +33,13 @@ library(dplyr)
 library(lubridate)
 ```
 
-## Example 1: Basic epidemic curve with rolling average
+## Example 1: Basic epi curve with rolling average
 
 Basic epi curves with rolling averages help smooth out daily fluctuations and identify underlying trends in surveillance data.
 
 ### Create the basic epi curve
 
-```{r basic-epi-curve, fig.cap="Monthly epidemic curve with a three-month rolling average.", fig.alt="Column chart showing monthly laboratory detections with an overlaid three-month rolling average line."}
+```{r basic-epi-curve, fig.cap="Monthly epi curve with a three-month rolling average.", fig.alt="Column chart showing monthly laboratory detections with an overlaid three-month rolling average line."}
 epi_curve(
   dynamic = FALSE,  # Create static ggplot chart
   params = list(
@@ -63,13 +63,13 @@ epi_curve(
 
 **Interpretation**: This epi curve shows monthly detections with a 3-month rolling average line that smooths out month-to-month variations to reveal underlying trends.
 
-## Example 2: Grouped epidemic curve with stacked bars
+## Example 2: Grouped epi curve with stacked bars
 
 Grouped epi curves allow comparison of different categories (e.g., organism types) over time, showing both individual patterns and overall trends.
 
 ### Create the grouped epi curve
 
-```{r grouped-epi-curve, fig.cap="Stacked weekly epidemic curve by organism species with seven-week rolling average.", fig.alt="Stacked column chart showing weekly laboratory detections by organism species, with an overlaid seven-week rolling average line."}
+```{r grouped-epi-curve, fig.cap="Stacked weekly epi curve by organism species with seven-week rolling average.", fig.alt="Stacked column chart showing weekly laboratory detections by organism species, with an overlaid seven-week rolling average line."}
 # Define custom week breaks for better x-axis display
 week_seq <- seq(as.Date("2021-01-01"), as.Date("2022-05-31"), by = '2 week')
 week_breaks <- paste0(lubridate::isoyear(week_seq), '-W', lubridate::isoweek(week_seq))
@@ -110,7 +110,7 @@ Daily epi curves with case boxes and cumulative lines are essential for outbreak
 
 ### Create the detailed daily epi curve
 
-```{r detailed-daily-epi-curve, fig.cap="Daily epidemic curve with stacked bars, case boxes, cumulative line, and threshold indicator.", fig.alt="Stacked daily column chart between June and July 2021 showing laboratory detections by species, annotated with case boxes, a seven-day rolling average line, and a cumulative total line."}
+```{r detailed-daily-epi-curve, fig.cap="Daily epi curve with stacked bars, case boxes, cumulative line, and threshold indicator.", fig.alt="Stacked daily column chart between June and July 2021 showing laboratory detections by species, annotated with case boxes, a seven-day rolling average line, and a cumulative total line."}
 epi_curve(
   dynamic = FALSE,  # Create static ggplot chart
   params = list(
@@ -170,7 +170,7 @@ pre_agg_data <- epiviz::lab_data %>%
 
 ### Create the pre-aggregated epi curve
 
-```{r pre-aggregated-epi-curve, fig.cap="Weekly epidemic curve from pre-aggregated counts with rolling average and cumulative total.", fig.alt="Column chart summarising weekly detections from pre-aggregated data with an overlaid three-week rolling average line and an orange cumulative total line."}
+```{r pre-aggregated-epi-curve, fig.cap="Weekly epi curve from pre-aggregated counts with rolling average and cumulative total.", fig.alt="Column chart summarising weekly detections from pre-aggregated data with an overlaid three-week rolling average line and an orange cumulative total line."}
 epi_curve(
   dynamic = FALSE,  # Create static ggplot chart
   params = list(
@@ -208,7 +208,7 @@ Interactive epi curves are ideal for surveillance dashboards, allowing users to 
 
 ### Create the interactive grouped epi curve
 
-```{r interactive-epi-curve, fig.cap="Interactive stacked epidemic curve with weekly aggregation and rolling average.", fig.alt="Interactive stacked bar chart of weekly laboratory detections by organism species, including a seven-week rolling average line."}
+```{r interactive-epi-curve, fig.cap="Interactive stacked epi curve with weekly aggregation and rolling average.", fig.alt="Interactive stacked bar chart of weekly laboratory detections by organism species, including a seven-week rolling average line."}
 epi_curve(
   dynamic = TRUE,   # Create interactive plotly chart
   params = list(
@@ -239,7 +239,7 @@ epi_curve(
 
 **Interpretation**: The interactive epi curve allows detailed exploration of weekly patterns, with hover information showing exact values and the ability to zoom into specific time periods for closer analysis.
 
-## Tips for epidemic curves
+## Tips for epi curves
 
 1. **Time period selection**: Choose the appropriate time period based on your analysis needs:
    - `"day"` for outbreak investigation

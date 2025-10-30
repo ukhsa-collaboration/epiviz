@@ -1,18 +1,18 @@
 ---
-title: "LLM interpretation"
+title: "LLM-assisted epidemiological narrative"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{LLM interpretation}
+  %\VignetteIndexEntry{LLM-assisted epidemiological narrative}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ## Introduction
 
-The `llm_interpret()` function integrates Large Language Model (LLM) capabilities to automatically interpret epidemiological visualizations and data. This powerful feature can generate insights, identify patterns, and provide contextual analysis of your charts and datasets, making it valuable for surveillance reporting and data exploration.
+The `llm_interpret()` function integrates Large Language Model (LLM) capabilities to automatically interpret epidemiological visualisations and data. This powerful feature can generate insights, identify patterns, and provide contextual analysis of your charts and datasets, making it valuable for surveillance reporting and data exploration.
 
 ## Prerequisites
 
@@ -31,16 +31,16 @@ Before using `llm_interpret()`, set provider-agnostic environment variables. The
 Set these in your `.Renviron` file or R session:
 
 ```r
-# Provider: one of "openai", "gemini", or "claude"
+# Provider: one of "openai", "gemini", or "anthropic"
 Sys.setenv(LLM_PROVIDER = "openai")
 
 # API key for the chosen provider
 Sys.setenv(LLM_API_KEY = "your-api-key")
 
 # Model for the chosen provider (examples)
-Sys.setenv(LLM_MODEL = "gpt-4o")        # OpenAI
-# Sys.setenv(LLM_MODEL = "gemini-1.5-flash")  # Google
-# Sys.setenv(LLM_MODEL = "claude-1")          # Anthropic
+Sys.setenv(LLM_MODEL = "gpt-4.1-nano")        # OpenAI
+# Sys.setenv(LLM_MODEL = "gemini-2.5-flash-lite")  # Google
+# Sys.setenv(LLM_MODEL = "claude-sonnet-4-20250514")          # Anthropic
 ```
 
 ### Verify Setup
@@ -55,7 +55,7 @@ if (Sys.getenv("LLM_PROVIDER") != "" && Sys.getenv("LLM_API_KEY") != "" && Sys.g
 
 ## Example 1: Interpreting an epidemic curve
 
-This example demonstrates how to use LLM interpretation to analyze an epidemic curve and generate insights about temporal patterns.
+This example demonstrates how to use LLM interpretation to analy#sze an epidemic curve and generate insights about temporal patterns.
 
 ### Prepare the data and create a visualization
 
@@ -88,14 +88,14 @@ epi_curve_plot <- epi_curve(
 print(epi_curve_plot)
 ```
 
-### Interpret the visualization
+### Interpret the visualisation
 
 ```{r, eval=FALSE}
 # Use LLM to interpret the epidemic curve
 interpretation <- llm_interpret(
   input = epi_curve_plot,
   word_limit = 120,
-  prompt_extension = "Analyze this epidemic curve and identify notable patterns, trends, or anomalies. Focus on seasonal patterns and potential outbreak periods."
+  prompt_extension = "Analyse this epidemic curve and identify notable patterns, trends, or anomalies. Focus on seasonal patterns and potential outbreak periods."
 )
 
 # Display the interpretation
@@ -103,7 +103,7 @@ cat("LLM Interpretation:\n")
 cat(interpretation)
 ```
 
-**Interpretation**: The LLM will analyze the epidemic curve and provide insights about temporal patterns, seasonal trends, and any notable peaks or anomalies in the data.
+**Interpretation**: The LLM will analyse the epidemic curve and provide insights about temporal patterns, seasonal trends, and any notable peaks or anomalies in the data.
 
 ## Example 2: Custom interpretation with specific focus
 
@@ -162,42 +162,31 @@ cat(custom_interpretation)
    - Never commit API keys to version control
    - Use different keys for different environments (development, production)
 
-2. **Model Selection**:
-   - GPT-4 provides the most comprehensive analysis but is more expensive
-   - GPT-3.5-turbo is faster and cheaper for basic interpretations
-   - Claude models offer excellent reasoning capabilities
-   - Gemini models are cost-effective for high-volume usage
-
-3. **Prompt Engineering**:
+2. **Prompt Engineering**:
    - Be specific about what you want the LLM to focus on
    - Include context about the epidemiological scenario
    - Ask for actionable insights and recommendations
    - Specify the level of detail you need
 
-4. **Data Privacy**:
+3. **Data Privacy**:
    - Be cautious with sensitive health data
-   - Consider using aggregated or anonymized data for LLM interpretation
-   - Review your organization's data sharing policies
+   - Consider using aggregated or anonymised data for LLM interpretation
+   - Review your organisation's data sharing policies
 
-5. **Cost Management**:
+4. **Cost Management**:
    - LLM API calls have costs based on usage
    - Start with smaller datasets for testing
-   - Consider caching interpretations for repeated analyses
 
-6. **Quality Control**:
+5. **Quality Control**:
    - Always review LLM interpretations for accuracy
    - Cross-reference with domain expertise
    - Use LLM insights as a starting point for further analysis
 
-7. **Integration with Workflows**:
+6. **Integration with Workflows**:
    - Use LLM interpretation for automated report generation
    - Incorporate into surveillance dashboards
    - Generate insights for outbreak investigation
 
-8. **Error Handling**:
-   - Implement proper error handling for API failures
-   - Have fallback options when LLM services are unavailable
-   - Monitor API rate limits and quotas
 
 ## Troubleshooting
 
@@ -209,10 +198,6 @@ cat(custom_interpretation)
 
 3. **Model Not Available**: Check that your specified model is available in your API plan.
 
-4. **Large Data**: For very large datasets, consider sampling or aggregating data before sending to the LLM.
 
-### Getting Help
 
-- Check the `ellmer` package documentation for detailed API setup instructions
-- Review your LLM provider's documentation for model-specific parameters
-- Test with simple examples before using with complex epidemiological data
+

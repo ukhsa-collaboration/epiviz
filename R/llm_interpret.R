@@ -14,7 +14,7 @@
 #' - **OpenAI**: Utilises OpenAI's models via `chat_openai()`. Requires setting the `OPENAI_API_KEY` environment variable. Applicable models include:
 #'   - `"gpt-4.1-nano"`
 #' - **Google Gemini**: Utilises Google's Gemini models via `chat_gemini()`. Requires setting the `GOOGLE_API_KEY` environment variable. Applicable models include:
-#'   - `"claude-sonnet-4-20250514"`
+#'   - `"gemini-2.5-flash-lite"`
 #' - **Anthropic Claude**: Utilises Anthropic's Claude models via `chat_anthropic()`. Requires setting the `CLAUDE_API_KEY` environment variable. Applicable models include:
 #'   - `"claude-sonnet-4-20250514"`
 #'
