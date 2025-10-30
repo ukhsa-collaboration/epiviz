@@ -4,9 +4,9 @@ Version: 0.1.1
 Authors@R: 
     c(person(given="Harshana", family="Liyanage", email="harshana.liyanage@ukhsa.gov.uk", role = c("aut","cre"),
            comment = c(ORCID = "0000-0001-9738-6349")),
-     person(given="Alex", family="Bhattacharya", email="alex.bhattacharya@ukhsa.gov.uk", role = c("aut"),
-           comment = c(ORCID = "0000-0003-3000-2771")),
     person(given="James", family="Duke", email="james.duke@ukhsa.gov.uk", role = c("aut")),
+    person(given="Alex", family="Bhattacharya", email="alex.bhattacharya@ukhsa.gov.uk", role = c("aut"),
+           comment = c(ORCID = "0000-0003-3000-2771")),
     person(given="Liam", family="Fitzpatrick", email="liam.fitzpatrick@ukhsa.gov.uk", role = c("aut")),
     person(given="James", family="Leatherland", email="james.leatherland@ukhsa.gov.uk", role = c("aut")),
     person(given="Jordan", family="Worth", email="jordan.worth@ukhsa.gov.uk", role = c("aut")),
