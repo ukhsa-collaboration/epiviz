@@ -12,7 +12,7 @@ vignette: >
 
 ## Introduction
 
-Point charts (scatter plots) are versatile tools for exploring relationships between variables in epidemiological data. They can show correlations, identify outliers, and reveal patterns that might not be apparent in other visualizations. The `point_chart()` function supports various point styles, confidence ribbons, threshold lines, and both static and interactive visualizations.
+Point charts (scatter plots) are versatile tools for exploring relationships between variables in epidemiological data. They can show correlations, identify outliers, and reveal patterns that might not be apparent in other visualisations. The `point_chart()` function supports various point styles, confidence ribbons, threshold lines, and both static and interactive visualisations.
 
 ## Prerequisites
 
@@ -49,7 +49,7 @@ monthly_data <- epiviz::lab_data %>%
 
 ### Create the basic point chart
 
-```{r basic-point-chart, fig.cap="Monthly detections with point markers across 2022-2023.", fig.alt="Scatter plot showing the number of detections per month between January 2022 and December 2023."}
+```{r basic-point-chart, fig.cap="Monthly detections with point markers across 2023.", fig.alt="Scatter plot showing the number of detections per month between January 2023 and December 2023."}
 point_chart(
   dynamic = FALSE,  # Create static ggplot chart
   params = list(
@@ -58,9 +58,9 @@ point_chart(
     y = "detections",           # Count variable for y-axis
     point_colours = "#007C91",  # Color for points
     point_size = 3,             # Size of points
-    x_limit_min = "2022-01-01", # X-axis minimum
+    x_limit_min = "2023-01-01", # X-axis minimum
     x_limit_max = "2023-12-31", # X-axis maximum
-    chart_title = "Detections per Month 2022-2023",
+    chart_title = "Detections per Month 2023",
     x_axis_title = "Month of detection",
     y_axis_title = "Number of detections",
     x_axis_date_breaks = "2 months"  # Show every 2 months

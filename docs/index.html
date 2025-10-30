@@ -47,7 +47,7 @@
     <li><a class="dropdown-item" href="articles/epi-map.html">Epidemiological maps</a></li>
     <li><a class="dropdown-item" href="articles/getting-started.html">Getting started with epiviz</a></li>
     <li><a class="dropdown-item" href="articles/line-chart.html">Line charts</a></li>
-    <li><a class="dropdown-item" href="articles/llm-interpret.html">LLM interpretation</a></li>
+    <li><a class="dropdown-item" href="articles/llm-interpret.html">LLM-assisted epidemiological narrative</a></li>
     <li><a class="dropdown-item" href="articles/point-chart.html">Point charts</a></li>
   </ul>
 </li>
@@ -170,13 +170,13 @@
 <p>The function supports multiple LLM providers:</p>
 <ul>
 <li>
-<strong>OpenAI</strong>: Models like <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>o1-mini</code>
+<strong>OpenAI</strong>: Models like <code>gpt-4.1-nano</code>
 </li>
 <li>
-<strong>Google Gemini</strong>: Models like <code>gemini-1.5-flash</code>
+<strong>Google Gemini</strong>: Models like <code>gemini-2.5-flash-lite</code>
 </li>
 <li>
-<strong>Anthropic Claude</strong>: Models like <code>claude-1</code>
+<strong>Anthropic Claude</strong>: Models like <code>claude-sonnet-4-20250514</code>
 </li>
 </ul>
 </div>
@@ -186,14 +186,14 @@
 <p>To use the <code><a href="reference/llm_interpret.html">llm_interpret()</a></code> function, you need to set up the following environment variables:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In your .Renviron file or before calling the function:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_PROVIDER <span class="op">=</span> <span class="st">"openai"</span><span class="op">)</span>  <span class="co"># Choose from: "openai", "gemini", "claude"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_PROVIDER <span class="op">=</span> <span class="st">"openai"</span><span class="op">)</span>  <span class="co"># Choose from: "openai", "gemini", "anthropic"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_API_KEY <span class="op">=</span> <span class="st">"your-api-key-here"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_MODEL <span class="op">=</span> <span class="st">"gpt-4o"</span><span class="op">)</span>  <span class="co"># Use an appropriate model for your chosen provider</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LLM_MODEL <span class="op">=</span> <span class="st">"gpt-4.1-nano"</span><span class="op">)</span>  <span class="co"># Use an appropriate model for your chosen provider</span></span></code></pre></div>
 <p>You can set these environment variables in your <code>.Renviron</code> file for persistent configuration:</p>
-<pre><code># .Renviron file
-LLM_PROVIDER=openai
-LLM_API_KEY=your-api-key-here
-LLM_MODEL=gpt-4o</code></pre>
+<pre><code><span><span class="co"># .Renviron file</span></span>
+<span><span class="va">LLM_PROVIDER</span><span class="op">=</span><span class="va">openai</span></span>
+<span><span class="va">LLM_API_KEY</span><span class="op">=</span><span class="va">your</span><span class="op">-</span><span class="va">api</span><span class="op">-</span><span class="va">key</span><span class="op">-</span><span class="va">here</span></span>
+<span><span class="va">LLM_MODEL</span><span class="op">=</span><span class="va">gpt</span><span class="op">-</span><span class="fl">4.1</span><span class="op">-</span><span class="va">nano</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -312,7 +312,7 @@ LLM_MODEL=gpt-4o</code></pre>
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-green.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://github.com/ukhsa-collaboration/epiviz/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ukhsa-collaboration/epiviz/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R-CMD-check"></a></li>
 </ul>
 </div>

@@ -30,7 +30,7 @@ This function interprets a given data frame or ggplot visualisation by sending i
 }
 \item \strong{Google Gemini}: Utilises Google's Gemini models via \code{chat_gemini()}. Requires setting the \code{GOOGLE_API_KEY} environment variable. Applicable models include:
 \itemize{
-\item \code{"claude-sonnet-4-20250514"}
+\item \code{"gemini-2.5-flash-lite"}
 }
 \item \strong{Anthropic Claude}: Utilises Anthropic's Claude models via \code{chat_anthropic()}. Requires setting the \code{CLAUDE_API_KEY} environment variable. Applicable models include:
 \itemize{

@@ -1,7 +1,7 @@
 # epiviz <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/ukhsa-collaboration/epiviz/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/ukhsa-collaboration/epiviz/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -87,9 +87,9 @@ plot_interpretation <- llm_interpret(plot)
 
 The function supports multiple LLM providers:
 
-- **OpenAI**: Models like `gpt-4o`, `gpt-4o-mini`, `o1-mini`
-- **Google Gemini**: Models like `gemini-1.5-flash`
-- **Anthropic Claude**: Models like `claude-1`
+- **OpenAI**: Models like `gpt-4.1-nano`
+- **Google Gemini**: Models like `gemini-2.5-flash-lite`
+- **Anthropic Claude**: Models like `claude-sonnet-4-20250514`
 
 #### Environment Variable Setup
 
@@ -97,9 +97,9 @@ To use the `llm_interpret()` function, you need to set up the following environm
 
 ```r
 # In your .Renviron file or before calling the function:
-Sys.setenv(LLM_PROVIDER = "openai")  # Choose from: "openai", "gemini", "claude"
+Sys.setenv(LLM_PROVIDER = "openai")  # Choose from: "openai", "gemini", "anthropic"
 Sys.setenv(LLM_API_KEY = "your-api-key-here")
-Sys.setenv(LLM_MODEL = "gpt-4o")  # Use an appropriate model for your chosen provider
+Sys.setenv(LLM_MODEL = "gpt-4.1-nano")  # Use an appropriate model for your chosen provider
 ```
 
 You can set these environment variables in your `.Renviron` file for persistent configuration:
@@ -108,7 +108,7 @@ You can set these environment variables in your `.Renviron` file for persistent 
 # .Renviron file
 LLM_PROVIDER=openai
 LLM_API_KEY=your-api-key-here
-LLM_MODEL=gpt-4o
+LLM_MODEL=gpt-4.1-nano
 ```
 
 ## Package data

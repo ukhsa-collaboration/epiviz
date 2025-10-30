@@ -12,7 +12,7 @@ vignette: >
 
 ## Introduction
 
-Line charts are essential for visualizing temporal trends in epidemiological data, showing how disease occurrence changes over time. They are particularly valuable for identifying seasonal patterns, outbreak progression, and long-term surveillance trends. The `line_chart()` function supports both single and multiple time series with extensive customization options for colors, line styles, and interactive features.
+Line charts are essential for visualising temporal trends in epidemiological data, showing how disease occurrence changes over time. They are particularly valuable for identifying seasonal patterns, outbreak progression, and long-term surveillance trends. The `line_chart()` function supports both single and multiple time series with extensive customisation options for colors, line styles, and interactive features.
 
 ## Prerequisites
 
@@ -58,7 +58,7 @@ single_series_data <- epiviz::lab_data %>%
 line_chart(
   dynamic = FALSE,  # Create static ggplot chart
   params = list(
-    dfr = single_series_data,        # Note: use 'dfr' parameter (as in tests)
+    df = single_series_data,        # Note: use 'dfr' parameter (as in tests)
     x = "specimen_date",             # Date variable for x-axis
     y = "count",                     # Count variable for y-axis
     line_colour = c("blue"),         # Single color for single line
@@ -82,7 +82,7 @@ multi_series_data <- epiviz::lab_data %>%
   summarise(count = n(), .groups = 'drop') %>%
   ungroup() %>%
   filter(
-    specimen_date >= as.Date("2023-01-01"),
+    specimen_date >= as.Date("2023-12-01"),
     specimen_date <= as.Date("2023-12-31")
   ) %>%
   as.data.frame()  # Ensure it's a data frame
@@ -90,11 +90,11 @@ multi_series_data <- epiviz::lab_data %>%
 
 ### Create the multiple time series line chart
 
-```{r multi-series-line-chart, fig.cap="Daily detections by organism species across 2023.", fig.alt="Line chart with multiple coloured lines representing daily laboratory detections for several organism species during 2023."}
+```{r multi-series-line-chart, fig.cap="Daily detections by organism species across the month of December 2023.", fig.alt="Line chart with multiple coloured lines representing daily laboratory detections for several organism species during December 2023."}
 line_chart(
   dynamic = FALSE,  # Create static ggplot chart
   params = list(
-    dfr = multi_series_data,         # Use 'dfr' parameter
+    df = multi_series_data,         # Use 'df' parameter
     x = "specimen_date",             # Date variable for x-axis
     y = "count",                     # Count variable for y-axis
     group_var = "organism_species_name",  # Group by organism type
@@ -112,11 +112,11 @@ Interactive line charts are ideal for surveillance dashboards, allowing users to
 
 ### Create the interactive line chart
 
-```{r interactive-multi-series-line-chart, fig.cap="Interactive comparison of organism-specific detections across 2023.", fig.alt="Interactive line chart with multiple series showing laboratory detections by organism across 2023."}
+```{r interactive-multi-series-line-chart, fig.cap="Interactive comparison of organism-specific detections across December 2023.", fig.alt="Interactive line chart with multiple series showing laboratory detections by organism across December 2023."}
 line_chart(
   dynamic = TRUE,   # Create interactive plotly chart
   params = list(
-    dfr = multi_series_data,         # Use 'dfr' parameter
+    df = multi_series_data,         # Use 'df' parameter
     x = "specimen_date",             # Date variable for x-axis
     y = "count",                     # Count variable for y-axis
     group_var = "organism_species_name",  # Group by organism type
@@ -130,7 +130,7 @@ line_chart(
 
 ## Example 4: Custom styled line chart with enhanced formatting
 
-Enhanced line charts with custom styling are useful for creating publication-ready visualizations with specific formatting requirements.
+Enhanced line charts with custom styling are useful for creating publication-ready visualisations with specific formatting requirements.
 
 ### Prepare data for enhanced styling
 
@@ -174,11 +174,9 @@ line_chart(
 
 ## Tips for line charts
 
-1. **Parameter naming**: The function uses `dfr` instead of `df` for the data parameter, as shown in the test examples.
+1. **Data preparation**: Always ensure your data is properly aggregated and formatted as a data frame before passing it to the function.
 
-2. **Data preparation**: Always ensure your data is properly aggregated and formatted as a data frame before passing it to the function.
-
-3. **Date handling**: Ensure your date variable is properly formatted as Date class for correct temporal visualization.
+2. **Date handling**: Ensure your date variable is properly formatted as Date class for correct temporal visualisation.
 
 4. **Grouping**: Use `group_var` to create multiple lines for comparison. Each group will get a different color and line style.
 
@@ -194,8 +192,8 @@ line_chart(
 
 9. **Time period selection**: Choose appropriate time periods (daily, weekly, monthly) based on your analysis needs and the expected patterns in your data.
 
-10. **Multiple series**: When comparing multiple time series, ensure all series have data for the same time periods to avoid gaps in the visualization.
+10. **Multiple series**: When comparing multiple time series, ensure all series have data for the same time periods to avoid gaps in the visualisation.
 
 11. **Line types**: Use different line types (`"solid"`, `"dotted"`, `"dashed"`) to distinguish between series, especially useful for black and white printing.
 
-12. **Data validation**: Always check that your aggregated data covers the expected time periods and that counts are reasonable before visualization.
+12. **Data validation**: Always check that your aggregated data covers the expected time periods and that counts are reasonable before visualisation.
