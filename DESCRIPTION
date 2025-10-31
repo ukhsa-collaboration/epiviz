@@ -17,12 +17,13 @@ Authors@R:
     person(given="Frederick", family="Sloots", email="Frederick.Sloots@ukhsa.gov.uk", role = c("ctb")),
     person(given="Charlie", family="Turner", email="Charlie.Turner@ukhsa.gov.uk", role = c("ctb"))
     )
-Description: The epiviz package provides a set of functions to produce frequently used static and interactive graphs in epidemiological data science products.
+Description: Tools for making epidemiological reporting easier with consistent static and dynamic charts and maps.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 LazyData: true
+LazyDataCompression: xz
 Suggests: 
     testthat (>= 3.0.0),
     mockery,
