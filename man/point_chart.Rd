@@ -2,7 +2,7 @@
 % Please edit documentation in R/point_chart.R
 \name{point_chart}
 \alias{point_chart}
-\title{point_chart}
+\title{Point Chart}
 \usage{
 point_chart(
   dynamic = FALSE,

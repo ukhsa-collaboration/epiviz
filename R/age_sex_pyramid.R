@@ -1,4 +1,4 @@
-#' Generate an Age-Sex Pyramid
+#' Age-Sex Pyramid
 #'
 #' This function creates an age-sex pyramid visualization, either as a static ggplot or an interactive plotly chart.
 #' The function can take either a line list (ungrouped data) or already grouped data as input.

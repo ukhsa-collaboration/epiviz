@@ -16,7 +16,7 @@ reference:
       - epi_map
       - line_chart
       - point_chart
-  - title: "LLM-assisted epidemiologic narrative"
+  - title: "LLM-assisted narrative"
     contents:
       - llm_interpret
   - title: "Data"

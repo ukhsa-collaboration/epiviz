@@ -2,8 +2,7 @@
 % Please edit documentation in R/line_chart.R
 \name{line_chart}
 \alias{line_chart}
-\title{A function for producing either static (ggplot) or dynamic (plotly)
-line charts.}
+\title{Line Chart}
 \usage{
 line_chart(
   dynamic = FALSE,

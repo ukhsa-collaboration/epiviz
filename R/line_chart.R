@@ -1,5 +1,4 @@
-#' A function for producing either static (ggplot) or dynamic (plotly)
-#' line charts.
+#' Line Chart
 #'
 #' This function generates a line chart from a data frame using specified x and y variables.
 #' Optionally, the plot can be rendered as an interactive Plotly object. The function also allows

@@ -2,7 +2,7 @@
 % Please edit documentation in R/age_sex_pyramid.R
 \name{age_sex_pyramid}
 \alias{age_sex_pyramid}
-\title{Generate an Age-Sex Pyramid}
+\title{Age-Sex Pyramid}
 \usage{
 age_sex_pyramid(
   dynamic = FALSE,
