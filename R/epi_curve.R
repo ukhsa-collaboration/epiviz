@@ -1,4 +1,4 @@
-#' epi_curve
+#' Epi Curve
 #'
 #' @description A function for producing either a static (ggplot) or dynamic (plotly)
 #' epidemic curve.

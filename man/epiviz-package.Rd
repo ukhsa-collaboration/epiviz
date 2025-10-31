@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-The epiviz package provides a set of functions to produce frequently used static and interactive graphs in epidemiological data science products.
+Tools for making epidemiological reporting easier with consistent static and dynamic charts and maps.
 }
 \seealso{
 Useful links:

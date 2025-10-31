@@ -2,7 +2,7 @@
 % Please edit documentation in R/epi_map.R
 \name{epi_map}
 \alias{epi_map}
-\title{epi_map}
+\title{Epi Map}
 \usage{
 epi_map(
   dynamic = FALSE,

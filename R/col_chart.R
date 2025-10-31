@@ -1,4 +1,4 @@
-#' col_chart
+#' Column chart
 #'
 #' @description A function for producing either a static (ggplot) or dynamic (plotly)
 #' column chart.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/col_chart.R
 \name{col_chart}
 \alias{col_chart}
-\title{col_chart}
+\title{Column chart}
 \usage{
 col_chart(
   dynamic = FALSE,

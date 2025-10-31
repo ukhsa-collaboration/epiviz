@@ -1,4 +1,4 @@
-#' point_chart
+#' Point Chart
 #'
 #' @description A function for producing either static (ggplot) or dynamic (plotly)
 #' point charts.

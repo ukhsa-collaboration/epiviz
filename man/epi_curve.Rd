@@ -2,7 +2,7 @@
 % Please edit documentation in R/epi_curve.R
 \name{epi_curve}
 \alias{epi_curve}
-\title{epi_curve}
+\title{Epi Curve}
 \usage{
 epi_curve(
   dynamic = FALSE,

@@ -1,4 +1,4 @@
-#' epi_map
+#' Epi Map
 #'
 #' @description A function for producing either static (ggplot) or dynamic (leaflet)
 #' choropleth maps.
