@@ -56,25 +56,8 @@
 #'   dynamic = FALSE,
 #'   params = list(
 #'     df = df,
-#'     var_map = list(age_var = 'age', dob_var = 'date_of_birth', sex_var = 'sex'),
+#'     var_map = list(dob_var = 'date_of_birth', sex_var = 'sex'),
 #'     grouped = FALSE
-#'   )
-#' )
-#'
-#' # Example using pre-grouped data
-#' grouped_df <- data.frame(
-#'   age_group = c("0-4", "5-18", "19-64", "65+"),
-#'   sex = c("Male", "Female"),
-#'   value = c(100, 120, 150, 80),
-#'   ci_lower = c(90, 110, 140, 70),
-#'   ci_upper = c(110, 130, 160, 90)
-#' )
-#' age_sex_pyramid(
-#'   dynamic = FALSE,
-#'   params = list(
-#'     df = grouped_df,
-#'     var_map = list(age_group_var = 'age_group', sex_var = 'sex', value = 'value'),
-#'     grouped = TRUE
 #'   )
 #' )
 #' }

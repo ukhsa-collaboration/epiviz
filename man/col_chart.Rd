@@ -171,12 +171,14 @@ column chart.
 }
 \examples{
 
-\dontrun{
+\donttest{
 
 # Example 1: Basic column chart
 
 # Create a basic column chart using the epiviz::lab_data dataset
+% Note: Each example is intended to be standalone and therefore loads required packages explicitly.
 library(epiviz)
+library(dplyr)
 
 # Summarise the overall number of detections by region in 2023
 detections_by_region_2023 <- lab_data |>
@@ -210,6 +212,7 @@ basic_col_chart
 
 # Create a basic column chart using the epiviz::lab_data dataset
 library(epiviz)
+library(dplyr)
 
 
 # Summarise the overall number of detections by region in 2023
@@ -261,6 +264,7 @@ col_chart
 # Example 3: Create both static and dynamic column charts using grouped data
 
 library(epiviz)
+library(dplyr)
 
 # Summarise the overall number of detections by species and region in 2023
 detections_by_species_region_2023 <- lab_data |>
@@ -316,6 +320,7 @@ shinyApp(ui, server)
 #              bar labels and present as horizontal column chart.
 
 library(epiviz)
+library(dplyr)
 
 # Summarise the overall number of detections by species and region in 2023
 detections_by_species_region_2023 <- lab_data |>
@@ -386,6 +391,7 @@ shinyApp(ui, server)
 #              and a percentage y-axis.
 
 library(epiviz)
+library(dplyr)
 
 # Create parameter list
 params_list <- list(

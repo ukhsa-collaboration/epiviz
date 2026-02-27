@@ -138,6 +138,7 @@
 #'
 #' # Create a basic epi curve using the epiviz::lab_data dataset
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' basic_epi_curve <- epi_curve(
 #'   params = list(
@@ -165,6 +166,7 @@
 #' # Example 2: Create both static and dynamic epi curves using grouped data
 #'
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' # Define list of date breaks for x-axis; use every other ISO week in date range
 #' week_seq <- seq(as.Date("2021-01-01"),as.Date("2022-05-31"), by = '2 week')
@@ -221,6 +223,7 @@
 #' # sum line and boxes around each case
 #'
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' # Create parameter list
 #' params_cases <- list(
@@ -281,6 +284,7 @@
 #' # Example 4: Create static and dynamic curves using pre-aggregated data
 #'
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' # Define a dataframe containing the number of detections by region
 #' regional_detections <- lab_data |>

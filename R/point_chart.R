@@ -146,6 +146,7 @@
 #' # Define a dataframe containing the number of detections per month from the
 #' # epiviz::lab_data dataset.
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' detections_per_month <- epiviz::lab_data |>
 #'   group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
@@ -175,6 +176,7 @@
 #'
 #' # Example 2: Point chart with error bars and threshold line.
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' # Add random error limits to detections_per_month dataframe
 #' detections_per_month <- detections_per_month |>
@@ -231,6 +233,7 @@
 #'
 #' # Example 3: Point chart with grouped data and confidence ribbon.
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' # Define a dataframe containing the number of detections per month by species
 #' # from the epiviz::lab_data dataset, and add random error limits.
@@ -294,6 +297,7 @@
 #'
 #' # Example 4: Point chart as bubble chart
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' # Create dataframe of number of detections of each species by region
 #' london_detections <- epiviz::lab_data |>
@@ -365,6 +369,7 @@
 #'
 #' # Example 5: Point chart with additional overlayed chart on secondary y-axis
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' # Use static chart from Example 1 as a base chart
 #' base_chart <- chart_detections_per_month

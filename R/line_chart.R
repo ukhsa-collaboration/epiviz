@@ -42,6 +42,7 @@
 #' @examples
 #' library(dplyr)
 #' library(epiviz)
+
 #'
 #' # Import df lab_data from epiviz and do some manipulation before passing for the test
 #' test_df <- epiviz::lab_data

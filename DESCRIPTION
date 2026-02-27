@@ -30,7 +30,8 @@ Suggests:
     withr,
     yarrr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    shiny
 Config/testthat/edition: 3
 Imports: 
     grDevices,
