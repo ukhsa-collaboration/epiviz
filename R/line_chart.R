@@ -67,6 +67,8 @@
 #' result <- line_chart(params = params, dynamic = FALSE)
 #' }
 #'
+#' @seealso See \code{vignette("line-chart", package = "epiviz")} for more examples.
+#'
 #' @export
 line_chart <-  function(dynamic = FALSE,
                         base = NULL,

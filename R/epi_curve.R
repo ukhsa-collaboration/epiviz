@@ -153,6 +153,8 @@
 #'
 #' }
 #'
+#' @seealso See \code{vignette("epi-curve", package = "epiviz")} for more examples.
+#'
 epi_curve <- function(
                         dynamic = FALSE,
                         params = list(

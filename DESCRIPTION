@@ -17,7 +17,11 @@ Authors@R:
     person(given="Frederick", family="Sloots", email="Frederick.Sloots@ukhsa.gov.uk", role = c("ctb")),
     person(given="Charlie", family="Turner", email="Charlie.Turner@ukhsa.gov.uk", role = c("ctb"))
     )
-Description: Tools for making epidemiological reporting easier with consistent static and dynamic charts and maps.
+Description: Tools for making epidemiological reporting easier with consistent 
+    static and dynamic charts and maps. Builds on 'ggplot2' for static 
+    visualizations as described in Wickham (2016) <doi:10.1007/978-3-319-24277-4> 
+    and 'plotly' for interactive visualizations as described in 
+    Sievert (2020) <doi:10.1201/9780429447273>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

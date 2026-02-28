@@ -3,9 +3,11 @@
 
 ## CRAN submission fixes
 
-* Added `on.exit()` calls to properly restore user options in `.onLoad()`
-* Replaced `\dontrun{}` with `\donttest{}` or unwrapped examples where appropriate
-* Resubmission addressing CRAN reviewer feedback
+* Added references to DESCRIPTION field (ggplot2 and plotly DOIs)
+* Replaced all `\dontrun{}` with `\donttest{}` in examples
+* Simplified examples to execute in < 5 seconds
+* Added `@seealso` references to vignettes for additional examples
+* Verified `on.exit()` is correctly used in `.onLoad()` for option changes
 
 # epiviz 0.1.1
 

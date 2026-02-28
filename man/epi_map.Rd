@@ -100,98 +100,30 @@ choropleth maps.
 }
 \examples{
 
-\dontrun{
+\donttest{
+# Basic epi_map example
+library(epiviz)
 library(dplyr)
 
-# Example 1: Create a static map of Staphylococcus Aureus detections in London
-# Local Authority Districts.
-
-# Define values for choropleth map using lab_data dataset
+# Prepare data
 London_staph_detections <- lab_data |>
   filter(region == "London", organism_species_name == "STAPHYLOCOCCUS AUREUS") |>
   group_by(local_authority_name) |>
   summarise(detections = n())
 
-# Create static map using London_LA_boundaries_2023 data
-London_staph_detections_map <- epi_map(
+# Create static map
+my_map <- epi_map(
   params = list(
     df = London_staph_detections,
     value_col = "detections",
     data_areacode = "local_authority_name",
     inc_shp = FALSE,
-    area_labels = TRUE,
     shp_name = London_LA_boundaries_2023,
     shp_areacode = "LAD23NM",
-    map_title = "Staphylococcus Aureus detections in London Local Authority Districts",
-    map_zoom = data.frame(LONG = c(-0.12776), LAT = c(51.50735), zoom = c(8.7)),
-    legend_title = "Number of \nDetections",
-    legend_pos = "right")
+    map_title = "Staphylococcus Aureus detections in London",
+    legend_title = "Detections"
+  )
 )
-
-
-
-# Example 2: Create a static map of Klebsiella Pneumoniae detections in England
-# public health regions using data pre-merged with a shapefile.
-
-# Define values for choropleth map using the lab_data dataset
-kleb_pneu_detections <- lab_data |>
-  filter(organism_species_name == "KLEBSIELLA PNEUMONIAE") |>
-  group_by(region) |>
-  summarise(detections = n()) |>
-  ungroup()
-
-# Add column defining labels to apply to map areas
-kleb_pneu_detections <- kleb_pneu_detections |>
-  mutate(map_labels = paste0(region,": \n",detections))
-
-# Join with the PHEC_boundaries_2016 shapefile data
-kleb_pneu_detections_shp <- left_join(x = PHEC_boundaries_2016, y = kleb_pneu_detections,
-                                      by = c("phec16nm" = "region"))
-
-# Define parameter list for map function
-kleb_pneu_params <- list(
-  df = kleb_pneu_detections_shp,
-  value_col = "detections",
-  data_areacode = "phec16nm",
-  inc_shp = TRUE,
-  fill_palette = "YlOrRd",
-  fill_opacity = 0.7,
-  labels = "map_labels",
-  map_title = "Number of Klebsiella Pneumoniae detections \nin UK public health regions",
-  map_title_size = 12,
-  map_title_colour = "orangered",
-  map_footer = "Map represents simulated test data only.",
-  map_footer_size = 10,
-  map_footer_colour = "black",
-  legend_title = "Number of \nDetections",
-  legend_pos = "topright",
-  break_labels = c("0-499","500-999","1000-1499","1500-1999","2000-2499","2500+"),
-  break_intervals = c(0,500,1000,1500,2000,2500),
-  force_cat = TRUE
-)
-
-# Create map
-kleb_pneu_detections_map <- epi_map(dynamic = FALSE, params = kleb_pneu_params)
-
-
-
-# Example 3: Refactor the above map as dynamic map, only add area_labels for
-# the top 5 areas by number of detections, and add an additional border using
-# the UK_boundaries_2023 shapefile data.
-
-# Create list of additional parameters
-kleb_pneu_params_add <- list(
-  area_labels = TRUE,
-  area_labels_topn = 5,
-  map_zoom = data.frame(LONG = c(-2.89479), LAT = c(54.793409), zoom = c(5)),
-  border_shape_name = UK_boundaries_2023
-)
-
-# Combine existing parameters list with additional parameters list
-kleb_pneu_params_dyn <- c(kleb_pneu_params, kleb_pneu_params_add)
-
-# Create map
-kleb_pneu_map_dynamic <- epi_map(dynamic = TRUE, params = kleb_pneu_params_dyn)
-
 }
+
 }
