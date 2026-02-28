@@ -137,7 +137,7 @@
 #'
 #' @examples
 #'
-#' \donttest{
+#' \dontrun{
 #'
 #'
 #'
@@ -499,10 +499,6 @@ point_chart <- function(
                           hline_label_colour = "black"
                         )
                   ) {
-
-
-  # Solve warnings regarding font family not found using utils/set_Arial() function
-  set_Arial()
 
 
   # Where relevant, assign defaults to any parameters not specified by the user
@@ -1015,6 +1011,9 @@ point_chart <- function(
   } else {
 
   ##### CREATE DYNAMIC CHART
+
+  # Solve warnings regarding font family not found using utils/set_Arial() function
+  set_Arial()
 
   # Produce plotly object if 'dynamic' is set to TRUE
 

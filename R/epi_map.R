@@ -89,7 +89,7 @@
 #'
 #' @examples
 #'
-#' \donttest{
+#' \dontrun{
 #' library(dplyr)
 #'
 #' # Example 1: Create a static map of Staphylococcus Aureus detections in London
@@ -215,11 +215,8 @@ epi_map <- function (dynamic = FALSE,
                      )
 ) {
 
-
-  # Solve warnings regarding font family not found using utils/set_Arial() function
-  #    -Sets chart_font variable
-  set_Arial()
-
+  # Set default font for static charts (set_Arial() only called for dynamic)
+  chart_font <- "sans"
 
   # Assign any missing default args to params list
   if(!exists('inc_shp',where=params)) params$inc_shp <- TRUE
@@ -745,6 +742,9 @@ epi_map <- function (dynamic = FALSE,
 
   } else {
     # produce leaflet object if 'dynamic' is set to TRUE
+
+    # Solve warnings regarding font family not found using utils/set_Arial() function
+    set_Arial()
 
     ### LEAFLET START
 

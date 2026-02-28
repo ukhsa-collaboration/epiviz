@@ -72,7 +72,7 @@ When \code{grouped = TRUE}, it assumes the data is already grouped and uses the 
 \donttest{
 # Example using a line list
 df <- epiviz::lab_data
-age_sex_pyramid(
+result <- age_sex_pyramid(
   dynamic = FALSE,
   params = list(
     df = df,

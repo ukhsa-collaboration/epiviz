@@ -52,7 +52,7 @@
 #' \donttest{
 #' # Example using a line list
 #' df <- epiviz::lab_data
-#' age_sex_pyramid(
+#' result <- age_sex_pyramid(
 #'   dynamic = FALSE,
 #'   params = list(
 #'     df = df,
@@ -94,9 +94,6 @@ age_sex_pyramid <- function(
       chart_title = ""
     )
 ) {
-
-  # Solve warnings regarding font family not found using utils/set_Arial() function
-  set_Arial()
 
   # Where relevant, assign defaults to any parameters not specified by the user
   if(!exists('mf_colours',where=params)) params$mf_colours <- c("#440154", "#2196F3")
@@ -233,6 +230,9 @@ age_sex_pyramid <- function(
 
   }else{
     # plotly implementation of dynamic age-sex-pyramid
+
+    # Solve warnings regarding font family not found using utils/set_Arial() function
+    set_Arial()
 
     # Process data similarly to static version
 # plotly implementation of dynamic age-sex-pyramid
@@ -405,7 +405,7 @@ age_sex_pyramid <- function(
                 linecolor = "black"
               ),
               barmode = 'overlay',
-              font = list(family = "Arial"),
+              font = list(family = "sans"),
               hoverlabel = list(bgcolor = "white", font = list(size = 12)),
               showlegend = TRUE,
               legend = list(orientation = "h",

@@ -100,7 +100,7 @@ choropleth maps.
 }
 \examples{
 
-\donttest{
+\dontrun{
 library(dplyr)
 
 # Example 1: Create a static map of Staphylococcus Aureus detections in London

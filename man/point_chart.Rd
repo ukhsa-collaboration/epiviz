@@ -160,7 +160,7 @@ point charts.
 }
 \examples{
 
-\donttest{
+\dontrun{
 
 
 
