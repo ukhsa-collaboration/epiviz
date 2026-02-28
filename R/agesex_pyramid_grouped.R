@@ -118,12 +118,12 @@ agesex_pyramid_grouped <- function(df,
     # customisations to minimal theme
     theme(
       panel.grid = element_blank(),
-      axis.title.y = element_text(family="Arial", margin = margin(0, 20, 0, 0, "mm"), face="bold"),
+      axis.title.y = element_text(family="sans", margin = margin(0, 20, 0, 0, "mm"), face="bold"),
       axis.title.x = element_text(face="bold"),
       legend.position = "bottom",
       legend.title = element_blank(),
-      text = element_text(size = text_size, family="Arial"),
-      plot.title = element_text(hjust = 0.5, family="Arial"),
+      text = element_text(size = text_size, family="sans"),
+      plot.title = element_text(hjust = 0.5, family="sans"),
       plot.margin = margin(1, 1.2, 1, 1.2, "cm"),
       axis.line.x = element_line(color = "black"),
       axis.ticks.x = element_line(color = "black")

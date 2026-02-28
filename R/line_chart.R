@@ -40,76 +40,34 @@
 #'
 #' @return A plotly or ggplot2 object representing the line chart.
 #' @examples
+#' \donttest{
 #' library(dplyr)
 #' library(epiviz)
 #'
-#' # Import df lab_data from epiviz and do some manipulation before passing for the test
+#' # Prepare data
 #' test_df <- epiviz::lab_data
-#'
-#' # Manipulating date within df
 #' test_df$specimen_date <- as.Date(test_df$specimen_date)
 #'
-#' # Setting start date and end date for aggregation
-#' start_date <- as.Date("2023-01-01")
-#' end_date <- as.Date("2023-12-31")
-#'
-#' # Summarization
 #' summarised_df <- test_df |>
+#'   filter(specimen_date >= as.Date("2023-01-01") &
+#'          specimen_date <= as.Date("2023-12-31")) |>
 #'   group_by(organism_species_name, specimen_date) |>
-#'   summarize(count = n(), .groups = 'drop') |>
-#'   ungroup() |>
-#'   filter(specimen_date >= start_date & specimen_date <= end_date)
+#'   summarize(count = n(), .groups = 'drop')
 #'
-#' # Ensure that summarised_df is a data frame
-#' summarised_df <- as.data.frame(summarised_df)
+#' # Create params list
+#' params <- list(
+#'   df = as.data.frame(summarised_df),
+#'   x = "specimen_date",
+#'   y = "count",
+#'   group_var = "organism_species_name",
+#'   line_colour = c("blue", "green", "orange")
+#' )
 #'
-#'  # Create params list
-#'  params <- list(
-#'    df = summarised_df,  # Ensure this is correctly referencing the data frame
-#'    x = "specimen_date", # Ensure this matches the column name exactly
-#'    y = "count",         # Ensure this matches the column name exactly
-#'    group_var = "organism_species_name",  # Ensure this matches the column name exactly
-#'    line_colour = c("blue","green","orange"),
-#'    line_type = c("solid", "dotted", "dashed")
-#'  )
-#'  # Generate the line chart
-#' line_chart(params = params, dynamic = FALSE)
+#' # Generate static line chart
+#' result <- line_chart(params = params, dynamic = FALSE)
+#' }
 #'
-#' # Generate the line chart
-#' result <- epiviz::line_chart(params = params, dynamic = FALSE)
-#'
-#'  # Import df lab_data from epiviz and do some manipulation before passing for the test
-#'  test_df <- epiviz::lab_data
-#'
-#'  # Manipulating date within df
-#'  test_df$specimen_date <- as.Date(test_df$specimen_date)
-#'
-#'  # Setting start date and end date for aggregation
-#'  start_date <- as.Date("2023-01-01")
-#'  end_date <- as.Date("2023-12-31")
-#'
-#'  # Summarization
-#'  summarised_df <- test_df |>
-#'    group_by(organism_species_name, specimen_date) |>
-#'    summarize(count = n(), .groups = 'drop') |>
-#'    ungroup() |>
-#'    filter(specimen_date >= start_date & specimen_date <= end_date)
-#'
-#'  # Ensure that summarised_df is a data frame
-#'  summarised_df <- as.data.frame(summarised_df)
-#'
-#'  # Create params list
-#'  params <- list(
-#'    df = summarised_df,  # Ensure this is correctly referencing the data frame
-#'    x = "specimen_date", # Ensure this matches the column name exactly
-#'    y = "count",         # Ensure this matches the column name exactly
-#'    group_var = "organism_species_name",  # Ensure this matches the column name exactly
-#'    line_colour = c("blue","green","orange"),
-#'    line_type = c("solid", "dotted", "dashed")
-#'  )
-#'
-#'  # Generate the line chart
-#'  epiviz::line_chart(params = params, dynamic = TRUE)
+#' @seealso See \code{vignette("line-chart", package = "epiviz")} for more examples.
 #'
 #' @export
 line_chart <-  function(dynamic = FALSE,
@@ -146,8 +104,6 @@ line_chart <-  function(dynamic = FALSE,
                           hline_label = NULL
                         ),
                         ...) {
-  # Solve warnings regarding font family not found using utils/set_Arial() function
-  set_Arial()
 
   # Where relevant, assign defaults to any parameters not specified by the user
   if (!exists('ci', where = params))
@@ -523,6 +479,9 @@ line_chart <-  function(dynamic = FALSE,
 
   } else{
     # produce plotly graph if 'dynamic' is set to TRUE
+
+    # Solve warnings regarding font family not found using utils/set_Arial() function
+    set_Arial()
 
     # Mapping ggplot2 line types to plotly dash styles
     plotly_line_types <- lapply(line_type, function(lt) {

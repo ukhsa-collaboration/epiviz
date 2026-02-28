@@ -138,292 +138,31 @@
 #' @examples
 #'
 #' \donttest{
-#'
-#'
-#'
-#' # Example 1: Basic point chart.
-#'
-#' # Define a dataframe containing the number of detections per month from the
-#' # epiviz::lab_data dataset.
+#' # Basic point chart example
 #' library(epiviz)
+#' library(dplyr)
 #'
 #' detections_per_month <- epiviz::lab_data |>
 #'   group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
 #'   summarise(detections = n()) |>
 #'   ungroup()
 #'
-#' # Create static point chart of detections per month from 2022 to 2023.
-#' chart_detections_per_month <- point_chart(
+#' # Create static point chart
+#' my_chart <- point_chart(
 #'   params = list(
 #'     df = detections_per_month,
 #'     x = "specimen_month",
 #'     y = "detections",
 #'     point_colours = "#007C91",
 #'     point_size = 3,
-#'     x_limit_min = "2022-01-01",
-#'     x_limit_max = "2023-12-31",
-#'     chart_title = "Detections per Month 2022-2023",
-#'     x_axis_title = "Month of detection",
-#'     y_axis_title = "Number of detections",
-#'     x_axis_date_breaks = "2 months"
+#'     chart_title = "Detections per Month",
+#'     x_axis_title = "Month",
+#'     y_axis_title = "Number of detections"
 #'   )
 #' )
-#'
-#' chart_detections_per_month
-#'
-#'
-#'
-#' # Example 2: Point chart with error bars and threshold line.
-#' library(epiviz)
-#'
-#' # Add random error limits to detections_per_month dataframe
-#' detections_per_month <- detections_per_month |>
-#'   rowwise() |>
-#'   mutate(lower_limit = detections - sample(10:50,1),
-#'          upper_limit = detections + sample(10:50,1)) |>
-#'   ungroup()
-#'
-#' # Define parameters list outside of point_chart() function.
-#' detections_params <- list(
-#'   df = detections_per_month,
-#'   x = "specimen_month",
-#'   y = "detections",
-#'   point_colours = "#007C91",
-#'   point_size = 3,
-#'   x_limit_min = "2022-01-01",
-#'   x_limit_max = "2023-12-31",
-#'   chart_title = "Detections per Month 2022-2023",
-#'   x_axis_title = "Month of detection",
-#'   y_axis_title = "Number of detections",
-#'   x_axis_date_breaks = "2 months",
-#'   y_axis_break_labels = seq(0, 900, 100),
-#'   ci = "errorbar",
-#'   ci_lower = "lower_limit",
-#'   ci_upper = "upper_limit",
-#'   error_colours = "red",
-#'   hline = 800,
-#'   hline_colour = "orange",
-#'   hline_label = "threshold",
-#'   hline_label_colour = "orange"
-#' )
-#'
-#' # Create static point chart
-#' static_chart <- point_chart(params = detections_params, dynamic = FALSE)
-#'
-#' # Create the same chart as a dynamic chart
-#' dynamic_chart <- point_chart(params = detections_params, dynamic = TRUE)
-#'
-#' # View both simultaneously using shiny app
-#' library(shiny)
-#' library(plotly)
-#' ui <- fluidPage(
-#'   plotOutput('static_chart'),
-#'   plotlyOutput('dynamic_chart')
-#' )
-#' server <- function(input, output, session) {
-#'   output$static_chart <- renderPlot(static_chart)
-#'   output$dynamic_chart <- renderPlotly(dynamic_chart)
 #' }
-#' shinyApp(ui, server)
 #'
-#'
-#'
-#'
-#' # Example 3: Point chart with grouped data and confidence ribbon.
-#' library(epiviz)
-#'
-#' # Define a dataframe containing the number of detections per month by species
-#' # from the epiviz::lab_data dataset, and add random error limits.
-#' species_by_month <- lab_data |>
-#'   group_by(specimen_month = lubridate::floor_date(specimen_date, 'month'),
-#'            organism_species_name) |>
-#'   summarise(detections = n()) |>
-#'   ungroup() |>
-#'   rowwise() |>
-#'   mutate(lower_limit = detections - sample(10:50,1),
-#'          upper_limit = detections + sample(10:50,1)) |>
-#'   ungroup()
-#'
-#' # Define parameters list for point_chart() function.
-#' #   -Include multiple threshold lines
-#' species_params <- list(
-#'   df = species_by_month,
-#'   x = "specimen_month",
-#'   y = "detections",
-#'   group_var = "organism_species_name",
-#'   point_colours = c("#007C91","#8A1B61","#FF7F32"),
-#'   point_size = 3,
-#'   x_limit_min = "2022-01-01",
-#'   x_limit_max = "2023-12-31",
-#'   chart_title = "Detections per Month 2022-2023",
-#'   x_axis_title = "Month of detection",
-#'   y_axis_title = "Number of detections",
-#'   x_axis_date_breaks = "2 months",
-#'   y_axis_break_labels = seq(0, 600, 100),
-#'   x_axis_label_angle = 45,
-#'   ci = "ribbon",
-#'   ci_lower = "lower_limit",
-#'   ci_upper = "upper_limit",
-#'   ci_colours = c("#007C91","#8A1B61","#FF7F32"),
-#'   hline = c(450,550),
-#'   hline_colour = c("blue","red"),
-#'   hline_label = c("threshold 1", "threshold 2"),
-#'   hline_label_colour = c("blue","red")
-#' )
-#'
-#'
-#' # Create static and dynamic charts
-#' static_chart <- point_chart(params = species_params, dynamic = FALSE)
-#' dynamic_chart <- point_chart(params = species_params, dynamic = TRUE)
-#'
-#' # View using app
-#' library(shiny)
-#' library(plotly)
-#' ui <- fluidPage(
-#'   plotOutput('static_chart'),
-#'   plotlyOutput('dynamic_chart')
-#' )
-#' server <- function(input, output, session) {
-#'   output$static_chart <- renderPlot(static_chart)
-#'   output$dynamic_chart <- renderPlotly(dynamic_chart)
-#' }
-#' shinyApp(ui, server)
-#'
-#'
-#'
-#'
-#' # Example 4: Point chart as bubble chart
-#' library(epiviz)
-#'
-#' # Create dataframe of number of detections of each species by region
-#' london_detections <- epiviz::lab_data |>
-#'   mutate(london_det = ifelse(region == "London", 1, 0)) |>
-#'   group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
-#'   summarise(detections = n(),
-#'             detections_london = sum(london_det)) |>
-#'   ungroup() |>
-#'   mutate(proportion_london = detections_london/detections,
-#'          percent_london = percent(proportion_london, accuracy = 1),
-#'          hoverlabels = paste0(
-#'            '<b>',specimen_month,'</b>',
-#'            '<br>Detections: ',detections,
-#'            '<br>In London: ',detections_london,
-#'            '<br><i>% in London: ',percent_london,'</i>'
-#'          ))
-#'
-#'
-#' # Define parameters list for point_chart() function.
-#' species_region_params <- list(
-#'   df = london_detections,
-#'   x = "specimen_month",
-#'   y = "detections",
-#'   point_size = "detections_london",
-#'   point_size_legend = TRUE,
-#'   point_size_legend_title = "Number of \ndetections in \nLondon",
-#'   point_shape = "circle",
-#'   point_colours = "#8A1B61",
-#'   chart_title = "Detections by month \n(with percentage in London)",
-#'   x_axis_title = "Detection Month",
-#'   y_axis_title = "Number of Detections",
-#'   x_axis_label_angle = 45,
-#'   y_axis_break_labels = seq(300, 900, 100),
-#'   x_axis_date_breaks = "6 months"
-#' )
-#'
-#' # Add point label parameters for static chart
-#' stat_label_parameters <- list(point_labels = "percent_london",
-#'                               point_labels_size = 2.5,
-#'                               point_labels_vjust = 1,
-#'                               point_labels_hjust = 0.5,
-#'                               point_labels_nudge_x = 5,
-#'                               point_labels_nudge_y = -15)
-#'
-#' # Add hover label parameters for dynamic chart
-#' dyn_label_parameters <- list(point_labels = "hoverlabels")
-#'
-#' # Create static and dynamic charts
-#' static_chart <- point_chart(params = c(species_region_params,stat_label_parameters),
-#'                             dynamic = FALSE)
-#'
-#' dynamic_chart <- point_chart(params = c(species_region_params,dyn_label_parameters),
-#'                              dynamic = TRUE)
-#'
-#' # View using app
-#' library(shiny)
-#' library(plotly)
-#' ui <- fluidPage(
-#'   plotOutput('static_chart'),
-#'   plotlyOutput('dynamic_chart')
-#' )
-#' server <- function(input, output, session) {
-#'   output$static_chart <- renderPlot(static_chart)
-#'   output$dynamic_chart <- renderPlotly(dynamic_chart)
-#' }
-#' shinyApp(ui, server)
-#'
-#'
-#'
-#' # Example 5: Point chart with additional overlayed chart on secondary y-axis
-#' library(epiviz)
-#'
-#' # Use static chart from Example 1 as a base chart
-#' base_chart <- chart_detections_per_month
-#'
-#' # Define data for overlaying chart
-#' # Percentage of overall detections in people over 65 years of age.
-#' library(lubridate)
-#' detections_over65 <- lab_data |>
-#'   mutate(age = year(as.period(lubridate::interval(date_of_birth,Sys.Date()))),
-#'          over65 = ifelse(age > 65, 1, 0)) |>
-#'   group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
-#'   summarise(detections = n(),
-#'             detections_over65 = sum(over65)) |>
-#'   ungroup() |>
-#'   mutate(percent_over65 = detections_over65/detections)
-#'
-#' # Define parameters list
-#' over65_params <- list(
-#'   df = detections_over65,
-#'   x = "specimen_month",
-#'   y = "percent_over65",
-#'   y_percent = TRUE,
-#'   y_sec_axis = TRUE,
-#'   y_sec_axis_percent_full = TRUE,
-#'   point_colours = "purple",
-#'   point_size = 3,
-#'   point_shape = "asterisk",
-#'   x_limit_min = "2022-01-01",
-#'   x_limit_max = "2023-12-31",
-#'   y_limit_max = 1000,
-#'   chart_title = "Detections per Month 2022-2023",
-#'   x_axis_title = "Month of detection",
-#'   y_axis_title = "Percentage of detections in over 65s",
-#'   x_axis_date_breaks = "2 months"
-#' )
-#'
-#' # Create point chart
-#' over65_chart <- point_chart(base = base_chart,
-#'                             params = over65_params,
-#'                             dynamic = FALSE)
-#'
-#'
-#' # Legends are not currently implemented for static charts with a supplied
-#' #  base chart, so add legend manually using dummy data and an invisible geom_point()
-#' over65_chart <- over65_chart +
-#'   geom_point(data = data.frame(x=as.Date(c("2020-01-01","2020-01-02")),
-#'                                y=c(1,1),
-#'                                label=c("Total Detections","% of Detections in Over 65s")),
-#'              aes(x=x, y=y, colour=label, shape=label)) +
-#'   scale_color_manual(name='', values=c("Total Detections"="#007C91",
-#'                                        "% of Detections in Over 65s"="purple")) +
-#'   scale_shape_manual(name='', values=c("Total Detections"="triangle",
-#'                                        "% of Detections in Over 65s"="asterisk")) +
-#'   theme(legend.position="top")
-#'
-#' over65_chart
-#'
-#'
-#' }
+#' @seealso See \code{vignette("point-chart", package = "epiviz")} for more examples.
 #'
 point_chart <- function(
                         dynamic = FALSE,
@@ -494,10 +233,6 @@ point_chart <- function(
                           hline_label_colour = "black"
                         )
                   ) {
-
-
-  # Solve warnings regarding font family not found using utils/set_Arial() function
-  set_Arial()
 
 
   # Where relevant, assign defaults to any parameters not specified by the user
@@ -1010,6 +745,9 @@ point_chart <- function(
   } else {
 
   ##### CREATE DYNAMIC CHART
+
+  # Solve warnings regarding font family not found using utils/set_Arial() function
+  set_Arial()
 
   # Produce plotly object if 'dynamic' is set to TRUE
 

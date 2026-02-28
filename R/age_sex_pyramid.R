@@ -52,29 +52,12 @@
 #' \donttest{
 #' # Example using a line list
 #' df <- epiviz::lab_data
-#' age_sex_pyramid(
+#' result <- age_sex_pyramid(
 #'   dynamic = FALSE,
 #'   params = list(
 #'     df = df,
-#'     var_map = list(age_var = 'age', dob_var = 'date_of_birth', sex_var = 'sex'),
+#'     var_map = list(dob_var = 'date_of_birth', sex_var = 'sex'),
 #'     grouped = FALSE
-#'   )
-#' )
-#'
-#' # Example using pre-grouped data
-#' grouped_df <- data.frame(
-#'   age_group = c("0-4", "5-18", "19-64", "65+"),
-#'   sex = c("Male", "Female"),
-#'   value = c(100, 120, 150, 80),
-#'   ci_lower = c(90, 110, 140, 70),
-#'   ci_upper = c(110, 130, 160, 90)
-#' )
-#' age_sex_pyramid(
-#'   dynamic = FALSE,
-#'   params = list(
-#'     df = grouped_df,
-#'     var_map = list(age_group_var = 'age_group', sex_var = 'sex', value = 'value'),
-#'     grouped = TRUE
 #'   )
 #' )
 #' }
@@ -111,9 +94,6 @@ age_sex_pyramid <- function(
       chart_title = ""
     )
 ) {
-
-  # Solve warnings regarding font family not found using utils/set_Arial() function
-  set_Arial()
 
   # Where relevant, assign defaults to any parameters not specified by the user
   if(!exists('mf_colours',where=params)) params$mf_colours <- c("#440154", "#2196F3")
@@ -250,6 +230,9 @@ age_sex_pyramid <- function(
 
   }else{
     # plotly implementation of dynamic age-sex-pyramid
+
+    # Solve warnings regarding font family not found using utils/set_Arial() function
+    set_Arial()
 
     # Process data similarly to static version
 # plotly implementation of dynamic age-sex-pyramid
@@ -422,7 +405,7 @@ age_sex_pyramid <- function(
                 linecolor = "black"
               ),
               barmode = 'overlay',
-              font = list(family = "Arial"),
+              font = list(family = "sans"),
               hoverlabel = list(bgcolor = "white", font = list(size = 12)),
               showlegend = TRUE,
               legend = list(orientation = "h",

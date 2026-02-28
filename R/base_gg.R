@@ -15,6 +15,7 @@ base_gg <- function() {
 
 
   # Ensure that unused variables exist
+  if(!exists("chart_font")) {chart_font <- "sans"}
   if(!exists("x_time_series")) {x_time_series <- FALSE}
   if(!exists("axis_flip")) {axis_flip <- FALSE}
 
