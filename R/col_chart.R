@@ -37,6 +37,9 @@
 #'    "#8A1B61","#FF7F32"), c("KLEBSIELLA PNEUMONIAE","STAPHYLOCOCCUS AUREUS","PSEUDOMONAS AERUGINOSA"))})}
 #'    \item{bar_border_colour}{character, Colour of the border around each bar. Default = \code{"transparent"},
 #'    meaning that no border colour is drawn as default.}
+#'    \item{bar_width}{numeric, Width of the bars as a proportion between 0 and 1, where 1 means bars
+#'    touch (no gap between bars) and smaller values create gaps between bars. Default = \code{0.9}.
+#'    This parameter controls bar width consistently for both ggplot (static) and plotly (dynamic) outputs.}
 #'    \item{bar_labels}{character, Name of the variable in \code{df} containing the labels to be used
 #'    for each bar. To set bar lables when \code{x_time_series = TRUE}, set \code{x_time_series_bar_labels = TRUE}
 #'    and labels will be added to each bar equal to y-axis values.}
@@ -437,6 +440,7 @@ col_chart <- function(
       group_var_barmode = 'stack',
       fill_colours = "lightblue",
       bar_border_colour = "transparent",
+      bar_width = 0.9,
       bar_labels = NULL,
       bar_labels_pos = 'bar_above',
       bar_labels_font_size = 8,
@@ -505,6 +509,7 @@ col_chart <- function(
   if(!exists('time_period',where=params)) params$time_period <- "day"
   if(!exists('fill_colours',where=params)) params$fill_colours <- "lightblue"
   if(!exists('bar_border_colour',where=params)) params$bar_border_colour <- "transparent"
+  if(!exists('bar_width',where=params)) params$bar_width <- 0.9
   if(!exists('bar_labels_pos',where=params)) params$bar_labels_pos <- "bar_above"
   if(!exists('bar_labels_font_size',where=params)) params$bar_labels_font_size <- 8
   if(!exists('bar_labels_font_colour',where=params)) params$bar_labels_font_colour <- 'black'
@@ -546,7 +551,7 @@ col_chart <- function(
   params$y_sec_axis_percent_full <- FALSE
 
 
-### DEV: IMPLEMENT
+  ### DEV: IMPLEMENT
   # 'base' not a user define arguement for col_chart, so set to NULL
   #   for base_gg() and base_plotly()
   base <- NULL
@@ -635,6 +640,13 @@ col_chart <- function(
     stop("bar_labels_pos must equal 'bar_above','bar_base','bar_centre', or 'above_errorbar'")
   }
 
+  # Check bar_width valid (must be numeric between 0 and 1)
+  if (exists('bar_width', where=params)) {
+    if (!is.numeric(params$bar_width) | params$bar_width <= 0 | params$bar_width > 1) {
+      stop("bar_width must be a numeric value greater than 0 and less than or equal to 1")
+    }
+  }
+
   # Check time_period valid
   if (!(params$time_period %in% c("day","year","month","quarter","year_month","year_quarter",
                                   "iso_year","iso_week","start_iso_year_week","iso_year_week"))) {
@@ -710,6 +722,7 @@ col_chart <- function(
                  "group_var_barmode",
                  "fill_colours",
                  "bar_border_colour",
+                 "bar_width",
                  "bar_labels",
                  "bar_labels_pos",
                  "bar_labels_font_size",
@@ -940,7 +953,7 @@ col_chart <- function(
       df[[x]] <- forcats::fct_rev(df[[x]])
     }
   }
- ### DEV: Apply this to base_gg to generalise to all functions?
+  ### DEV: Apply this to base_gg to generalise to all functions?
 
 
 
@@ -1014,7 +1027,8 @@ col_chart <- function(
             fill = fill_colours[1],
             stat = 'identity',
             color = bar_border_colour,
-            linewidth = 0.25
+            linewidth = 0.25,
+            width = bar_width
           )
 
       } else {
@@ -1024,7 +1038,7 @@ col_chart <- function(
         # Rename group_var_barmode for ggplot and generate group_var_barpos variable
         if(group_var_barmode == "group") {
           group_var_barmode <- "dodge"
-          group_var_barpos <- position_dodge(preserve = 'single')  # ensures that bar widths are not stretched to fill when certain groups are empty
+          group_var_barpos <- position_dodge(width = bar_width, preserve = 'single')  # ensures that bar widths are not stretched to fill when certain groups are empty
           df <- df |> complete(.data[[x]], .data[[group_var]])     # Fill in blank groups to make sure they're plotted as empty bars
         }
 
@@ -1039,6 +1053,7 @@ col_chart <- function(
             stat = 'identity',
             color = bar_border_colour,
             linewidth = 0.25,
+            width = bar_width,
             position = if(group_var_barmode == 'dodge') {group_var_barpos} else {'stack'},
             na.rm = if(group_var_barmode == 'dodge') {TRUE} else {FALSE}
           ) +
@@ -1072,16 +1087,16 @@ col_chart <- function(
         #    is one of the stacking elements 1-unit high.Uncount df to get 1 row per
         #    case, add box = 1 column for y-vals to create 1 box per case.
         df_box <- df |>
-                 mutate(across(all_of(y), .fns = ~replace_na(.,0))) |>
-                 uncount(get(y)) |>
-                 mutate(box = 1)
+          mutate(across(all_of(y), .fns = ~replace_na(.,0))) |>
+          uncount(get(y)) |>
+          mutate(box = 1)
 
         # When bars are dodged rather than stacked, slice by max value of y in
         #    each group else y-axis assumes the stacked value and over-scales accordingly
         if(group_var_barmode == 'dodge') {
           df_box <- df_box |>
-                     slice_max(order_by = get(y), by = any_of(x)) |>
-                     slice_max(order_by = get(group_var), by = any_of(x))   # second slice resolves draws if 2 groups have equal values
+            slice_max(order_by = get(y), by = any_of(x)) |>
+            slice_max(order_by = get(group_var), by = any_of(x))   # second slice resolves draws if 2 groups have equal values
         }
 
         # Add transparent stacked bar plot with external borders to create
@@ -1096,7 +1111,8 @@ col_chart <- function(
             stat = 'identity',
             #position = if(group_var_barmode == 'dodge') {group_var_barpos} else {'stack'},
             color = case_boxes_colour,
-            linewidth = 0.5
+            linewidth = 0.5,
+            width = bar_width
           )
 
       }
@@ -1148,7 +1164,7 @@ col_chart <- function(
 
             }
 
-          # Plot for group_var provided
+            # Plot for group_var provided
           } else if (!is.null(group_var)) {
 
             # Add error bars with grouping variable
@@ -1193,13 +1209,13 @@ col_chart <- function(
 
             }
 
-          # Stop if ci_upper and/or ci_lower limit isn't provided
-        } else {
-          stop("Please provide arguements for 'ci_upper' and 'ci_lower' when ci is specified.")
-        }
+            # Stop if ci_upper and/or ci_lower limit isn't provided
+          } else {
+            stop("Please provide arguements for 'ci_upper' and 'ci_lower' when ci is specified.")
+          }
 
+        }
       }
-    }
 
 
 
@@ -1256,10 +1272,10 @@ col_chart <- function(
           } else if (bar_labels_pos == 'bar_centre') {
             x_labpos <- df[[x]]
             y_labpos <- df[[y]] / 2
-              # Redfine ynudge, vjust, and hjust to centre text for bar_centre
-              ynudge <- 0
-              v <- 0.5
-              h <- 0.5
+            # Redfine ynudge, vjust, and hjust to centre text for bar_centre
+            ynudge <- 0
+            v <- 0.5
+            h <- 0.5
           } else if (bar_labels_pos == 'above_errorbar') {
             x_labpos <- df[[x]]
             y_labpos <- df[[ci_upper]]
@@ -1267,20 +1283,20 @@ col_chart <- function(
 
 
           base <- base + geom_text(
-                          data = df,
-                          aes(x = x_labpos,
-                              y = y_labpos,
-                              vjust = v,
-                              hjust = h,
-                              label = .data[[bar_labels]]),
-                          colour = bar_labels_font_colour,
-                          size = bar_labels_font_size * (5/14), # apply scaling ratio to font size
-                          angle = bar_labels_angle,
-                          nudge_y = ynudge
-                          )
+            data = df,
+            aes(x = x_labpos,
+                y = y_labpos,
+                vjust = v,
+                hjust = h,
+                label = .data[[bar_labels]]),
+            colour = bar_labels_font_colour,
+            size = bar_labels_font_size * (5/14), # apply scaling ratio to font size
+            angle = bar_labels_angle,
+            nudge_y = ynudge
+          )
 
 
-        # Plot for group_var provided
+          # Plot for group_var provided
         } else if (!is.null(group_var)) {
 
           # Reset vjust and hjust so that labels pivot about centre point when label angle is adjusted
@@ -1309,20 +1325,20 @@ col_chart <- function(
           } else if (bar_labels_pos == 'bar_base') {
             x_labpos <- df_labels[[x]]
             y_labpos <- if(group_var_barmode == "stack") {df_labels$cumul_bar_base} else {df_labels[[y]]} # position at bottom of each stacked bar
-              # Redefine y_labpos to bottom of bar for grouped bars
-              y_base <- if (is.na(ylim[1])) {0} else {ylim[1]}
-              y_labpos <- if(group_var_barmode == "dodge") {y_base} else {y_labpos}
+            # Redefine y_labpos to bottom of bar for grouped bars
+            y_base <- if (is.na(ylim[1])) {0} else {ylim[1]}
+            y_labpos <- if(group_var_barmode == "dodge") {y_base} else {y_labpos}
           } else if (bar_labels_pos == 'bar_centre') {
             x_labpos <- df_labels[[x]]
             y_labpos <- if(group_var_barmode != "stack") {df_labels[[y]]} else {df_labels$cumul_bar_centre}  # position in centre of each stacked bar
-              # Redefine y_labpos to halfway up bar for grouped bars
-              y_labpos <- if(group_var_barmode == "dodge") {y_labpos / 2} else {y_labpos}
+            # Redefine y_labpos to halfway up bar for grouped bars
+            y_labpos <- if(group_var_barmode == "dodge") {y_labpos / 2} else {y_labpos}
             ynudge <- 0 # reset ynudge to zero so labels pivot about centre point
           } else if (bar_labels_pos == 'above_errorbar') {
             x_labpos <- df_labels[[x]]
             y_labpos <- df_labels$cumul_above_errorbar
-              # Redefine y_labpos to halfway up bar for grouped bars
-              y_labpos <- if(group_var_barmode == "dodge") {df_labels[[ci_upper]]} else {y_labpos}
+            # Redefine y_labpos to halfway up bar for grouped bars
+            y_labpos <- if(group_var_barmode == "dodge") {df_labels[[ci_upper]]} else {y_labpos}
           }
 
           # Generate offset position for labels when group_var_barmode = "dodge"
@@ -1349,7 +1365,7 @@ col_chart <- function(
 
         }
 
-    }
+      }
 
 
 
@@ -1615,7 +1631,7 @@ col_chart <- function(
     }
 
 
-  # Remove old theme settings that are now handled above
+    # Remove old theme settings that are now handled above
 
     ##### Build col_chart
 
@@ -1626,16 +1642,16 @@ col_chart <- function(
     #     so that the x-axis is numeric, and preserve the levels to use as axis labels.
     if (axis_flip == TRUE) {swap_object_names('x', 'y')} # temp swap names back for calc
 
-      # Reverse x levels if x_time_series == TRUE & x_axis_reverse == TRUE else they get double reversed
-      if (x_time_series == TRUE & x_axis_reverse == TRUE) {df[[x]] <- forcats::fct_rev(df[[x]])}
+    # Reverse x levels if x_time_series == TRUE & x_axis_reverse == TRUE else they get double reversed
+    if (x_time_series == TRUE & x_axis_reverse == TRUE) {df[[x]] <- forcats::fct_rev(df[[x]])}
 
-      # Adjust grouping parameters
-      if (group_var_barmode == 'group' & is.factor(df[[x]]) & !is.null(group_var)) {
-        x_levels <- levels(df[[x]]) # preserve levels to use as axis ticks
-          if(x_axis_reverse == TRUE) {x_levels <- rev(x_levels)} # reverse levels if x-axis reversed
-        df <- df |> mutate(x_orig = get(x)) # preserve original x column in df
-        df[[x]] <- as.numeric(factor(df[[x]]))-1  # -1 to shunt bars down 1 position to start at 0
-      }
+    # Adjust grouping parameters
+    if (group_var_barmode == 'group' & is.factor(df[[x]]) & !is.null(group_var)) {
+      x_levels <- levels(df[[x]]) # preserve levels to use as axis ticks
+      if(x_axis_reverse == TRUE) {x_levels <- rev(x_levels)} # reverse levels if x-axis reversed
+      df <- df |> mutate(x_orig = get(x)) # preserve original x column in df
+      df[[x]] <- as.numeric(factor(df[[x]]))-1  # -1 to shunt bars down 1 position to start at 0
+    }
     if (axis_flip == TRUE) {swap_object_names('x', 'y')} # swap back
 
 
@@ -1666,7 +1682,8 @@ col_chart <- function(
           orientation = if(axis_flip == TRUE) {'h'} else {'v'}, #set orientation to horizontal if axis_flip = TRUE
           showlegend = if (is.null(group_var)) {F} else {T}
         ) |>
-        layout(barmode = group_var_barmode)
+        layout(barmode = group_var_barmode,
+               bargap = 1 - bar_width)  # Convert bar_width to bargap for plotly (inverse relationship)
 
 
       # Add bar plot with boxes around each case
@@ -1678,8 +1695,8 @@ col_chart <- function(
       # Uncount data to get one row per case for one box per case.
       df_case_boxes <- df |> uncount(get(y)) |> mutate(box = 1)
 
-        # Swap them back
-        if(axis_flip == TRUE) {swap_object_names('x', 'y')}
+      # Swap them back
+      if(axis_flip == TRUE) {swap_object_names('x', 'y')}
 
       # Re-define colour_field parameter for bar plot
       #    Note:- Stacked bar colours need reversing to match with ggplot output
@@ -1711,7 +1728,8 @@ col_chart <- function(
           orientation = if(axis_flip == TRUE) {'h'} else {'v'}, #set orientation to horizontal if axis_flip = TRUE
           showlegend = if (is.null(group_var)) {F} else {T}
         ) |>
-        layout(barmode = group_var_barmode)
+        layout(barmode = group_var_barmode,
+               bargap = 1 - bar_width)  # Convert bar_width to bargap for plotly (inverse relationship)
 
     }
 
@@ -1819,8 +1837,8 @@ col_chart <- function(
 
           # Define unique groups
           unique_groups <- unique(df[[group_var]])
-              # # Reverse order when x-axis is reversed
-              # if(x_axis_reverse == TRUE & group_var_barmode == 'group') {unique_groups <- fct_rev(unique_groups)}
+          # # Reverse order when x-axis is reversed
+          # if(x_axis_reverse == TRUE & group_var_barmode == 'group') {unique_groups <- fct_rev(unique_groups)}
 
           if(axis_flip == TRUE) {swap_object_names('x', 'y')} # temporarily swap back axis names for calculation if axes are flipped
 
@@ -1967,7 +1985,7 @@ col_chart <- function(
       # take into account flipped axes
       if(axis_flip == TRUE) {
         ynudge <- if (bar_labels_pos == 'bar_centre') {0} else {0.02 * x_max}
-        }
+      }
 
 
       # Label according to whether or not bars are grouped
@@ -1989,16 +2007,16 @@ col_chart <- function(
         } else if (bar_labels_pos == 'bar_base') {
           x_labpos <- df[[x]]
           y_labpos <- if(bar_labels_angle %in% c(90,270)) {y_min + (0.015*y_max)} else {y_min + (1.5*ynudge)}
-            # Redefine for flipped axes to eliminate gap
-            y_labpos <- if(axis_flip == TRUE) {y_min + (1.5*ynudge)} else {y_labpos}
+          # Redefine for flipped axes to eliminate gap
+          y_labpos <- if(axis_flip == TRUE) {y_min + (1.5*ynudge)} else {y_labpos}
         } else if (bar_labels_pos == 'bar_centre') {
           x_labpos <- df[[x]]
           y_labpos <- df[[y]] / 2
         } else if (bar_labels_pos == 'above_errorbar') {
           x_labpos <- df[[x]]
           y_labpos <- if(bar_labels_angle %in% c(90,270)) {df[[ci_upper]] + (0.01*y_max)} else {df[[ci_upper]]}
-            # Redefine for flipped axes to eliminate gap
-            y_labpos <- if(axis_flip == TRUE) {df[[ci_upper]]} else {y_labpos}
+          # Redefine for flipped axes to eliminate gap
+          y_labpos <- if(axis_flip == TRUE) {df[[ci_upper]]} else {y_labpos}
         }
 
         # flip axis variables back after calculation
@@ -2035,7 +2053,7 @@ col_chart <- function(
         if(axis_flip == TRUE) {
           swap_object_names('x', 'y')
           swap_object_names('x_min', 'y_min')
-          }
+        }
 
         # Calculate positions for stacked labels manually, create new dataframe to manage.
         df_labels <- df |>
@@ -2085,13 +2103,13 @@ col_chart <- function(
         # Join df and lookup table to create offset x values for plotting
         if(group_var_barmode == "group") {
           df_labels <- left_join(df_labels, x_offset_lookup, join_by(!!rlang::sym(group_var) == 'group')) #|>
-            # Character x-axis offset needs to be treated differently to numeric offset
-            if(exists('x_levels')) { # If x_levels exists then x is a factor/character
-              df_labels <- left_join(df_labels, x_bar_order_lookup, join_by('x_orig' == 'x')) |>  # join with preserved x-values
-                mutate(x_grouped = as.numeric(bar_order) + x_offset)
-            } else {
-              df_labels <- df_labels |> mutate(x_grouped = get(x) + x_offset)
-            }
+          # Character x-axis offset needs to be treated differently to numeric offset
+          if(exists('x_levels')) { # If x_levels exists then x is a factor/character
+            df_labels <- left_join(df_labels, x_bar_order_lookup, join_by('x_orig' == 'x')) |>  # join with preserved x-values
+              mutate(x_grouped = as.numeric(bar_order) + x_offset)
+          } else {
+            df_labels <- df_labels |> mutate(x_grouped = get(x) + x_offset)
+          }
         }
         #if(axis_flip == TRUE) {swap_object_names('x', 'y')}  # flip axis variables back after calculation
 
@@ -2106,17 +2124,17 @@ col_chart <- function(
           y_labpos <- if(group_var_barmode == "stack") {df_labels$cumul} else {df_labels[[y]]}
         } else if (bar_labels_pos == 'bar_base') {
           y_labpos <- if(group_var_barmode == "stack") {df_labels$cumul_bar_base} else {df_labels[[y]]} # position at bottom of each stacked bar
-            # Redefine y_labpos to bottom of bar for grouped bars
-            y_base <- if (is.na(y_min)) {0} else {y_min}
-            y_labpos <- if(group_var_barmode == "group") {y_base} else {y_labpos}
+          # Redefine y_labpos to bottom of bar for grouped bars
+          y_base <- if (is.na(y_min)) {0} else {y_min}
+          y_labpos <- if(group_var_barmode == "group") {y_base} else {y_labpos}
         } else if (bar_labels_pos == 'bar_centre') {
           y_labpos <- if(group_var_barmode != "stack") {df_labels[[y]]} else {df_labels$cumul_bar_centre}  # position in centre of each stacked bar
-            # Redefine y_labpos to halfway up bar for grouped bars
-            y_labpos <- if(group_var_barmode == "group") {y_labpos / 2} else {y_labpos}
+          # Redefine y_labpos to halfway up bar for grouped bars
+          y_labpos <- if(group_var_barmode == "group") {y_labpos / 2} else {y_labpos}
         } else if (bar_labels_pos == 'above_errorbar') {
           y_labpos <- df_labels$cumul_above_errorbar
-            # Redefine y_labpos to halfway up bar for grouped bars
-            y_labpos <- if(group_var_barmode == "group") {df_labels[[ci_upper]]} else {y_labpos}
+          # Redefine y_labpos to halfway up bar for grouped bars
+          y_labpos <- if(group_var_barmode == "group") {df_labels[[ci_upper]]} else {y_labpos}
         }
 
 
@@ -2138,9 +2156,9 @@ col_chart <- function(
                           y = ~ if(axis_flip == FALSE) {y_labpos + ynudge} else {x_labpos},
                           textangle = bar_labels_angle,
                           font = list(
-                                    family = chart_font,
-                                    size = bar_labels_font_size,
-                                    color = bar_labels_font_colour),
+                            family = chart_font,
+                            size = bar_labels_font_size,
+                            color = bar_labels_font_colour),
                           yanchor = y_anchor,
                           showarrow = FALSE)
 
