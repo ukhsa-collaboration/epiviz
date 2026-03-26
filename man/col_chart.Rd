@@ -9,24 +9,25 @@ col_chart(
   params = list(df = NULL, x = NULL, y = NULL, x_time_series = FALSE,
     x_time_series_bar_labels = FALSE, time_period = "day", group_var = NULL,
     group_var_barmode = "stack", fill_colours = "lightblue", bar_border_colour =
-    "transparent", bar_labels = NULL, bar_labels_pos = "bar_above", bar_labels_font_size
-    = 8, bar_labels_font_colour = "black", bar_labels_angle = 0, bar_labels_percent =
-    FALSE, case_boxes = FALSE, case_boxes_colour = "white", axis_flip = FALSE, ci = NULL,
-    ci_upper = NULL, ci_lower = NULL, ci_legend = TRUE, 
-     ci_legend_title =
-    "Confidence interval", ci_colours = "red", errorbar_width = NULL, chart_title = NULL,
-    chart_title_size = 13, chart_title_colour = "black", chart_footer = NULL,
-    chart_footer_size = 12, chart_footer_colour = "black", x_axis_title = NULL,
-    y_axis_title = NULL, x_axis_title_font_size = 11, y_axis_title_font_size = 11,
-    x_axis_label_angle = NULL, y_axis_label_angle = NULL, x_axis_label_font_size = 9,
-    y_axis_label_font_size = 9, x_limit_min = NULL, x_limit_max = NULL, y_limit_min =
-    NULL, 
-     y_limit_max = NULL, x_axis_break_labels = NULL, y_axis_break_labels =
-    NULL, x_axis_n_breaks = NULL, y_axis_n_breaks = NULL, x_axis_reverse = FALSE,
-    y_percent = FALSE, show_gridlines = TRUE, show_axislines = TRUE, legend_title = "",
-    legend_pos = "right", legend_font_size = 8, legend_title_font_size = 8, hline = NULL,
-    hline_colour = "black", hline_width = 0.5, hline_type = "dashed", hline_label = NULL,
-    hline_label_colour = "black", hover_labels = NULL)
+    "transparent", bar_width = 0.9, bar_labels = NULL, bar_labels_pos = "bar_above",
+    bar_labels_font_size = 8, bar_labels_font_colour = "black", bar_labels_angle = 0,
+    bar_labels_percent = FALSE, case_boxes = FALSE, case_boxes_colour = "white",
+    axis_flip = FALSE, ci = NULL, ci_upper = NULL, ci_lower = NULL, 
+     ci_legend =
+    TRUE, ci_legend_title = "Confidence interval", ci_colours = "red", errorbar_width =
+    NULL, chart_title = NULL, chart_title_size = 13, chart_title_colour = "black",
+    chart_footer = NULL, chart_footer_size = 12, chart_footer_colour = "black",
+    x_axis_title = NULL, y_axis_title = NULL, x_axis_title_font_size = 11,
+    y_axis_title_font_size = 11, x_axis_label_angle = NULL, y_axis_label_angle = NULL,
+    x_axis_label_font_size = 9, y_axis_label_font_size = 9, x_limit_min = NULL,
+    x_limit_max = NULL, 
+     y_limit_min = NULL, y_limit_max = NULL, x_axis_break_labels
+    = NULL, y_axis_break_labels = NULL, x_axis_n_breaks = NULL, y_axis_n_breaks = NULL,
+    x_axis_reverse = FALSE, y_percent = FALSE, show_gridlines = TRUE, show_axislines =
+    TRUE, legend_title = "", legend_pos = "right", legend_font_size = 8,
+    legend_title_font_size = 8, hline = NULL, hline_colour = "black", hline_width = 0.5,
+    hline_type = "dashed", hline_label = NULL, hline_label_colour = "black", hover_labels
+    = NULL)
 )
 }
 \arguments{
@@ -65,6 +66,9 @@ on the output chart and legend (e.g. \code{c("KLEBSIELLA PNEUMONIAE" = "#007C91"
    "#8A1B61","#FF7F32"), c("KLEBSIELLA PNEUMONIAE","STAPHYLOCOCCUS AUREUS","PSEUDOMONAS AERUGINOSA"))})}
 \item{bar_border_colour}{character, Colour of the border around each bar. Default = \code{"transparent"},
 meaning that no border colour is drawn as default.}
+\item{bar_width}{numeric, Width of the bars as a proportion between 0 and 1, where 1 means bars
+touch (no gap between bars) and smaller values create gaps between bars. Default = \code{0.9}.
+This parameter controls bar width consistently for both ggplot (static) and plotly (dynamic) outputs.}
 \item{bar_labels}{character, Name of the variable in \code{df} containing the labels to be used
 for each bar. To set bar lables when \code{x_time_series = TRUE}, set \code{x_time_series_bar_labels = TRUE}
 and labels will be added to each bar equal to y-axis values.}
