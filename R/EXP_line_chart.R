@@ -216,7 +216,7 @@
 #'
 #' }
 #'
-line_chart <- function(
+EXP_line_chart <- function(
     dynamic = FALSE,
     base = NULL,
     params = list(
@@ -741,10 +741,28 @@ line_chart <- function(
 
     ##### Define base min/max x & y values for axis ranges
 
-    # Define ggplot object to harvest axis ranges from
+    #   -It is not currently possible to access range/autorange values from
+    #    a plotly object, so define a ggplot object showing the same information
+    #    and use its autoranges as a basis. This also keeps the formatting the
+    #    same as the static chart.
+
+    # Build xlim and ylim for coord_cartesian (matching base_gg approach)
+    xlim <- c(
+      if (!is.null(x_limit_min)) { if (lubridate::is.Date(df[[x]])) as.Date(x_limit_min) else x_limit_min } else { NA },
+      if (!is.null(x_limit_max)) { if (lubridate::is.Date(df[[x]])) as.Date(x_limit_max) else x_limit_max } else { NA }
+    )
+    ylim <- c(
+      if (!is.null(y_limit_min)) { y_limit_min } else { NA },
+      if (!is.null(y_limit_max)) { y_limit_max } else { NA }
+    )
+
+    # Define ggplot object to harvest axis ranges from (with coord_cartesian to match static chart)
     ggobj <- ggplot() +
       geom_line(data=df, aes(x=.data[[x]], y=.data[[y]])) +
-      geom_hline(yintercept = hline)
+      geom_hline(yintercept = hline) +
+      coord_cartesian(xlim = if (all(is.na(xlim))) NULL else xlim,
+                      ylim = if (all(is.na(ylim))) NULL else ylim)
+
     x_min <- ggplot_build(ggobj)$layout$panel_params[[1]]$x.range[1]
     x_max <- ggplot_build(ggobj)$layout$panel_params[[1]]$x.range[2]
     y_min <- ggplot_build(ggobj)$layout$panel_params[[1]]$y.range[1]
@@ -755,6 +773,26 @@ line_chart <- function(
     x_max <- if(lubridate::is.Date(df[[x]])) {as.Date.numeric(x_max)} else {x_max}
     y_min <- if(lubridate::is.Date(df[[y]])) {as.Date.numeric(y_min)} else {y_min}
     y_max <- if(lubridate::is.Date(df[[y]])) {as.Date.numeric(y_max)} else {y_max}
+
+    # Compensate for the 5% padding that base_plotly adds to date axes
+    # base_plotly adds: xpad = 0.05 * range, then x_min -= xpad, x_max += xpad
+    # To counteract this, we pre-shrink by: compensation = range / 22
+    if (lubridate::is.Date(df[[x]])) {
+      x_range_days <- as.numeric(difftime(x_max, x_min, units = "days"))
+      compensation_days <- round(x_range_days / 22, digits = 0)
+      x_min <- x_min + compensation_days
+      x_max <- x_max - compensation_days
+    } else if (is.numeric(df[[x]])) {
+      x_range <- x_max - x_min
+      compensation <- x_range / 22
+      x_min <- x_min + compensation
+      x_max <- x_max - compensation
+    }
+
+    # Set x_limit_min/max to NULL so base_plotly uses our compensated x_min/x_max
+    # instead of overriding them with the raw user-specified limits
+    x_limit_min <- NULL
+    x_limit_max <- NULL
 
 
 
@@ -1000,30 +1038,36 @@ line_chart <- function(
       }
 
       # Add plotly trace without groups
-      base <- base |>
-        add_trace(
-          df,
-          x = ~ df[[x]],
-          y = ~ df[[y]],
-          type = 'scatter',
-          mode = plt_mode,
-          yaxis = y_axis_choice,
-          line = list(
-            color = line_colours[[1]],
-            dash = plotly_line_style(line_types[[1]]),
-            width = line_width * 2  # scale ggplot to plotly
-          ),
-          marker = list(
-            color = line_colours[[1]],
-            size = add_points_size * 3,  # scale ggplot to plotly
-            line = list(color = 'transparent', width = 0)
-          ),
-          legendgroup = 'data',
-          name = if(legend_title != "") {legend_title} else {y},
-          text = text_upper,
-          customdata = text_lower,
-          hovertemplate = hoverlabels
+      # Build trace arguments - only include markers if add_points is TRUE
+      trace_args <- list(
+        data = df,
+        x = ~ df[[x]],
+        y = ~ df[[y]],
+        type = 'scatter',
+        mode = plt_mode,
+        yaxis = y_axis_choice,
+        line = list(
+          color = line_colours[[1]],
+          dash = plotly_line_style(line_types[[1]]),
+          width = line_width * 2  # scale ggplot to plotly
+        ),
+        legendgroup = 'data',
+        name = if(legend_title != "") {legend_title} else {y},
+        text = text_upper,
+        customdata = text_lower,
+        hovertemplate = hoverlabels
+      )
+
+      # Add marker list only if add_points is TRUE
+      if (add_points) {
+        trace_args$marker <- list(
+          color = line_colours[[1]],
+          size = add_points_size * 3,  # scale ggplot to plotly
+          line = list(color = 'transparent', width = 0)
         )
+      }
+
+      base <- do.call(add_trace, c(list(p = base), trace_args))
 
     } else {
 
@@ -1031,10 +1075,23 @@ line_chart <- function(
 
       unique_groups <- unique(df[[group_var]])
 
+      # Determine colour order - if line_colours is a named vector, match by name
+      # Otherwise use index-based matching
+      has_named_colours <- !is.null(names(line_colours))
+
       for (i in 1:length(unique_groups)) {
 
         df_group <- df |>
           filter(get(group_var) == unique_groups[i])
+
+        # Get colour for this group - by name if available, otherwise by index
+        # Convert to character to handle factors properly
+        group_name <- as.character(unique_groups[i])
+        group_colour <- if (has_named_colours && group_name %in% names(line_colours)) {
+          line_colours[[group_name]]
+        } else {
+          line_colours[[i]]
+        }
 
         # Leverage 'text' and 'customdata' fields
         if (is.null(ci)) {
@@ -1045,31 +1102,37 @@ line_chart <- function(
           text_lower <- if(y_percent==TRUE) {scales::percent(df_group[[ci_lower]])} else {df_group[[ci_lower]]}
         }
 
-        base <- base |>
-          add_trace(
-            data = df_group,
-            x = df_group[[x]],
-            y = df_group[[y]],
-            type = 'scatter',
-            mode = plt_mode,
-            yaxis = y_axis_choice,
-            name = unique_groups[[i]],
-            line = list(
-              color = line_colours[[i]],
-              dash = plotly_line_style(line_types[[i]]),
-              width = line_width * 2  # scale ggplot to plotly
-            ),
-            marker = list(
-              color = line_colours[[i]],
-              size = add_points_size * 3,  # scale ggplot to plotly
-              line = list(color = 'transparent', width = 0)
-            ),
-            legendgroup = 'data',
-            legendgrouptitle = list(text = legend_title),
-            text = text_upper,
-            customdata = text_lower,
-            hovertemplate = hoverlabels
+        # Build trace arguments - only include markers if add_points is TRUE
+        trace_args <- list(
+          data = df_group,
+          x = df_group[[x]],
+          y = df_group[[y]],
+          type = 'scatter',
+          mode = plt_mode,
+          yaxis = y_axis_choice,
+          name = unique_groups[[i]],
+          line = list(
+            color = group_colour,
+            dash = plotly_line_style(line_types[[i]]),
+            width = line_width * 2  # scale ggplot to plotly
+          ),
+          legendgroup = 'data',
+          legendgrouptitle = list(text = legend_title),
+          text = text_upper,
+          customdata = text_lower,
+          hovertemplate = hoverlabels
+        )
+
+        # Add marker list only if add_points is TRUE
+        if (add_points) {
+          trace_args$marker <- list(
+            color = group_colour,
+            size = add_points_size * 3,  # scale ggplot to plotly
+            line = list(color = 'transparent', width = 0)
           )
+        }
+
+        base <- do.call(add_trace, c(list(p = base), trace_args))
 
       }
 
