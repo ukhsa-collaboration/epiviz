@@ -148,9 +148,16 @@ test_that(".parse_openshift_answer strips assistantfinal marker", {
   )
 })
 
-test_that(".parse_openshift_answer falls back to last non-empty line", {
+test_that(".parse_openshift_answer strips Answer: prefix", {
   expect_equal(
-    epiviz:::.parse_openshift_answer("line one\n\nline two"),
-    "line two"
+    epiviz:::.parse_openshift_answer("Answer: The data shows a peak in March."),
+    "The data shows a peak in March."
+  )
+})
+
+test_that(".parse_openshift_answer returns clean text when no marker", {
+  expect_equal(
+    epiviz:::.parse_openshift_answer("The data shows a peak in March."),
+    "The data shows a peak in March."
   )
 }) 
