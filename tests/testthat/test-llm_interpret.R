@@ -78,4 +78,79 @@ test_that("llm_interpret validates environment variables", {
     llm_interpret(data.frame(x = 1)),
     "Unsupported LLM provider: 'unsupported'"
   )
+})
+
+# =============================================================================
+# OpenShift AI provider tests
+# =============================================================================
+
+test_that("openshiftai-gpt-oss-120b requires LLM_URL", {
+  withr::local_envvar(c(
+    LLM_PROVIDER = "openshiftai-gpt-oss-120b",
+    LLM_API_KEY  = "fake-bearer-token",
+    LLM_MODEL    = "openshiftai-gpt-oss-120b",
+    LLM_URL      = NA
+  ))
+  expect_error(
+    llm_interpret(data.frame(x = 1)),
+    "LLM_URL environment variable is not set"
+  )
+})
+
+test_that("openshiftai-gpt-oss-120b rejects ggplot input", {
+  withr::local_envvar(c(
+    LLM_PROVIDER = "openshiftai-gpt-oss-120b",
+    LLM_API_KEY  = "fake-bearer-token",
+    LLM_MODEL    = "openshiftai-gpt-oss-120b",
+    LLM_URL      = "https://fake-openshift-endpoint"
+  ))
+  p <- ggplot2::ggplot(data.frame(x = 1, y = 1), ggplot2::aes(x, y)) +
+    ggplot2::geom_point()
+  expect_error(
+    llm_interpret(p),
+    "ggplot image input is not supported for the 'openshiftai-gpt-oss-120b' provider"
+  )
+})
+
+test_that("openshiftai-gpt-oss-120b sends correct httr2 request for data frame", {
+  withr::local_envvar(c(
+    LLM_PROVIDER = "openshiftai-gpt-oss-120b",
+    LLM_API_KEY  = "fake-bearer-token",
+    LLM_MODEL    = "openshiftai-gpt-oss-120b",
+    LLM_URL      = "https://fake-openshift-endpoint"
+  ))
+
+  # Fake a successful /v1/completions response
+  fake_response_body <- list(
+    choices = list(list(text = "assistantfinalDisease incidence peaked in week 10."))
+  )
+
+  # Stub httr2::req_perform so no real network call is made
+  mockery::stub(
+    llm_interpret,
+    "httr2::req_perform",
+    function(...) structure(list(), class = "httr2_response")
+  )
+  mockery::stub(
+    llm_interpret,
+    "httr2::resp_body_json",
+    function(...) fake_response_body
+  )
+
+  result <- llm_interpret(data.frame(week = 10, cases = 42))
+  expect_equal(result, "Disease incidence peaked in week 10.")
+})
+
+test_that(".parse_openshift_answer strips assistantfinal marker", {
+  expect_equal(
+    epiviz:::.parse_openshift_answer("some preambleassistantfinal The answer."),
+    "The answer."
+  )
+})
+
+test_that(".parse_openshift_answer falls back to last non-empty line", {
+  expect_equal(
+    epiviz:::.parse_openshift_answer("line one\n\nline two"),
+    "line two"
+  )
 }) 

@@ -19,7 +19,7 @@ A character string containing the narrative or interpretation of the input objec
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This function interprets a given data frame or ggplot visualisation by sending it to a language model API via the ellmer package. It supports multiple LLM providers, allowing users to specify the desired provider and model through environment variables.
+This function interprets a given data frame or ggplot visualisation by sending it to a language model API. It supports multiple LLM providers, including an internal OpenShift AI deployment, allowing users to specify the desired provider and model through environment variables.
 }
 \details{
 \strong{Supported LLM Providers and Models:}
@@ -36,24 +36,32 @@ This function interprets a given data frame or ggplot visualisation by sending i
 \itemize{
 \item \code{"claude-sonnet-4-20250514"}
 }
+\item \strong{OpenShift AI (internal)}: Utilises an internally hosted LLM via a direct \code{httr2} call to the \code{/v1/completions} endpoint.
+Set \code{LLM_PROVIDER} to \code{"openshiftai-gpt-oss-120b"}. Applicable models include:
+\itemize{
+\item \code{"openshiftai-gpt-oss-120b"}
+}
+Note: ggplot image input is \strong{not} supported for this provider.
 }
 
 \strong{Environment Variables:}
 \itemize{
-\item \code{LLM_PROVIDER}: Specifies the LLM provider ("openai", "gemini", "anthropic").
-\item \code{LLM_API_KEY}: The API key corresponding to the chosen provider.
+\item \code{LLM_PROVIDER}: Specifies the LLM provider ("openai", "gemini", "anthropic", or "openshiftai-gpt-oss-120b").
+\item \code{LLM_API_KEY}: The API key or Bearer token corresponding to the chosen provider.
 \item \code{LLM_MODEL}: The model identifier to use.
+\item \code{LLM_URL}: Base URL of the OpenShift AI endpoint. Required only when using the \code{"openshiftai-gpt-oss-120b"} provider.
 }
 
 \strong{Note:} Ensure that the appropriate environment variables are set before invoking this function. The function will throw an error if the specified provider is unsupported or if required environment variables are missing.
 }
 \section{Tested Models}{
 
-As of October 2025, this function has been tested and verified to work with the following models:
+As of April 2026, this function has been tested and verified to work with the following models:
 \itemize{
 \item OpenAI: gpt-4.1-nano
 \item Anthropic: claude-sonnet-4-20250514
 \item Google Gemini: gemini-2.5-flash-lite
+\item OpenShift AI (internal): openshiftai-gpt-oss-120b
 }
 
 Additional models may be tested in the future. Users can provide custom instructions
