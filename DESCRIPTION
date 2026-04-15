@@ -54,6 +54,7 @@ Imports:
     slider,
     rlang,
     ellmer,
+    httr2,
     jsonlite,
     lifecycle
 Depends: 

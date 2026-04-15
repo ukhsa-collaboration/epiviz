@@ -1,9 +1,23 @@
+# Private helper: strip the internal reasoning prefix that the OpenShift AI
+# model prepends before a special "assistantfinal" marker. Falls back to
+# returning the last non-empty line if the marker is absent.
+.parse_openshift_answer <- function(raw) {
+  marker <- "assistantfinal"
+  if (grepl(marker, raw, fixed = TRUE)) {
+    trimws(strsplit(raw, marker, fixed = TRUE)[[1]][2])
+  } else {
+    lines <- trimws(strsplit(trimws(raw), "\n")[[1]])
+    lines <- lines[nchar(lines) > 0]
+    if (length(lines) > 0) lines[length(lines)] else trimws(raw)
+  }
+}
+
 #' Interpret Epidemiological Data or Visualisations using LLMs
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
 #' 
-#' This function interprets a given data frame or ggplot visualisation by sending it to a language model API via the ellmer package. It supports multiple LLM providers, allowing users to specify the desired provider and model through environment variables.
+#' This function interprets a given data frame or ggplot visualisation by sending it to a language model API. It supports multiple LLM providers, including an internal OpenShift AI deployment, allowing users to specify the desired provider and model through environment variables.
 #'
 #' @param input An input object, either a data frame or a ggplot object, representing the data or visualisation to be interpreted.
 #' @param word_limit Integer. The desired word length for the response. Defaults to 100.
@@ -17,25 +31,32 @@
 #'   - `"gemini-2.5-flash-lite"`
 #' - **Anthropic Claude**: Utilises Anthropic's Claude models via `chat_anthropic()`. Requires setting the `CLAUDE_API_KEY` environment variable. Applicable models include:
 #'   - `"claude-sonnet-4-20250514"`
+#' - **OpenShift AI (internal)**: Utilises an internally hosted LLM via a direct `httr2` call to the `/v1/completions` endpoint.
+#'   Set `LLM_PROVIDER` to `"openshiftai-gpt-oss-120b"`. Applicable models include:
+#'   - `"openshiftai-gpt-oss-120b"`
+#'   Note: ggplot image input is **not** supported for this provider.
 #'
 #' **Environment Variables:**
-#' - `LLM_PROVIDER`: Specifies the LLM provider ("openai", "gemini", "anthropic").
-#' - `LLM_API_KEY`: The API key corresponding to the chosen provider.
+#' - `LLM_PROVIDER`: Specifies the LLM provider ("openai", "gemini", "anthropic", or "openshiftai-gpt-oss-120b").
+#' - `LLM_API_KEY`: The API key or Bearer token corresponding to the chosen provider.
 #' - `LLM_MODEL`: The model identifier to use.
+#' - `LLM_URL`: Base URL of the OpenShift AI endpoint. Required only when using the `"openshiftai-gpt-oss-120b"` provider.
 #'
 #' **Note:** Ensure that the appropriate environment variables are set before invoking this function. The function will throw an error if the specified provider is unsupported or if required environment variables are missing.
 #'
 #' @import ggplot2
 #' @importFrom jsonlite toJSON
 #' @import ellmer
+#' @importFrom httr2 request req_headers req_body_json req_timeout req_perform resp_body_json
 #' @importFrom lifecycle badge signal_stage
 #' @export
 #'
 #' @section Tested Models:
-#' As of October 2025, this function has been tested and verified to work with the following models:
+#' As of April 2026, this function has been tested and verified to work with the following models:
 #' - OpenAI: gpt-4.1-nano
 #' - Anthropic: claude-sonnet-4-20250514  
 #' - Google Gemini: gemini-2.5-flash-lite
+#' - OpenShift AI (internal): openshiftai-gpt-oss-120b
 #' 
 #' Additional models may be tested in the future. Users can provide custom instructions
 #' through the \code{prompt_extension} parameter for specialised analysis requirements.
@@ -58,7 +79,8 @@ llm_interpret <- function(input,
     provider <- Sys.getenv("LLM_PROVIDER")
     if (provider == "") {
       stop("LLM_PROVIDER environment variable is not set. ",
-           "Please set it to one of: 'openai', 'gemini', or 'claude'")
+           "Please set it to one of: 'openai', 'gemini', 'anthropic', or ",
+           "'openshiftai-gpt-oss-120b'")
     }
 
     api_key <- Sys.getenv("LLM_API_KEY")
@@ -74,31 +96,50 @@ llm_interpret <- function(input,
            sprintf("For %s, please set an appropriate model identifier.",
                    toupper(provider)))
     }
+
+    # OpenShift AI requires the base URL of the hosted endpoint
+    if (provider == "openshiftai-gpt-oss-120b") {
+      llm_url <- Sys.getenv("LLM_URL")
+      if (llm_url == "") {
+        stop("LLM_URL environment variable is not set. ",
+             "Set it to the base URL of your OpenShift AI endpoint.")
+      }
+    }
   }, error = function(e) {
     stop("Error checking environment variables: ", conditionMessage(e))
   })
 
-  # Initialize the chat client with error handling
-  chat <- tryCatch({
-    switch(
-      provider,
-      "openai" = chat_openai(model = model, api_key = api_key),
-      "gemini" = chat_google_gemini(model = model, api_key = api_key),
-      "anthropic" = chat_anthropic(model = model, api_key = api_key),
-      stop(sprintf("Unsupported LLM provider: '%s'", provider))
-    )
-  }, error = function(e) {
-    stop("Failed to initialize chat client: ", conditionMessage(e))
-  })
+  # For the OpenShift AI provider we bypass ellmer entirely and use httr2
+  # directly (the endpoint exposes /v1/completions, not /v1/chat/completions).
+  use_openshift <- provider == "openshiftai-gpt-oss-120b"
 
-  # Set the system prompt with error handling
-  tryCatch({
-    chat$set_system_prompt(
-      "You are a concise assistant focusing on epidemiologically relevant observations."
-    )
-  }, error = function(e) {
-    stop("Failed to set system prompt: ", conditionMessage(e))
-  })
+  # Initialize the chat client with error handling (ellmer providers only)
+  chat <- if (!use_openshift) {
+    tryCatch({
+      switch(
+        provider,
+        "openai"    = chat_openai(model = model, api_key = api_key),
+        "gemini"    = chat_google_gemini(model = model, api_key = api_key),
+        "anthropic" = chat_anthropic(model = model, api_key = api_key),
+        stop(sprintf("Unsupported LLM provider: '%s'", provider))
+      )
+    }, error = function(e) {
+      stop("Failed to initialize chat client: ", conditionMessage(e))
+    })
+  } else {
+    NULL
+  }
+
+  # Set the system prompt with error handling (ellmer providers only)
+  if (!use_openshift) {
+    tryCatch({
+      chat$set_system_prompt(
+        "You are a concise assistant focusing on epidemiologically relevant observations."
+      )
+    }, error = function(e) {
+      stop("Failed to set system prompt: ", conditionMessage(e))
+    })
+  }
 
   # Define the standard prompt
   standard_prompt <- tryCatch({
@@ -130,14 +171,48 @@ llm_interpret <- function(input,
     })
 
     # Send JSON data to the API with error handling
-    tryCatch({
-      response <- chat$chat(standard_prompt, json_data)
-      return(response)
-    }, error = function(e) {
-      stop("API request failed for data frame input: ", conditionMessage(e))
-    })
+    if (use_openshift) {
+      # Build a single combined prompt: instructions then data
+      full_prompt <- paste(standard_prompt, json_data, sep = "\n\n")
+      llm_url <- Sys.getenv("LLM_URL")
+      tryCatch({
+        resp <- httr2::request(paste0(llm_url, "/v1/completions")) |>
+          httr2::req_headers(
+            Authorization = paste("Bearer", api_key)
+          ) |>
+          httr2::req_body_json(list(
+            model       = model,
+            prompt      = full_prompt,
+            max_tokens  = ceiling(word_limit * 1.5),
+            temperature = 0.1
+          )) |>
+          httr2::req_timeout(60) |>
+          httr2::req_perform()
+        raw_text <- httr2::resp_body_json(resp)$choices[[1]]$text
+        return(.parse_openshift_answer(raw_text))
+      }, error = function(e) {
+        stop("OpenShift AI API request failed: ", conditionMessage(e))
+      })
+    } else {
+      tryCatch({
+        response <- chat$chat(standard_prompt, json_data)
+        return(response)
+      }, error = function(e) {
+        stop("API request failed for data frame input: ", conditionMessage(e))
+      })
+    }
   }
   else if (inherits(input, "ggplot")) {
+    # The OpenShift AI endpoint (/v1/completions) is text-only and cannot
+    # accept image data.
+    if (use_openshift) {
+      stop(
+        "ggplot image input is not supported for the 'openshiftai-gpt-oss-120b' ",
+        "provider. The internal endpoint only accepts text input. ",
+        "Pass the underlying data frame instead."
+      )
+    }
+
     temp_file <- NULL
 
     # Use withCallingHandlers for cleanup even if error occurs
