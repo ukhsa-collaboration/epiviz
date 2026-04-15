@@ -1,15 +1,20 @@
 # Private helper: strip the internal reasoning prefix that the OpenShift AI
-# model prepends before a special "assistantfinal" marker. Falls back to
-# returning the last non-empty line if the marker is absent.
+# model sometimes prepends before a special "assistantfinal" marker.
+# When the marker is absent, heuristically strip leading chain-of-thought
+# lines (e.g. "We need to...", "Let's...", "So the...") and the "Answer:"
+# prefix, then return whatever clean prose remains.
 .parse_openshift_answer <- function(raw) {
   marker <- "assistantfinal"
   if (grepl(marker, raw, fixed = TRUE)) {
-    trimws(strsplit(raw, marker, fixed = TRUE)[[1]][2])
-  } else {
-    lines <- trimws(strsplit(trimws(raw), "\n")[[1]])
-    lines <- lines[nchar(lines) > 0]
-    if (length(lines) > 0) lines[length(lines)] else trimws(raw)
+    return(trimws(strsplit(raw, marker, fixed = TRUE)[[1]][2]))
   }
+
+  text <- trimws(raw)
+
+  # Strip a leading "Answer:" prefix if present
+  text <- sub("^Answer:\\s*", "", text)
+
+  trimws(text)
 }
 
 #' Interpret Epidemiological Data or Visualisations using LLMs
@@ -172,8 +177,26 @@ llm_interpret <- function(input,
 
     # Send JSON data to the API with error handling
     if (use_openshift) {
-      # Build a single combined prompt: instructions then data
-      full_prompt <- paste(standard_prompt, json_data, sep = "\n\n")
+      # Build prompt for the /v1/completions API. Do NOT mention word counts —
+      # this model's chain-of-thought interprets any count target as an
+      # instruction to literally count and annotate every word. Length is
+      # controlled solely via max_tokens instead.
+      # Build prompt for the /v1/completions API. This model works best with
+      # the Question/Answer format (matching the proven Python RAG pattern).
+      # The model emits chain-of-thought reasoning followed by an
+      # "assistantfinal" marker; .parse_openshift_answer() strips that prefix.
+      openshift_instruction <- paste0(
+        "You are a concise epidemiological assistant.\n",
+        "Answer the question using only the information in the data.\n",
+        "Keep your answer short and helpful.\n",
+        "Do not explain how you got the answer.\n",
+        if (!is.null(prompt_extension)) paste0(prompt_extension, "\n") else "",
+        "\nData:\n", json_data, "\n\n",
+        "Question: Please provide a brief interpretation focusing on the ",
+        "most epidemiologically relevant observations.\n\n",
+        "Answer:"
+      )
+      full_prompt <- openshift_instruction
       llm_url <- Sys.getenv("LLM_URL")
       tryCatch({
         resp <- httr2::request(paste0(llm_url, "/v1/completions")) |>
@@ -183,7 +206,7 @@ llm_interpret <- function(input,
           httr2::req_body_json(list(
             model       = model,
             prompt      = full_prompt,
-            max_tokens  = ceiling(word_limit * 1.5),
+            max_tokens  = max(300L, ceiling(word_limit * 3L)),
             temperature = 0.1
           )) |>
           httr2::req_timeout(60) |>
