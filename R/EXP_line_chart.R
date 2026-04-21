@@ -817,10 +817,11 @@ EXP_line_chart <- function(
       x_max <- x_max - compensation
     }
 
-    # Set x_limit_min/max to NULL so base_plotly uses our compensated x_min/x_max
-    # instead of overriding them with the raw user-specified limits
-    x_limit_min <- NULL
-    x_limit_max <- NULL
+    # Replace x_limit_min/max with compensated x_min/x_max so that base_plotly:
+    # 1) Assigns x_min <- x_limit_min (no-op, since the value already equals x_min)
+    # 2) Uses x_limit_min for hline label positioning (at the visible left edge)
+    x_limit_min <- x_min
+    x_limit_max <- x_max
 
 
 
@@ -942,8 +943,17 @@ EXP_line_chart <- function(
         if(ci == 'errorbar') {
 
           unique_groups <- unique(df[[group_var]])
+          has_named_ci_colours <- !is.null(names(ci_colours))
 
           for (i in 1:length(unique_groups)) {
+
+            # Get ci colour for this group - by name if available, otherwise by index
+            ci_group_name <- as.character(unique_groups[i])
+            ci_group_colour <- if (has_named_ci_colours && ci_group_name %in% names(ci_colours)) {
+              ci_colours[[ci_group_name]]
+            } else {
+              ci_colours[[i]]
+            }
 
             df_group <- df |>
               filter(get(group_var) == unique_groups[i]) |>
@@ -968,7 +978,7 @@ EXP_line_chart <- function(
                 error_y = list(
                   type = "data",
                   symmetric = FALSE,
-                  color = ci_colours[[i]],
+                  color = ci_group_colour,
                   thickness = 1,
                   arrayminus = ~ diff_ci_lower,
                   array = ~ diff_ci_upper
@@ -980,8 +990,17 @@ EXP_line_chart <- function(
         } else if (ci == 'ribbon') {
 
           unique_groups <- unique(df[[group_var]])
+          has_named_ci_colours <- !is.null(names(ci_colours))
 
           for (i in 1:length(unique_groups)) {
+
+            # Get ci colour for this group - by name if available, otherwise by index
+            ci_group_name <- as.character(unique_groups[i])
+            ci_group_colour <- if (has_named_ci_colours && ci_group_name %in% names(ci_colours)) {
+              ci_colours[[ci_group_name]]
+            } else {
+              ci_colours[[i]]
+            }
 
             df_group_low <- df |>
               filter(get(group_var) == unique_groups[i]) |>
@@ -1006,7 +1025,7 @@ EXP_line_chart <- function(
                 name = unique_groups[[i]],
                 line = list(color = 'transparent'),
                 fill = 'toself',
-                fillcolor = add_transparency(ci_colours[[i]], trans.val = .5),
+                fillcolor = add_transparency(ci_group_colour, trans.val = .5),
                 showlegend = ci_legend,
                 legendgroup = 'ci',
                 legendgrouptitle = list(text = ci_legend_title)
@@ -1145,6 +1164,7 @@ EXP_line_chart <- function(
             width = line_width * 2  # scale ggplot to plotly
           ),
           legendgroup = 'data',
+          legendgrouptitle = list(text = legend_title),
           text = text_upper,
           customdata = text_lower,
           hovertemplate = hoverlabels
@@ -1185,7 +1205,7 @@ EXP_line_chart <- function(
     base <- base |>
       layout(
         legend = list(
-          title=list(text = legend_title, font = list(size = legend_title_font_size)),
+          #title=list(text = legend_title, font = list(size = legend_title_font_size)),
           font=list(size = legend_font_size)
         )
       )
