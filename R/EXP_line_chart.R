@@ -486,6 +486,14 @@ EXP_line_chart <- function(
     line_types <- rep(line_types, length(unique(df[[group_var]])))
   }
 
+  # Expand ci_colours if group_var is provided but only 1 colour is provided
+  # (matching col_chart approach)
+  if(!is.null(ci) & !is.null(group_var)) {
+    if(length(ci_colours) == 1) {
+      ci_colours <- rep(ci_colours, each = length(unique(df[[group_var]])))
+    }
+  }
+
 
 
   #################### LINE CHART #################################
@@ -576,31 +584,11 @@ EXP_line_chart <- function(
             # Plot for group_var provided
           } else if (!is.null(group_var)) {
 
-            # Add error bars with grouping variable
-            if(ci == 'errorbar') {
+            # Grouped errorbars are added AFTER lines/points using
+            # ggnewscale::new_scale_colour() to avoid colour scale conflict.
+            # Only grouped ribbons (which use 'fill', not 'colour') are added here.
 
-              base <-
-                base + ggplot2::geom_errorbar(
-                  data = df,
-                  mapping = aes(
-                    x = .data[[x]],
-                    ymin = .data[[ci_lower]],
-                    ymax = .data[[ci_upper]],
-                    group = .data[[group_var]],
-                    colour =  .data[[group_var]]
-                  ),
-                  width = errorbar_width,
-                  linewidth = .5
-                )
-
-              # Add ci_colours if provided
-              if (length(ci_colours) > 1) {
-                base <- base +
-                  scale_colour_manual(values = ci_colours)
-              }
-
-              # Add ribbon with grouping variable
-            } else if (ci == 'ribbon') {
+            if (ci == 'ribbon') {
 
               base <-
                 base +
@@ -719,6 +707,46 @@ EXP_line_chart <- function(
             ) +
             guides(size = "none")
         }
+      }
+
+
+
+      ##### Add grouped errorbars (after lines/points to allow separate colour scale)
+
+      if (!is.null(ci) && ci == 'errorbar' && !is.null(group_var)) {
+        # new_scale_colour() internally renames the original colour aesthetic,
+        # which prevents ggplot2 from merging the colour and linetype legends.
+        # Fold linetype visuals into the colour guide and suppress the separate
+        # linetype legend to avoid a duplicate with black entries.
+        base <- base +
+          guides(
+            colour = guide_legend(override.aes = list(linetype = line_types)),
+            linetype = "none"
+          )
+
+        # new_scale_colour() must be added as a separate step so it is
+        # registered in the plot before subsequent layers reference it.
+        base <- base + ggnewscale::new_scale_colour()
+
+        base <- base +
+          ggplot2::geom_errorbar(
+            data = df,
+            mapping = aes(
+              x = .data[[x]],
+              ymin = .data[[ci_lower]],
+              ymax = .data[[ci_upper]],
+              colour = .data[[group_var]]
+            ),
+            width = errorbar_width,
+            linewidth = .5,
+            show.legend = ifelse(ci_legend == TRUE, NA, FALSE)
+          ) +
+          scale_colour_manual(
+            name = ci_legend_title,
+            values = if (length(ci_colours) > 1) ci_colours else rep(ci_colours, length(line_colours)),
+            guide = if (ci_legend) "legend" else "none"
+          )
+
       }
 
 
@@ -1117,7 +1145,6 @@ EXP_line_chart <- function(
             width = line_width * 2  # scale ggplot to plotly
           ),
           legendgroup = 'data',
-          legendgrouptitle = list(text = legend_title),
           text = text_upper,
           customdata = text_lower,
           hovertemplate = hoverlabels
