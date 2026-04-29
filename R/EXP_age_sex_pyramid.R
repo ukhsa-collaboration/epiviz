@@ -39,6 +39,7 @@
 #'    \item{ci_upper}{character, Name of the variable in \code{df} containing upper
 #'    confidence limits when \code{grouped = TRUE} and \code{ci = "errorbar"}.}
 #'    \item{ci_colours}{character, Colour of the error bars. Default is \code{"red"}.}
+#'    \item{errorbar_width}{numeric, Width of the error bar caps. Default is \code{0.5}.}
 #'    \item{shift_origin}{Logical. If \code{TRUE}, allows the value-axis origin to shift
 #'    to accommodate asymmetric data where one sex has larger values than the other.
 #'    This preserves plot space by independently scaling each side of the pyramid.
@@ -93,7 +94,7 @@
 #' basic_pyramid <- EXP_age_sex_pyramid(
 #'   params = list(
 #'     df = lab_data,
-#'     age_var = "age",
+#'     dob_var = "date_of_birth",
 #'     sex_var = "sex",
 #'     age_breakpoints = c(0, 5, 19, 65, Inf),
 #'     chart_title = "Age-Sex Pyramid",
@@ -110,13 +111,20 @@
 #'
 #' library(epiviz)
 #'
-#' grouped_df <- data.frame(
-#'   age_group = rep(c("0-4", "5-18", "19-64", "65+"), each = 2),
-#'   sex = rep(c("Male", "Female"), times = 4),
-#'   count = c(100, 120, 200, 180, 350, 400, 150, 130),
-#'   lower = c(80, 100, 170, 150, 320, 370, 120, 100),
-#'   upper = c(120, 140, 230, 210, 380, 430, 180, 160)
-#' )
+#' grouped_df <- lab_data |> 
+#'   mutate(age = lubridate::time_length(interval(date_of_birth, Sys.Date()), "years")) |> 
+#'   mutate(age_group = case_when(
+#'     age < 5 ~ "0-4",
+#'     age < 19 ~ "5-18",
+#'     age < 65 ~ "19-64",
+#'     TRUE ~ "65+"
+#'   )) |> 
+#'   group_by(age_group, sex) |> 
+#'   summarise(
+#'     count = n(),
+#'     lower = count - sample(100:500, 1),
+#'     upper = count + sample(100:500, 1)
+#'   )
 #'
 #' # Create parameter list
 #' pyramid_params <- list(
@@ -191,6 +199,7 @@ EXP_age_sex_pyramid <- function(
       ci_upper = NULL,
       ci_lower = NULL,
       ci_colours = "red",
+      errorbar_width = 0.5,
       shift_origin = FALSE,
       chart_title = NULL,
       chart_title_size = 13,
@@ -229,6 +238,7 @@ EXP_age_sex_pyramid <- function(
   if(!exists('fill_colours',where=params)) params$fill_colours <- c("#440154", "#2196F3")
   if(!exists('bar_border_colour',where=params)) params$bar_border_colour <- "black"
   if(!exists('ci_colours',where=params)) params$ci_colours <- "red"
+  if(!exists('errorbar_width',where=params)) params$errorbar_width <- 0.5
   if(!exists('shift_origin',where=params)) params$shift_origin <- FALSE
   if(!exists('chart_title_size',where=params)) params$chart_title_size <- 13
   if(!exists('chart_title_colour',where=params)) params$chart_title_colour <- "black"
@@ -395,7 +405,6 @@ EXP_age_sex_pyramid <- function(
     arrange(as.integer(sub("^(\\d+).*", "\\1", sub("[<+]", "", age_group)))) |>
     mutate(age_group = factor(age_group, levels = unique(age_group))) |>
     na.omit()
-
 
   # Negate male values for left-side display
   .grp_df <- .grp_df |>
@@ -692,6 +701,7 @@ EXP_age_sex_pyramid <- function(
                        symmetric = FALSE,
                        color = ci_colours,
                        thickness = 1,
+                       width = errorbar_width,
                        array = male_data$ci_lower - male_data$value,
                        arrayminus = male_data$value - male_data$ci_upper
                      ))
@@ -798,14 +808,15 @@ EXP_age_sex_pyramid <- function(
                   list(text = html_bold(chart_title),
                        font = title_font,
                        x = 0.5,
-                       xanchor = "center")
+                       xanchor = "center",
+                       y = 0.95)
                 } else {
                   NULL
                 },
                 xaxis = list(
                   title = list(text = html_bold(x_axis_title), font = x_title_font),
                   tickfont = x_label_font,
-                  zeroline = TRUE,
+                  zeroline = FALSE,
                   showgrid = show_gridlines,
                   showline = show_axislines,
                   linecolor = "black",
@@ -819,7 +830,7 @@ EXP_age_sex_pyramid <- function(
                 yaxis = list(
                   title = list(text = html_bold(y_axis_title), font = y_title_font),
                   tickfont = y_label_font,
-                  zeroline = TRUE,
+                  zeroline = FALSE,
                   showgrid = FALSE,
                   showline = show_axislines,
                   linecolor = "black",
@@ -832,7 +843,9 @@ EXP_age_sex_pyramid <- function(
                 showlegend = TRUE,
                 legend = c(legend_config,
                            list(font = list(size = legend_font_size,
-                                            family = chart_font))),
+                                            family = chart_font),
+                                bgcolor = "rgba(0,0,0,0)",
+                                borderwidth = 0)),
                 margin = list(t = 50, b = 60, l = 3, r = 10)
     )
 
