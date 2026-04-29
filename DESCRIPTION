@@ -44,6 +44,7 @@ Imports:
     sf,
     leaflet,
     htmltools,
+    htmlwidgets,
     stringr,
     scales,
     tidyr,

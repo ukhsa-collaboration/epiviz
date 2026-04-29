@@ -481,7 +481,7 @@ EXP_age_sex_pyramid <- function(
           geom_errorbar(
             aes(x = age_group, ymin = ci_lower, ymax = ci_upper),
             colour = ci_colours,
-            width = 0.5,
+            width = errorbar_width,
             linewidth = 0.75
           )
       }
@@ -674,6 +674,14 @@ EXP_age_sex_pyramid <- function(
 
     if (!is.null(ci) && ci == "errorbar") {
 
+      # Number of age groups (used for cap width calculation)
+      n_groups <- length(unique(.grp_df$age_group))
+
+      # Initial cap width estimate in pixels (will be dynamically corrected
+      # by onRender to match the actual rendered plot dimensions).
+      # Plotly width is a half-width (center to cap end), so divide by 2.
+      errorbar_width_px <- errorbar_width * (300 / n_groups) / 2
+
       # Preserve positive CI values for male hover labels
       male_data$ci_lower_pos <- abs(male_data$ci_lower)
       male_data$ci_upper_pos <- abs(male_data$ci_upper)
@@ -701,7 +709,7 @@ EXP_age_sex_pyramid <- function(
                        symmetric = FALSE,
                        color = ci_colours,
                        thickness = 1,
-                       width = errorbar_width,
+                       width = errorbar_width_px,
                        array = male_data$ci_lower - male_data$value,
                        arrayminus = male_data$value - male_data$ci_upper
                      ))
@@ -729,6 +737,7 @@ EXP_age_sex_pyramid <- function(
                        symmetric = FALSE,
                        color = ci_colours,
                        thickness = 1,
+                       width = errorbar_width_px,
                        array = female_data$ci_upper - female_data$value,
                        arrayminus = female_data$value - female_data$ci_lower
                      ))
@@ -863,6 +872,29 @@ EXP_age_sex_pyramid <- function(
                     font = footer_font,
                     align = "right"
                   ))
+    }
+
+
+    ##### Dynamically size error bar caps to match ggplot output
+    # ggplot errorbar width is in data units (fraction of category spacing)
+    # but plotly width is in pixels, so a fixed constant only matches at one
+    # chart size. onRender calculates the correct pixel width from the actual
+    # rendered plot area height, keeping caps consistent at any display size.
+
+    if (!is.null(ci) && ci == "errorbar") {
+      p <- htmlwidgets::onRender(p, sprintf("
+        function(el) {
+          var plotHeight = el._fullLayout._size.h;
+          var capWidth   = %f * plotHeight / (%d * 2);
+          var indices    = [];
+          el.data.forEach(function(trace, i) {
+            if (trace.error_x) indices.push(i);
+          });
+          if (indices.length > 0) {
+            Plotly.restyle(el, {'error_x.width': capWidth}, indices);
+          }
+        }
+      ", errorbar_width, n_groups))
     }
 
 
