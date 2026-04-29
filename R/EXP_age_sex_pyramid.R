@@ -32,7 +32,14 @@
 #'    \item{bar_border_colour}{character, Colour of the border around each bar.
 #'    Default is \code{"black"}.}
 #'    \item{bar_width}{numeric, Width of the bars as a proportion between 0 and 1, where 1 means bars
-#'    touch (no gap between bars) and smaller values create gaps between bars. Default = \code{0.9}.
+#'    touch (no gap between bars) and smaller values create gaps between bars. Default = \code{0.9}.}
+#'    \item{bar_labels}{Logical. If \code{TRUE}, value labels (absolute counts) are displayed
+#'    at the end of each bar. Default is \code{FALSE}.}
+#'    \item{bar_labels_pos}{character, Position of the bar labels. Permitted values are
+#'    \code{"bar_outside"} (labels outside the bar ends) and \code{"bar_inside"} (labels
+#'    inside the bar ends). Default = \code{"bar_outside"}.}
+#'    \item{bar_labels_font_size}{numeric, Font size for the bar labels. Default = \code{8}.}
+#'    \item{bar_labels_font_colour}{character, Font colour for the bar labels. Default = \code{"black"}.}
 #'    \item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals
 #'    will be plotted with each bar. When \code{grouped = FALSE}, default Poisson
 #'    confidence intervals are applied automatically.}
@@ -198,6 +205,10 @@ EXP_age_sex_pyramid <- function(
       fill_colours = c("#440154", "#2196F3"),
       bar_border_colour = "black",
       bar_width = 0.9,
+      bar_labels = FALSE,
+      bar_labels_pos = "bar_outside",
+      bar_labels_font_size = 8,
+      bar_labels_font_colour = "black",
       ci = NULL,
       ci_upper = NULL,
       ci_lower = NULL,
@@ -241,6 +252,10 @@ EXP_age_sex_pyramid <- function(
   if(!exists('fill_colours',where=params)) params$fill_colours <- c("#440154", "#2196F3")
   if(!exists('bar_border_colour',where=params)) params$bar_border_colour <- "black"
   if(!exists('bar_width',where=params)) params$bar_width <- 0.9
+  if(!exists('bar_labels',where=params)) params$bar_labels <- FALSE
+  if(!exists('bar_labels_pos',where=params)) params$bar_labels_pos <- "bar_outside"
+  if(!exists('bar_labels_font_size',where=params)) params$bar_labels_font_size <- 8
+  if(!exists('bar_labels_font_colour',where=params)) params$bar_labels_font_colour <- "black"
   if(!exists('ci_colours',where=params)) params$ci_colours <- "red"
   if(!exists('errorbar_width',where=params)) params$errorbar_width <- 0.5
   if(!exists('shift_origin',where=params)) params$shift_origin <- FALSE
@@ -342,6 +357,10 @@ EXP_age_sex_pyramid <- function(
                  "fill_colours",
                  "bar_border_colour",
                  "bar_width",
+                 "bar_labels",
+                 "bar_labels_pos",
+                 "bar_labels_font_size",
+                 "bar_labels_font_colour",
                  "ci",
                  "ci_upper",
                  "ci_lower",
@@ -417,6 +436,10 @@ EXP_age_sex_pyramid <- function(
     arrange(as.integer(sub("^(\\d+).*", "\\1", sub("[<+]", "", age_group)))) |>
     mutate(age_group = factor(age_group, levels = unique(age_group))) |>
     na.omit()
+
+  # Ensure Male is the first level so it appears first in the legend
+  .grp_df <- .grp_df |>
+    mutate(sex = factor(sex, levels = c("Male", "Female")))
 
   # Negate male values for left-side display
   .grp_df <- .grp_df |>
@@ -496,6 +519,31 @@ EXP_age_sex_pyramid <- function(
             colour = ci_colours,
             width = errorbar_width,
             linewidth = 0.75
+          )
+      }
+
+
+      ##### Add bar labels if requested
+
+      if (isTRUE(bar_labels)) {
+
+        # Set hjust based on bar_labels_pos
+        if (bar_labels_pos == "bar_inside") {
+          male_hjust <- -0.1
+          female_hjust <- 1.1
+        } else {
+          male_hjust <- 1.1
+          female_hjust <- -0.1
+        }
+
+        p <- p +
+          geom_text(
+            aes(x = age_group, y = value,
+                label = abs(value),
+                hjust = ifelse(sex == "Male", male_hjust, female_hjust)),
+            colour = bar_labels_font_colour,
+            size = bar_labels_font_size * (5/14),
+            family = chart_font
           )
       }
 
@@ -681,6 +729,51 @@ EXP_age_sex_pyramid <- function(
                    ),
                    orientation = 'h',
                    hovertemplate = female_hover)
+
+
+    ##### Add bar labels if requested
+
+    if (isTRUE(bar_labels)) {
+
+      # Set anchor and shift based on bar_labels_pos
+      if (bar_labels_pos == "bar_inside") {
+        male_xanchor <- "left"
+        male_xshift <- 3
+        female_xanchor <- "right"
+        female_xshift <- -3
+      } else {
+        male_xanchor <- "right"
+        male_xshift <- -3
+        female_xanchor <- "left"
+        female_xshift <- 3
+      }
+
+      # Male labels
+      p <- add_annotations(p,
+                           x = male_data$value,
+                           y = male_data$age_group,
+                           text = abs(male_data$value),
+                           xanchor = male_xanchor,
+                           xshift = male_xshift,
+                           font = list(
+                             family = chart_font,
+                             size = bar_labels_font_size,
+                             color = bar_labels_font_colour),
+                           showarrow = FALSE)
+
+      # Female labels
+      p <- add_annotations(p,
+                           x = female_data$value,
+                           y = female_data$age_group,
+                           text = abs(female_data$value),
+                           xanchor = female_xanchor,
+                           xshift = female_xshift,
+                           font = list(
+                             family = chart_font,
+                             size = bar_labels_font_size,
+                             color = bar_labels_font_colour),
+                           showarrow = FALSE)
+    }
 
 
     ##### Add confidence intervals if requested
