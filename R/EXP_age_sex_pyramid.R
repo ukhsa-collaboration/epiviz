@@ -31,6 +31,8 @@
 #'    Default is \code{c("#440154", "#2196F3")}.}
 #'    \item{bar_border_colour}{character, Colour of the border around each bar.
 #'    Default is \code{"black"}.}
+#'    \item{bar_width}{numeric, Width of the bars as a proportion between 0 and 1, where 1 means bars
+#'    touch (no gap between bars) and smaller values create gaps between bars. Default = \code{0.9}.
 #'    \item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals
 #'    will be plotted with each bar. When \code{grouped = FALSE}, default Poisson
 #'    confidence intervals are applied automatically.}
@@ -111,15 +113,15 @@
 #'
 #' library(epiviz)
 #'
-#' grouped_df <- lab_data |> 
-#'   mutate(age = lubridate::time_length(interval(date_of_birth, Sys.Date()), "years")) |> 
+#' grouped_df <- lab_data |>
+#'   mutate(age = lubridate::time_length(interval(date_of_birth, Sys.Date()), "years")) |>
 #'   mutate(age_group = case_when(
 #'     age < 5 ~ "0-4",
 #'     age < 19 ~ "5-18",
 #'     age < 65 ~ "19-64",
 #'     TRUE ~ "65+"
-#'   )) |> 
-#'   group_by(age_group, sex) |> 
+#'   )) |>
+#'   group_by(age_group, sex) |>
 #'   summarise(
 #'     count = n(),
 #'     lower = count - sample(100:500, 1),
@@ -195,6 +197,7 @@ EXP_age_sex_pyramid <- function(
       age_calc_refdate = Sys.Date(),
       fill_colours = c("#440154", "#2196F3"),
       bar_border_colour = "black",
+      bar_width = 0.9,
       ci = NULL,
       ci_upper = NULL,
       ci_lower = NULL,
@@ -237,6 +240,7 @@ EXP_age_sex_pyramid <- function(
   if(!exists('age_calc_refdate',where=params)) params$age_calc_refdate <- Sys.Date()
   if(!exists('fill_colours',where=params)) params$fill_colours <- c("#440154", "#2196F3")
   if(!exists('bar_border_colour',where=params)) params$bar_border_colour <- "black"
+  if(!exists('bar_width',where=params)) params$bar_width <- 0.9
   if(!exists('ci_colours',where=params)) params$ci_colours <- "red"
   if(!exists('errorbar_width',where=params)) params$errorbar_width <- 0.5
   if(!exists('shift_origin',where=params)) params$shift_origin <- FALSE
@@ -274,6 +278,13 @@ EXP_age_sex_pyramid <- function(
   # Check fill_colours has exactly 2 elements
   if (length(params$fill_colours) != 2)
     stop("fill_colours must be a vector of exactly 2 colours (Male, Female)")
+
+  # Check bar_width valid (must be numeric between 0 and 1)
+  if (exists('bar_width', where=params)) {
+    if (!is.numeric(params$bar_width) | params$bar_width <= 0 | params$bar_width > 1) {
+      stop("bar_width must be a numeric value greater than 0 and less than or equal to 1")
+    }
+  }
 
   # For pre-grouped data, check required variables
   if (params$grouped == TRUE) {
@@ -330,6 +341,7 @@ EXP_age_sex_pyramid <- function(
                  "age_calc_refdate",
                  "fill_colours",
                  "bar_border_colour",
+                 "bar_width",
                  "ci",
                  "ci_upper",
                  "ci_lower",
@@ -469,7 +481,8 @@ EXP_age_sex_pyramid <- function(
         geom_col(
           aes(x = age_group, y = value, fill = sex),
           colour = bar_border_colour,
-          linewidth = 0.25
+          linewidth = 0.25,
+          width = bar_width
         ) +
         coord_flip()
 
@@ -847,6 +860,7 @@ EXP_age_sex_pyramid <- function(
                   ticklen = if (show_axislines) 3 else 0
                 ),
                 barmode = 'overlay',
+                bargap = 1 - bar_width,
                 font = list(family = chart_font),
                 hoverlabel = list(bgcolor = "white", font = list(size = 12)),
                 showlegend = TRUE,
