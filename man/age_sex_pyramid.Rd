@@ -6,97 +6,207 @@
 \usage{
 age_sex_pyramid(
   dynamic = FALSE,
-  base = NULL,
-  params = list(df, var_map = list(age_var = "age", dob_var = "date_of_birth", sex_var =
-    "sex", age_group_var = "age_group", value_var = "value", ci_lower = "ci_lower",
-    ci_upper = "ci_upper"), mf_colours = c("#440154", "#2196F3"), x_breaks = 10,
-    x_axis_title = "Number of cases", y_axis_title = "Age group (years)", text_size = 12,
-    ci = NULL, ci_colour = "red", age_breakpoints = c(0, 5, 19, 65, Inf),
-    age_calc_refdate = Sys.Date(), grouped = FALSE, legend_pos = "top", chart_title = "")
+  params = list(df = NULL, y = NULL, age_var = NULL, dob_var = NULL, sex_var = "sex",
+    age_group_var = NULL, grouped = FALSE, age_breakpoints = c(0, 5, 19, 65, Inf),
+    age_calc_refdate = Sys.Date(), fill_colours = c("#440154", "#2196F3"),
+    bar_border_colour = "black", bar_width = 0.9, bar_labels = FALSE, bar_labels_pos =
+    "bar_outside", bar_labels_font_size = 8, bar_labels_font_colour = "black", ci = NULL,
+    ci_upper = NULL, ci_lower = NULL, ci_colours = "red", errorbar_width = 0.5,
+    shift_origin = FALSE, chart_title = NULL, 
+     chart_title_size = 13,
+    chart_title_colour = "black", chart_footer = NULL, chart_footer_size = 12,
+    chart_footer_colour = "black", x_axis_title = "Number of cases", y_axis_title =
+    "Age group (years)", x_axis_title_font_size = 11, y_axis_title_font_size = 11,
+    x_axis_label_font_size = 9, y_axis_label_font_size = 9, x_axis_n_breaks = 10,
+    x_limit_max = NULL, show_gridlines = FALSE, show_axislines = TRUE, legend_title = "",
+    legend_pos = "top", legend_font_size = 8, legend_title_font_size = 8, hover_labels =
+    NULL)
 )
 }
 \arguments{
-\item{dynamic}{Logical. If \code{TRUE}, the function returns an interactive plotly chart. If \code{FALSE}, a static ggplot chart is returned.}
+\item{dynamic}{Logical indicating whether to produce a dynamic (plotly) output.
+Default is \code{FALSE}, which will return a static ggplot output.}
 
-\item{base}{An optional base plot to add the pyramid to. Default is \code{NULL}.}
-
-\item{params}{A list of parameters including:
+\item{params}{A named list containing arguments used to create the plot.
 \describe{
-\item{df}{Data frame containing the data to be used.}
-\item{var_map}{A list mapping variable names in the data frame to the expected names used in the function.
-\describe{
-\item{age_var}{Name of the variable in \code{df} containing age values. Default is \code{'age'}.}
-\item{dob_var}{Name of the variable in \code{df} containing date of birth values. Default is \code{'date_of_birth'}.}
-\item{sex_var}{Name of the variable in \code{df} containing sex values. Default is \code{'sex'}.}
-\item{age_group_var}{Name of the variable in \code{df} containing pre-grouped age groups (if \code{grouped = TRUE}).}
-\item{value_var}{Name of the column containing the value counts (if \code{grouped = TRUE}).}
-\item{ci_lower}{Name of the column containing lower confidence limits (if \code{ci = TRUE}).}
-\item{ci_upper}{Name of the column containing upper confidence limits (if \code{ci = TRUE}).}
-}
-}
-\item{mf_colours}{A vector of 2 colours used to fill the male and female bars in the
-plot. The first colour will be used for males, and the second for females. Default
-is \code{c("#440154", "#2196F3")}.}
-\item{x_breaks}{Number of breaks on the x-axis. Default is \code{10}.}
-\item{y_axis_title}{Title of the y-axis. Default is \code{"Individual count"}.}
-\item{x_axis_title}{Title of the x-axis. Default is \code{"Number of cases"}.}
-\item{text_size}{Size of the text in the plot. Default is \code{12}.}
-\item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals will be
-be plotted with each bar as errorbars. If \code{ci = "errorbar"} and \code{grouped = FALSE}, then
-default confidence intervals are applied using the normal approximation to the Poisson
-distribution, with bounds set at \eqn{\pm 1.96 \times \sqrt{n}}.}
-\item{ci_colour}{Colour of the plotted errorbars if \code{ci = TRUE}. Default is \code{"red"}.}
-\item{age_breakpoints}{A numeric vector specifying the breakpoints for age groups. Default is \code{c(0, 5, 19, 65, Inf)}.}
-\item{age_calc_refdate}{Reference date for calculating age from date of birth. Default is \code{Sys.Date()}.}
-\item{grouped}{Logical. If \code{TRUE}, assumes the data is pre-grouped by age and sex. If \code{FALSE},
-the function processes the line list data. Default is \code{FALSE}.}
-\item{legend_pos}{Position of the legend. Default is \code{"top"}.}
+\item{df}{A data frame containing data used to create the age-sex pyramid.}
+\item{y}{character, Name of the variable in \code{df} containing the values
+(counts) when \code{grouped = TRUE}.}
+\item{age_var}{character, Name of the variable in \code{df} containing age values.
+Used when \code{grouped = FALSE}. Default is \code{"age"}.}
+\item{dob_var}{character, Name of the variable in \code{df} containing date of
+birth values. Used when \code{grouped = FALSE} and \code{age_var} is not available.}
+\item{sex_var}{character, Name of the variable in \code{df} containing sex values.
+Default is \code{"sex"}. Permitted values for sex include M, F, Male, Female
+(not case sensitive).}
+\item{age_group_var}{character, Name of the variable in \code{df} containing
+pre-grouped age groups when \code{grouped = TRUE}.}
+\item{grouped}{Logical. If \code{TRUE}, assumes the data is pre-grouped by age
+and sex. If \code{FALSE} (default), the function processes line list data.}
+\item{age_breakpoints}{A numeric vector specifying the breakpoints for age groups
+when \code{grouped = FALSE}. Default is \code{c(0, 5, 19, 65, Inf)}.}
+\item{age_calc_refdate}{Reference date for calculating age from date of birth.
+Default is \code{Sys.Date()}.}
+\item{fill_colours}{A character vector of 2 colours used to fill the male and
+female bars. The first colour is used for males, and the second for females.
+Default is \code{c("#440154", "#2196F3")}.}
+\item{bar_border_colour}{character, Colour of the border around each bar.
+Default is \code{"black"}.}
+\item{bar_width}{numeric, Width of the bars as a proportion between 0 and 1, where 1 means bars
+touch (no gap between bars) and smaller values create gaps between bars. Default = \code{0.9}.}
+\item{bar_labels}{Logical. If \code{TRUE}, value labels (absolute counts) are displayed
+at the end of each bar. Default is \code{FALSE}.}
+\item{bar_labels_pos}{character, Position of the bar labels. Permitted values are
+\code{"bar_outside"} (labels outside the bar ends) and \code{"bar_inside"} (labels
+inside the bar ends). Default = \code{"bar_outside"}.}
+\item{bar_labels_font_size}{numeric, Font size for the bar labels. Default = \code{8}.}
+\item{bar_labels_font_colour}{character, Font colour for the bar labels. Default = \code{"black"}.}
+\item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals
+will be plotted with each bar. When \code{grouped = FALSE}, default Poisson
+confidence intervals are applied automatically.}
+\item{ci_lower}{character, Name of the variable in \code{df} containing lower
+confidence limits when \code{grouped = TRUE} and \code{ci = "errorbar"}.}
+\item{ci_upper}{character, Name of the variable in \code{df} containing upper
+confidence limits when \code{grouped = TRUE} and \code{ci = "errorbar"}.}
+\item{ci_colours}{character, Colour of the error bars. Default is \code{"red"}.}
+\item{errorbar_width}{numeric, Width of the error bar caps. Default is \code{0.5}.}
+\item{shift_origin}{Logical. If \code{TRUE}, allows the value-axis origin to shift
+to accommodate asymmetric data where one sex has larger values than the other.
+This preserves plot space by independently scaling each side of the pyramid.
+Default is \code{FALSE}.}
 \item{chart_title}{Text to use as the chart title.}
+\item{chart_title_size}{Font size of chart title. Default = \code{13}.}
+\item{chart_title_colour}{Font colour of chart title. Default = \code{"black"}.}
+\item{chart_footer}{Text to use as chart footer.}
+\item{chart_footer_size}{Font size of chart footer. Default = \code{12}.}
+\item{chart_footer_colour}{Font colour of chart footer. Default = \code{"black"}.}
+\item{x_axis_title}{Text used for the value axis title (horizontal).
+Default is \code{"Number of cases"}.}
+\item{y_axis_title}{Text used for the age group axis title (vertical).
+Default is \code{"Age group (years)"}.}
+\item{x_axis_title_font_size}{Font size of the value axis title. Default = \code{11}.}
+\item{y_axis_title_font_size}{Font size of the age group axis title. Default = \code{11}.}
+\item{x_axis_label_font_size}{Font size for the value axis tick labels. Default = \code{9}.}
+\item{y_axis_label_font_size}{Font size for the age group axis tick labels. Default = \code{9}.}
+\item{x_axis_n_breaks}{Approximate number of breaks on the value axis.
+Default = \code{10}.}
+\item{x_limit_max}{Upper limit for the value axis. If not provided, the limit
+is determined automatically from the data.}
+\item{show_gridlines}{Logical to show chart gridlines. Default = \code{FALSE}.}
+\item{show_axislines}{Logical to show chart axis lines. Default = \code{TRUE}.}
+\item{legend_title}{Text used for legend title.}
+\item{legend_pos}{Position of the legend. Permitted values =
+c("top","bottom","right","left"). Default = \code{"top"}.}
+\item{legend_font_size}{Font size used in the legend. Default = \code{8}.}
+\item{legend_title_font_size}{Font size used for the legend title. Default = \code{8}.}
+\item{hover_labels}{string, Text to be used in the hover-over labels in a dynamic
+chart. Accepts html.}
 }}
 }
 \value{
-A ggplot or plotly object representing the age-sex pyramid, depending on the value of \code{dynamic}.
+A ggplot or plotly object.
 }
 \description{
-This function creates an age-sex pyramid visualization, either as a static ggplot or an interactive plotly chart.
-The function can take either a line list (ungrouped data) or already grouped data as input.
-When using a line list, the function processes the data, groups it by age and sex, and then generates the pyramid.
-If grouped data is provided, it directly creates the pyramid.
-}
-\details{
-When \code{grouped = FALSE}, the function processes a line list by grouping the data by age and sex,
-calculating age based on either the provided age column or date of birth, and then generating the age-sex pyramid.
-When \code{grouped = TRUE}, it assumes the data is already grouped and uses the provided values directly to generate the pyramid.
+A function for producing either a static (ggplot) or dynamic (plotly)
+age-sex pyramid chart. This function can take either a line list (ungrouped data)
+or pre-grouped data as input.
 }
 \examples{
+
 \dontrun{
-# Example using a line list
-df <- epiviz::lab_data
-age_sex_pyramid(
-  dynamic = FALSE,
+
+# Example 1: Basic pyramid from line list data
+
+library(epiviz)
+
+basic_pyramid <- age_sex_pyramid(
   params = list(
-    df = df,
-    var_map = list(age_var = 'age', dob_var = 'date_of_birth', sex_var = 'sex'),
-    grouped = FALSE
+    df = lab_data,
+    dob_var = "date_of_birth",
+    sex_var = "sex",
+    age_breakpoints = c(0, 5, 19, 65, Inf),
+    chart_title = "Age-Sex Pyramid",
+    x_axis_title = "Number of cases",
+    y_axis_title = "Age group (years)"
   )
 )
 
-# Example using pre-grouped data
-grouped_df <- data.frame(
-  age_group = c("0-4", "5-18", "19-64", "65+"),
-  sex = c("Male", "Female"),
-  value = c(100, 120, 150, 80),
-  ci_lower = c(90, 110, 140, 70),
-  ci_upper = c(110, 130, 160, 90)
+basic_pyramid
+
+
+
+# Example 2: Pyramid from pre-grouped data with confidence intervals
+
+library(epiviz)
+
+grouped_df <- lab_data |>
+  mutate(age = lubridate::time_length(interval(date_of_birth, Sys.Date()), "years")) |>
+  mutate(age_group = case_when(
+    age < 5 ~ "0-4",
+    age < 19 ~ "5-18",
+    age < 65 ~ "19-64",
+    TRUE ~ "65+"
+  )) |>
+  group_by(age_group, sex) |>
+  summarise(
+    count = n(),
+    lower = count - sample(100:500, 1),
+    upper = count + sample(100:500, 1)
+  )
+
+# Create parameter list
+pyramid_params <- list(
+  df = grouped_df,
+  y = "count",
+  age_group_var = "age_group",
+  sex_var = "sex",
+  grouped = TRUE,
+  ci = "errorbar",
+  ci_lower = "lower",
+  ci_upper = "upper",
+  fill_colours = c("#440154", "#2196F3"),
+  chart_title = "Age-Sex Pyramid with CI",
+  show_gridlines = FALSE
 )
-age_sex_pyramid(
-  dynamic = FALSE,
+
+# Create static pyramid
+static_pyramid <- age_sex_pyramid(params = pyramid_params, dynamic = FALSE)
+
+# Create dynamic pyramid
+dynamic_pyramid <- age_sex_pyramid(params = pyramid_params, dynamic = TRUE)
+
+# View both simultaneously using shiny app
+library(shiny)
+library(plotly)
+ui <- fluidPage(
+  plotOutput('static_pyramid'),
+  plotlyOutput('dynamic_pyramid')
+)
+server <- function(input, output, session) {
+  output$static_pyramid <- renderPlot(static_pyramid)
+  output$dynamic_pyramid <- renderPlotly(dynamic_pyramid)
+}
+shinyApp(ui, server)
+
+
+
+# Example 3: Pyramid with shifted origin for asymmetric data
+
+library(epiviz)
+
+asymmetric_pyramid <- age_sex_pyramid(
   params = list(
-    df = grouped_df,
-    var_map = list(age_group_var = 'age_group', sex_var = 'sex', value = 'value'),
-    grouped = TRUE
+    df = lab_data,
+    dob_var = "date_of_birth",
+    sex_var = "sex",
+    shift_origin = TRUE,
+    chart_title = "Asymmetric Age-Sex Pyramid",
+    fill_colours = c("#007C91", "#8A1B61")
   )
 )
+
+asymmetric_pyramid
+
 }
 
 }

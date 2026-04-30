@@ -137,9 +137,9 @@
 #'
 #' # Summarise detections per month
 #' detections_per_month <- epiviz::lab_data |>
-#'   dplyr::group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
-#'   dplyr::summarise(detections = dplyr::n()) |>
-#'   dplyr::ungroup()
+#'   group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
+#'   summarise(detections = n()) |>
+#'   ungroup()
 #'
 #' # Create static line chart
 #' chart <- line_chart(
@@ -151,6 +151,7 @@
 #'     chart_title = "Detections per Month",
 #'     x_axis_title = "Month of detection",
 #'     y_axis_title = "Number of detections",
+#'     x_axis_label_angle = 45,
 #'     x_axis_date_breaks = "2 months"
 #'   )
 #' )
@@ -165,14 +166,14 @@
 #'
 #' # Define detections per month by species with error limits
 #' species_by_month <- epiviz::lab_data |>
-#'   dplyr::group_by(specimen_month = lubridate::floor_date(specimen_date, 'month'),
+#'   group_by(specimen_month = lubridate::floor_date(specimen_date, 'month'),
 #'            organism_species_name) |>
-#'   dplyr::summarise(detections = dplyr::n()) |>
-#'   dplyr::ungroup() |>
-#'   dplyr::rowwise() |>
-#'   dplyr::mutate(lower_limit = detections - sample(10:50,1),
+#'   summarise(detections = n()) |>
+#'   ungroup() |>
+#'   rowwise() |>
+#'   mutate(lower_limit = detections - sample(10:50,1),
 #'          upper_limit = detections + sample(10:50,1)) |>
-#'   dplyr::ungroup()
+#'   ungroup()
 #'
 #' # Define parameters
 #' species_params <- list(
@@ -186,6 +187,7 @@
 #'   chart_title = "Detections per Month by Species",
 #'   x_axis_title = "Month of detection",
 #'   y_axis_title = "Number of detections",
+#'   x_axis_label_angle = 45,
 #'   x_axis_date_breaks = "2 months",
 #'   ci = "ribbon",
 #'   ci_lower = "lower_limit",
