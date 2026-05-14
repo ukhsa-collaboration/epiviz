@@ -56,6 +56,11 @@ utils::globalVariables(c(
   "point_labels_nudge_y", "hline", "setNames", "y_percent",
 
 
+  # For epi_timeline
+  "single_day", "event", "date", "case_def_sym",
+  "case_def_val", "gap_startdate", "gap_enddate",
+  "gap_start", "gap", "nudge", "void_start", "void_end",
+
   # For epi_curve
   "iso_year", "iso_week", "x_axis_title_font_size", "y_axis_title_font_size",
   "x_axis_label_font_size", "y_axis_label_font_size", "legend_font_size",

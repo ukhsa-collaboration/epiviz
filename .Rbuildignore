@@ -12,3 +12,5 @@ docs
 dev
 ^cript
 ^update_chunks\.R$
+^\.positai$
+^\.claude$

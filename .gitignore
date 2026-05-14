@@ -6,3 +6,5 @@
 .quarto
 .Renviron
 dev/
+.positai
+inst/doc
