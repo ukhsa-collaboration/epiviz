@@ -273,15 +273,20 @@ epi_timeline <- function(
   dftl <- df |>
     mutate(!!location := as.character(.data[[location]]))
 
-  # Ensure date columns are Date type
+  # Ensure date columns are POSIXct for sub-day precision
   date_cols <- c(start_date, end_date)
   optional_date_cols <- c(sym_onset_date, sym_end_date, spec_date, neg_spec_date, death_date)
   optional_date_cols <- optional_date_cols[!is.null(optional_date_cols) & optional_date_cols %in% colnames(dftl)]
   all_date_cols <- c(date_cols, optional_date_cols)
 
   for (col in all_date_cols) {
-    if (col %in% colnames(dftl) && !lubridate::is.Date(dftl[[col]])) {
-      dftl[[col]] <- as.Date(dftl[[col]])
+    if (col %in% colnames(dftl)) {
+      if (lubridate::is.POSIXct(dftl[[col]])) next
+      if (lubridate::is.Date(dftl[[col]])) {
+        dftl[[col]] <- as.POSIXct(dftl[[col]], tz = "UTC")
+      } else {
+        dftl[[col]] <- as.POSIXct(dftl[[col]], tz = "UTC", tryFormats = c("%Y-%m-%d %H:%M:%OS", "%Y-%m-%d", "%d/%m/%Y"))
+      }
     }
   }
 
@@ -289,25 +294,20 @@ epi_timeline <- function(
   start_cols <- intersect(c(start_date, sym_onset_date, spec_date, neg_spec_date), colnames(dftl))
   end_cols <- intersect(c(end_date, sym_end_date, spec_date, neg_spec_date, death_date), colnames(dftl))
 
-  mindate <- dftl |>
-    select(any_of(start_cols)) |>
-    sapply(function(x) {
-      if (all(is.na(x))) NA_real_ else as.numeric(min(x, na.rm = TRUE))
-    }) |>
-    min(na.rm = TRUE) |>
-    as.Date(origin = "1970-01-01")
+  # Gather all non-NA start/end values to find the data range
+  all_start_vals <- do.call(c, lapply(start_cols, function(col) dftl[[col]][!is.na(dftl[[col]])]))
+  all_end_vals <- do.call(c, lapply(end_cols, function(col) dftl[[col]][!is.na(dftl[[col]])]))
 
-  maxdate <- dftl |>
-    select(any_of(end_cols)) |>
-    sapply(function(x) {
-      if (all(is.na(x))) NA_real_ else as.numeric(max(x, na.rm = TRUE))
-    }) |>
-    max(na.rm = TRUE) |>
-    as.Date(origin = "1970-01-01")
+  if (length(all_start_vals) == 0 || length(all_end_vals) == 0) {
+    stop("No valid date values found in the data")
+  }
+
+  mindate <- min(all_start_vals)
+  maxdate <- max(all_end_vals)
 
   # Apply user date range or default to data range
-  date_range_start <- if (!is.null(x_limit_min)) as.Date(x_limit_min) else mindate
-  date_range_end <- if (!is.null(x_limit_max)) as.Date(x_limit_max) else maxdate
+  date_range_start <- if (!is.null(x_limit_min)) as.POSIXct(x_limit_min, tz = "UTC") else mindate
+  date_range_end <- if (!is.null(x_limit_max)) as.POSIXct(x_limit_max, tz = "UTC") else maxdate
 
   # Check if date range cuts off data for visual indication
   xstart_expand <- if (mindate < date_range_start) 0 else 3
@@ -323,12 +323,8 @@ epi_timeline <- function(
       single_day = as.Date(.data[[start_date]]) == as.Date(.data[[end_date]])
     ) |>
     mutate(
-      !!start_date := if_else(single_day, .data[[start_date]] - 0.25, as.numeric(.data[[start_date]])),
-      !!end_date := if_else(single_day, .data[[end_date]] + 0.25, as.numeric(.data[[end_date]]))
-    ) |>
-    mutate(
-      !!start_date := as.Date(.data[[start_date]], origin = "1970-01-01"),
-      !!end_date := as.Date(.data[[end_date]], origin = "1970-01-01")
+      !!start_date := if_else(single_day, .data[[start_date]] - lubridate::hours(6), .data[[start_date]]),
+      !!end_date := if_else(single_day, .data[[end_date]] + lubridate::hours(6), .data[[end_date]])
     )
 
   # Filter: valid date data and overlap with date range
@@ -593,13 +589,14 @@ epi_timeline <- function(
   }
 
   # Also factor patient in event/symptom data
+  patient_levels <- levels(dftl[[patient]])
   if (!is.null(dftl_events)) {
     dftl_events <- dftl_events |>
-      mutate(!!patient := factor(.data[[patient]], levels = levels(dftl[[patient]])))
+      mutate(!!patient := factor(.data[[patient]], levels = patient_levels))
   }
   if (!is.null(dftl_sym)) {
     dftl_sym <- dftl_sym |>
-      mutate(!!patient := factor(.data[[patient]], levels = levels(dftl[[patient]])))
+      mutate(!!patient := factor(.data[[patient]], levels = patient_levels))
   }
 
 
@@ -646,18 +643,18 @@ epi_timeline <- function(
 
       # Apply x-axis scale
       if (!is.null(x_axis_break_labels)) {
-        g <- g + scale_x_date(name = "",
-                              breaks = x_axis_break_labels,
+        g <- g + scale_x_datetime(name = "",
+                              breaks = as.POSIXct(as.character(x_axis_break_labels), tz = "UTC"),
                               labels = date_format("%d-%m-%Y"),
                               limits = c(date_range_start, date_range_end),
-                              expand = expansion(add = c(xstart_expand, xend_expand)))
+                              expand = expansion(add = c(xstart_expand * 86400, xend_expand * 86400)))
       } else {
-        g <- g + scale_x_date(name = "",
-                              breaks = date_breaks(x_axis_date_breaks),
-                              minor_breaks = date_breaks(x_axis_minor_date_breaks),
+        g <- g + scale_x_datetime(name = "",
+                              date_breaks = x_axis_date_breaks,
+                              date_minor_breaks = x_axis_minor_date_breaks,
                               labels = date_format("%d-%m-%Y"),
                               limits = c(date_range_start, date_range_end),
-                              expand = expansion(add = c(xstart_expand, xend_expand)))
+                              expand = expansion(add = c(xstart_expand * 86400, xend_expand * 86400)))
       }
 
       g <- g + coord_cartesian(xlim = c(date_range_start, date_range_end))
@@ -754,13 +751,13 @@ epi_timeline <- function(
       } else {
         paste0("<b>", pat, "</b><br>",
                loc, "<br>",
-               format(as.Date(row[[start_date]]), "%d-%m-%Y"), " to ",
-               format(as.Date(row[[end_date]]), "%d-%m-%Y"))
+               format(row[[start_date]], "%d-%m-%Y"), " to ",
+               format(row[[end_date]], "%d-%m-%Y"))
       }
 
       p <- p |>
         add_trace(
-          x = c(as.Date(row[[start_date]]), as.Date(row[[end_date]])),
+          x = c(row[[start_date]], row[[end_date]]),
           y = c(pat, pat),
           type = "scatter",
           mode = "lines",
@@ -782,7 +779,7 @@ epi_timeline <- function(
 
         p <- p |>
           add_trace(
-            x = c(as.Date(row[[sym_onset_date]]), as.Date(row[[sym_end_date]])),
+            x = c(row[[sym_onset_date]], row[[sym_end_date]]),
             y = c(pat, pat),
             type = "scatter",
             mode = "lines",
@@ -791,8 +788,8 @@ epi_timeline <- function(
             name = "Symptoms",
             showlegend = !sym_legend_added,
             hovertext = paste0("<b>", pat, "</b><br>Symptoms<br>",
-                               format(as.Date(row[[sym_onset_date]]), "%d-%m-%Y"), " to ",
-                               format(as.Date(row[[sym_end_date]]), "%d-%m-%Y")),
+                               format(row[[sym_onset_date]], "%d-%m-%Y"), " to ",
+                               format(row[[sym_end_date]], "%d-%m-%Y")),
             hoverinfo = "text"
           )
         sym_legend_added <- TRUE
@@ -830,7 +827,7 @@ epi_timeline <- function(
             showlegend = TRUE,
             hovertext = paste0("<b>", evt_data[[patient]], "</b><br>",
                                evt, "<br>",
-                               format(as.Date(evt_data$date), "%d-%m-%Y")),
+                               format(evt_data$date, "%d-%m-%Y")),
             hoverinfo = "text"
           )
       }
@@ -878,7 +875,6 @@ epi_timeline <- function(
       yaxis = list(
         title = "",
         tickfont = list(size = y_axis_label_font_size),
-        autorange = "reversed",
         categoryorder = "array",
         categoryarray = levels(dftl[[patient]])
       ),
