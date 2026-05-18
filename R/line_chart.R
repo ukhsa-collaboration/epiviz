@@ -376,7 +376,7 @@ line_chart <- function(
   }
 
   # Warn that multiple colours have been provided but group_var absent
-  if (length(params$line_colours) > 1 & !exists('group_var',where=params))
+  if (length(params$line_colours) > 1 & is.null(params$group_var))
     warning("Multiple line_colours have been provided but group_var is absent")
 
   # Allow axis_break_labels or axis_n_breaks
