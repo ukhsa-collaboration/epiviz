@@ -335,6 +335,13 @@ age_sex_pyramid <- function(
       stop("ci_upper variable not found within df.")
   }
 
+  # Check sex_var column exists and contains only 'Male' or 'Female'
+  if (!params$sex_var %in% colnames(params$df))
+    stop("sex_var ('", params$sex_var, "') not found within df.")
+  sex_values <- unique(params$df[[params$sex_var]])
+  if (any(is.na(sex_values)) || !all(sex_values %in% c("Male", "Female")))
+    stop("sex_var must contain only 'Male' or 'Female' values (no NAs or other values permitted).")
+
 
 
   ##### Parameter assignment
