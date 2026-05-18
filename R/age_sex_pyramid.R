@@ -41,8 +41,7 @@
 #'    \item{bar_labels_font_size}{numeric, Font size for the bar labels. Default = \code{8}.}
 #'    \item{bar_labels_font_colour}{character, Font colour for the bar labels. Default = \code{"black"}.}
 #'    \item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals
-#'    will be plotted with each bar. When \code{grouped = FALSE}, default Poisson
-#'    confidence intervals are applied automatically.}
+#'    will be plotted with each bar.}
 #'    \item{ci_lower}{character, Name of the variable in \code{df} containing lower
 #'    confidence limits when \code{grouped = TRUE} and \code{ci = "errorbar"}.}
 #'    \item{ci_upper}{character, Name of the variable in \code{df} containing upper

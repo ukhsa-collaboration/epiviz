@@ -18,8 +18,7 @@
 #' @param age_calc_refdate A Date object specifying the reference date for calculating age from date of birth.
 #' The default is `Sys.Date()`.
 #'
-#' @return A data frame that is aggregated by age group and sex, with columns for age group, sex, value (count),
-#' lower confidence limit, and upper confidence limit.
+#' @return A data frame that is aggregated by age group and sex, with columns for age group, sex, and value (count).
 #'
 #' @keywords internal
 #'
@@ -93,14 +92,9 @@ process_line_list_for_age_sex_pyramid <- function(df,
     dplyr::group_by(age_group, sex = df[[var_map$sex_var]]) |>
     dplyr::summarise(
       value = n(),
-      ci_lower = -1.96 * sqrt(value),
-      ci_upper =  1.96 * sqrt(value),
       .groups = "drop"
     ) |>
-    ungroup() |>
-    # Change +/- upper and lower limits into true upper and lower values needed for plotting
-    mutate(ci_lower = value + ci_lower,
-           ci_upper = value + ci_upper)
+    ungroup()
 
   # Return the processed data frame
   return(df)
