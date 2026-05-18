@@ -354,7 +354,7 @@ line_chart <- function(
     stop("y not found within df. Please include a variable from df for y, i.e. y = \"variable_name\"")
 
   # Check if number of groups and number of line colours are the same
-  if (exists('group_var', where=params)) {
+  if (!is.null(params$group_var)) {
     if (length(params$line_colours) > 1) {
       if (length(params$line_colours) != length(unique(params$df[[params$group_var]])))
         stop("The number of line_colours provided must equal the number of unique groups in group_var")
