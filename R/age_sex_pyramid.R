@@ -323,7 +323,7 @@ age_sex_pyramid <- function(
   }
 
   # CI checks for pre-grouped data
-  if (("ci" %in% names(params)) & params$grouped == TRUE) {
+  if (!is.null(params$ci) && params$ci == "errorbar" && params$grouped == TRUE) {
     if (is.null(params$ci_lower))
       stop("Please provide 'ci_lower' when ci is specified and grouped = TRUE.")
     if (is.null(params$ci_upper))
