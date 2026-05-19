@@ -922,6 +922,9 @@ epi_timeline <- function(
     # Build tick values from ggplot-extracted breaks for exact parity
     plotly_major_tickvals <- as.POSIXct(gg_major_breaks, origin = "1970-01-01", tz = "UTC")
     plotly_minor_tickvals <- as.POSIXct(gg_minor_breaks, origin = "1970-01-01", tz = "UTC")
+    # Remove minor ticks that coincide with major ticks to avoid solid shapes
+    # hiding the dashed major gridlines
+    plotly_minor_tickvals <- plotly_minor_tickvals[!plotly_minor_tickvals %in% plotly_major_tickvals]
 
     # Layout
     layout_args <- list(
@@ -935,10 +938,7 @@ epi_timeline <- function(
         tickfont = list(size = x_axis_label_font_size),
         tickmode = "array",
         tickvals = plotly_major_tickvals,
-        gridcolor = major_grid_hex,
-        griddash = "dash",
-        gridwidth = 1,
-        showgrid = TRUE,
+        showgrid = FALSE,
         ticks = "outside",
         ticklen = 5,
         tickcolor = "black",
@@ -952,7 +952,6 @@ epi_timeline <- function(
         title = "",
         tickfont = list(size = y_axis_label_font_size),
         gridcolor = major_grid_hex,
-        griddash = "dash",
         gridwidth = 1,
         showgrid = TRUE,
         showline = TRUE,
@@ -1033,8 +1032,25 @@ epi_timeline <- function(
 
     p <- do.call(layout, layout_args)
 
-    # Add minor x-axis gridlines as explicit shapes (dotted vertical lines)
-    # since plotly's minor axis config may not render reliably across versions
+    # Draw all vertical gridlines as explicit shapes for reliable rendering
+    all_x_shapes <- c()
+
+    # Major vertical gridlines (dashed)
+    if (length(plotly_major_tickvals) > 0) {
+      major_shapes <- lapply(plotly_major_tickvals, function(tv) {
+        list(
+          type = "line",
+          x0 = as.character(tv), x1 = as.character(tv),
+          y0 = 0, y1 = 1,
+          xref = "x", yref = "paper",
+          line = list(color = major_grid_hex, width = 1, dash = "4px 4px"),
+          layer = "below"
+        )
+      })
+      all_x_shapes <- c(all_x_shapes, major_shapes)
+    }
+
+    # Minor vertical gridlines (solid, light)
     if (length(plotly_minor_tickvals) > 0) {
       minor_shapes <- lapply(plotly_minor_tickvals, function(tv) {
         list(
@@ -1042,11 +1058,15 @@ epi_timeline <- function(
           x0 = as.character(tv), x1 = as.character(tv),
           y0 = 0, y1 = 1,
           xref = "x", yref = "paper",
-          line = list(color = "#EBEBEB", width = 0.5, dash = "solid"),
+          line = list(color = "#F0F0F0", width = 0.5, dash = "solid"),
           layer = "below"
         )
       })
-      p <- layout(p, shapes = minor_shapes)
+      all_x_shapes <- c(all_x_shapes, minor_shapes)
+    }
+
+    if (length(all_x_shapes) > 0) {
+      p <- layout(p, shapes = all_x_shapes)
     }
 
     # Dynamically size bar widths to match static ggplot rendering.
