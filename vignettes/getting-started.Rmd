@@ -1,139 +1,19 @@
 ---
-title: "Getting started with epiviz"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    toc_depth: 2
+title: "getting-started"
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started with epiviz}
+  %\VignetteIndexEntry{getting-started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-## Introduction
-
-The `epiviz` package provides epidemiological visualization functions for creating both static (ggplot2) and interactive (plotly) charts commonly used in public health surveillance and outbreak investigation. This guide introduces you to the package using the built-in `lab_data` dataset.
-
-## Prerequisites
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.width = 8, fig.height = 6, warning = FALSE, message = FALSE)
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
 
-```{r load-libraries, eval=TRUE, echo=TRUE}
+```{r setup}
 library(epiviz)
-library(dplyr)
-library(lubridate)
 ```
-
-## The lab_data dataset
-
-`lab_data` is a synthetic laboratory dataset included with epiviz for demonstration purposes. It contains simulated laboratory detection data with typical epidemiological variables:
-
-```{r explore-data, eval=TRUE, echo=TRUE}
-# Explore the structure of lab_data
-glimpse(epiviz::lab_data)
-```
-
-The dataset includes:
-- **Patient demographics**: `date_of_birth`, `sex`
-- **Laboratory information**: `organism_species_name`, `specimen_date`, `lab_code`
-- **Geographic data**: `local_authority_name`, `local_authority_code`, `region`
-
-## Example 1: Regional distribution of detections
-
-When analyzing laboratory surveillance data, we often want to understand the geographic distribution of detections. Here we'll create a simple column chart showing detections by region for a specific time period.
-
-### Prepare the data
-
-```{r prepare-regional-data, eval=TRUE, echo=TRUE}
-# Filter to a specific time period and aggregate by region
-regional_detections <- epiviz::lab_data %>%
-  filter(
-    specimen_date >= as.Date("2023-01-01"),
-    specimen_date <= as.Date("2023-01-31")
-  ) %>%
-  count(region, name = "detections") %>%
-  arrange(desc(detections)) %>%
-  slice(1:6) %>%  # Keep top 6 regions for readability
-  mutate(
-    # Handle long region names for better display
-    region = ifelse(region == "Yorkshire and Humber", 
-                   "Yorkshire and\nHumber", region)
-  )
-```
-
-### Create the visualization
-
-```{r regional-chart, fig.width=8, fig.height=6, eval=TRUE, echo=TRUE}
-col_chart(
-  dynamic = FALSE,  # Create static ggplot chart
-  params = list(
-    df = regional_detections,
-    x = "region",           # Variable for x-axis
-    y = "detections",       # Variable for y-axis
-    fill_colours = "#007C91",  # Single color for all bars
-    chart_title = "Laboratory detections by region (January 2023)",
-    x_axis_title = "Region",
-    y_axis_title = "Number of detections",
-    x_axis_label_angle = -45,  # Rotate labels for readability
-    show_gridlines = FALSE     # Remove grid lines for cleaner look
-  )
-)
-```
-
-**Interpretation**: This chart shows the regional distribution of laboratory detections in January 2023, with London having the highest number of detections.
-
-## Example 2: Temporal trends in detections
-
-Time series analysis is fundamental in epidemiological surveillance. Here we'll create a line chart showing monthly trends in detections over a two-year period.
-
-### Prepare the data
-
-```{r prepare-monthly-data, eval=TRUE, echo=TRUE}
-# Aggregate detections by month
-monthly_detections <- epiviz::lab_data %>%
-  filter(
-    specimen_date >= as.Date("2022-01-01"),
-    specimen_date <= as.Date("2023-12-31")
-  ) %>%
-  mutate(
-    specimen_month = floor_date(specimen_date, "month")
-  ) %>%
-  count(specimen_month, name = "detections")
-```
-
-### Create the visualization
-
-```{r monthly-line-chart, fig.width=8, fig.height=6, eval=TRUE, echo=TRUE}
-line_chart(
-  dynamic = FALSE,  # Create static ggplot chart
-  params = list(
-    dfr = monthly_detections,   # Note: use 'dfr' parameter for line_chart
-    x = "specimen_month",      # Date variable for x-axis
-    y = "detections",          # Count variable for y-axis
-    line_colour = c("#007C91"), # Color for the line (vector format)
-    line_type = c("solid")     # Line type
-  )
-)
-```
-
-**Interpretation**: This line chart reveals seasonal patterns in laboratory detections, with potential peaks and troughs throughout the two-year period.
-
-## Tips for getting started
-
-1. **Start with static charts**: Use `dynamic = FALSE` initially to create ggplot2 charts, then switch to `dynamic = TRUE` for interactive plotly charts when you need zooming, hovering, or filtering capabilities.
-
-2. **Filter your data**: The `lab_data` dataset is quite large. Always filter to specific time periods, regions, or organisms to create readable visualizations.
-
-3. **Check your data structure**: Use `glimpse()` or `str()` to understand your data before passing it to visualization functions.
-
-4. **Parameter naming**: Most functions use a `params` list to organize parameters. This keeps function calls clean and allows for easy parameter reuse.
-
-5. **Color consistency**: Use consistent color schemes across your visualizations. The package provides sensible defaults, but you can customize colors using the `*_colours` parameters.
-
-## Next steps
-
-- Explore the function-specific vignettes for detailed examples of each visualization type
-- Try setting `dynamic = TRUE` in the examples above to see interactive versions
-- Experiment with different time periods and filters to explore the `lab_data` dataset

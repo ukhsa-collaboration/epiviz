@@ -7,127 +7,238 @@
 line_chart(
   dynamic = FALSE,
   base = NULL,
-  params = list(df, x, y, ci = NULL, lower = NULL, upper = NULL, error_colour =
-    c("#f2c75c"), group_var, line_colour = c("blue"), line_type = "solid", width = 1,
-    title = NULL, x_label = NULL, x_label_angle = NULL, y_label = NULL, y_label_angle =
-    NULL, y_percent = FALSE, st_theme = NULL, add_points = FALSE, show_gridlines = FALSE,
-    show_axislines = TRUE, legend_title = NULL, legend_position = NULL, hline = NULL,
-    hline_colour = "red", hline_label = NULL),
-  ...
+  params = list(df = NULL, x = NULL, y = NULL, group_var = NULL, line_colours = "blue",
+    line_types = "solid", line_width = 1, add_points = FALSE, add_points_size = 1.5, ci =
+    NULL, ci_upper = NULL, ci_lower = NULL, ci_legend = TRUE, ci_legend_title =
+    "Confidence interval", ci_colours = "red", errorbar_width = NULL, y_sec_axis = FALSE,
+    y_sec_axis_no_shift = TRUE, y_sec_axis_percent_full = FALSE, chart_title = NULL,
+    chart_title_size = 13, chart_title_colour = "black", chart_footer = NULL,
+    chart_footer_size = 12, 
+     chart_footer_colour = "black", x_axis_title = NULL,
+    y_axis_title = NULL, x_axis_title_font_size = 11, y_axis_title_font_size = 11,
+    x_axis_label_angle = NULL, y_axis_label_angle = NULL, x_axis_label_font_size = 9,
+    y_axis_label_font_size = 9, x_axis_reverse = FALSE, y_percent = FALSE, x_limit_min =
+    NULL, x_limit_max = NULL, y_limit_min = NULL, y_limit_max = NULL, x_axis_break_labels
+    = NULL, y_axis_break_labels = NULL, x_axis_n_breaks = NULL, y_axis_n_breaks = NULL,
+    x_axis_date_breaks = NULL, st_theme = NULL, 
+     show_gridlines = TRUE,
+    show_axislines = TRUE, legend_title = "", legend_pos = "right", legend_font_size = 8,
+    legend_title_font_size = 8, hline = NULL, hline_colour = "black", hline_width = 0.5,
+    hline_type = "dashed", hline_label = NULL, hline_label_colour = "black", hover_labels
+    = NULL)
 )
 }
 \arguments{
-\item{dynamic}{A logical value. If \code{TRUE}, the line chart will be rendered as a Plotly object for interactivity.
-If \code{FALSE}, a static ggplot2 object will be returned.}
+\item{dynamic}{Logical indicating whether to produce a dynamic (plotly) output.
+Default is \code{FALSE}, which will return a static ggplot output.}
 
-\item{base}{A base plotly or ggplot2 object to add the line chart to. Default is \code{NULL}.}
+\item{base}{A base ggplot or plotly object that the output will be applied to. If
+\code{dynamic = TRUE} then \code{base} must be a plotly object, and if \code{dynamic = FALSE}
+then \code{base} must be a ggplot object.}
 
-\item{params}{A list containing the following elements:
-\itemize{
-\item \code{df} A data frame containing the data to be plotted.
-\item \code{x} A character string specifying the name of the column in \code{df} to be used for the x-axis.
-\item \code{y} A character string specifying the name of the column in \code{df} to be used for the y-axis.
-\item \code{group_var} A character string specifying the name of the column in \code{df} to be used for grouping the data.
-\item \code{ci} Optional. A character string specifying the column in \code{df} for confidence intervals.
-\item \code{lower} Optional. A character string specifying the column in \code{df} for lower bounds of confidence intervals.
-\item \code{upper} Optional. A character string specifying the column in \code{df} for upper bounds of confidence intervals.
-\item \code{error_colour} The color for error bars. Default is \verb{#f2c75c}.
-\item \code{line_colour} List of colours for lines. Default is \code{blue}.
-\item \code{line_type} Line type for single graph, or list of line types
-Permissable values: "solid", "dotted", "dashed", "longdash", "dotdash"
-\item \code{width} A numeric value specifying the width of the lines.
-\item \code{title} Optional. A character string specifying the title of the plot.
-\item \code{x_label} Optional. A character string specifying the label for the x-axis.
-\item \code{x_label_angle} Optional. A numeric value specifying the rotation angle for the x-axis labels.
-\item \code{y_label} Optional. A character string specifying the label for the y-axis.
-\item \code{y_label_angle} Optional. A numeric value specifying the rotation angle for the y-axis labels.
-\item \code{y_percent} Optional. A logical value. If \code{TRUE}, the y-axis will be scaled to percentages.
-\item \code{st_theme} Optional. A ggplot2 theme object to customize the style of the plot.
-\item \code{add_points} Optional. A logical value. If \code{TRUE}, points will be added to the line chart.
+\item{params}{A named list containing arguements used to create the plot.
+\describe{
+\item{df}{A data frame containing data used to create the line chart.}
+\item{x}{character, Name of the variable in \code{df} containing the values used
+to populate the x-axis.}
+\item{y}{character, Name of the variable in \code{df} containing the values used
+to populate the y-axis.}
+\item{group_var}{Name of the variable in df used to define separate groups of lines
+in the chart.}
+\item{line_colours}{Colour(s) of the lines to be plotted (default = \code{"blue"}).
+When \code{group_var} is provided, \code{line_colours} can be set as a
+character vector to define colours for each group. If a named character vector
+is provided where the names are values within \code{group_var}, then each colour
+will be mapped to its corresponding value.}
+\item{line_types}{Line type for the plotted lines. Permitted values:
+\code{"solid"}, \code{"dotted"}, \code{"dashed"}, \code{"longdash"}, \code{"dotdash"}.
+Default = \code{"solid"}. When \code{group_var} is provided, a vector of line types
+can be supplied to define a different type for each group.}
+\item{line_width}{Numeric, width of the plotted lines. Default = \code{1}.}
+\item{add_points}{Logical. If \code{TRUE}, points will be added to the line chart.
+Default = \code{FALSE}.}
+\item{add_points_size}{Numeric, size of the plotted points when \code{add_points = TRUE}.
+Default = \code{1.5}.}
+\item{ci}{Confidence interval. If \code{ci = "errorbar"} then confidence intervals
+will be plotted with each point as errorbars, and if \code{ci = "ribbon"} then
+confidence intervals will be added to the chart as a ribbon plot for each group.
+If \code{ci} is provided, then \code{ci_upper} and \code{ci_lower} must also be provided.}
+\item{ci_upper}{character, Name of the variable in df used as the upper confidence limit.
+Mandatory when \code{ci} is provided.}
+\item{ci_lower}{character, Name of the variable in df used as the lower confidence limit.
+Mandatory when \code{ci} is provided.}
+\item{ci_legend}{Logical indicating whether a separate legend should be included
+in the chart for confidence interval parameters. Only applies when \code{group_var}
+is provided. Defaults to \code{TRUE}.}
+\item{ci_legend_title}{Text to use as title for separate legend when \code{ci_legend = TRUE}.
+Default = \code{"Confidence interval"}.}
+\item{ci_colours}{Colour(s) used for plotting confidence intervals. When \code{ci =
+   "errorbar"} this will determine the colour of the plotted errorbars, when \code{ci =
+   "ribbon"} this will determine the colour of the plotted ribbons.}
+\item{errorbar_width}{Horizontal width of the plotted error bars when \code{ci =
+   "errorbar"}.}
+\item{y_sec_axis}{Logical to indicate whether data should be plotted on the
+secondary (right) y-axis. Default = \code{FALSE}.}
+\item{y_sec_axis_no_shift}{Forces the secondary y-axis scale to begin at 0. Default = \code{TRUE}.}
+\item{y_sec_axis_percent_full}{Forces the secondary y-axis scale to range from 0-100\\%
+when \code{y_percent = TRUE}}
+\item{chart_title}{Text to use as the chart title.}
+\item{chart_title_size}{Font size of chart title. Default = \code{13}.}
+\item{chart_title_colour}{Font colour of chart title. Default = \code{"black"}.}
+\item{chart_footer}{Text to use as chart footer.}
+\item{chart_footer_size}{Font size of chart footer. Default = \code{12}.}
+\item{chart_footer_colour}{Font colour of chart footer. Default = \code{"black"}.}
+\item{x_axis_title}{Text used for x-axis title. Defaults to name of x-variable if
+not stated.}
+\item{y_axis_title}{Text used for y-axis title. Defaults to name of y-variable if
+not stated.}
+\item{x_axis_title_font_size}{Font size of the x-axis title. Default = \code{11}.}
+\item{y_axis_title_font_size}{Font size of the y-axis title. Default = \code{11}.}
+\item{x_axis_label_angle}{Angle for x-axis label text.}
+\item{y_axis_label_angle}{Angle for y-axis label text.}
+\item{x_axis_label_font_size}{Font size for the x-axis tick labels. Default = \code{9}.}
+\item{y_axis_label_font_size}{Font size for the y-axis tick labels. Default = \code{9}.}
+\item{x_axis_reverse}{Reverses x-axis scale if \code{x_axis_reverse = TRUE}.}
+\item{y_percent}{Converts y-axis to percentage scale if \code{y_percent = TRUE}.}
+\item{x_limit_min}{Lower limit for the x-axis. Default used if not provided.}
+\item{x_limit_max}{Upper limit for the x-axis. Default used if not provided.}
+\item{y_limit_min}{Lower limit for the y-axis. Default used if not provided.}
+\item{y_limit_max}{Upper limit for the y-axis. Default used if not provided.}
+\item{x_axis_break_labels}{Vector of values to use for x-axis breaks. Defaults
+used if not provided.}
+\item{y_axis_break_labels}{Vector of values to use for y-axis breaks. Defaults
+used if not provided.}
+\item{x_axis_n_breaks}{Scales x-axis with approximately n breaks. Cannot be provided
+if \code{x_axis_break_labels} has also been provided.}
+\item{y_axis_n_breaks}{Scales y-axis with approximately n breaks. Cannot be used
+if \code{y_axis_break_labels} has also been provided.}
+\item{x_axis_date_breaks}{A string giving the distance between breaks like "2 weeks",
+or "10 years". Valid specifications are 'sec', 'min', 'hour', 'day', 'week',
+'month' or 'year', optionally followed by 's'. Matches ggplot scale_date() conventions.
+Cannot be used if \code{x_axis_break_labels} is also provided.}
+\item{st_theme}{Name of a ggplot theme to be applied to a static plot. Can only be provided
+when \code{dynamic = FALSE}.}
+\item{show_gridlines}{Logical to show chart gridlines. Default = \code{TRUE}.}
+\item{show_axislines}{Logical to show chart axis lines. Default = \code{TRUE}.}
+\item{legend_title}{Text used for legend title.}
+\item{legend_pos}{Position of the legend. Permitted values = c("top","bottom","right","left")}
+\item{legend_font_size}{Font size used in the legend. Default = \code{8}.}
+\item{legend_title_font_size}{Font size used for the legend title. Default = \code{8}.}
+\item{hline}{Adds horizontal line across the chart at the corresponding y-value. Multiple
+values may be provided as a vector to add multiple horizontal lines.}
+\item{hline_colour}{Colour of the horizontal lines if \code{hline} is provided. A vector of colours
+can be provided to colour individual hlines if multiple hlines have been provided. Default = \code{"black"}.}
+\item{hline_width}{Numerical width of the horizontal lines if \code{hline} is provided. A vector of numerical widths
+can be provided for individual hlines if multiple hlines have been provided. Default = \code{0.5}.}
+\item{hline_type}{Line style of the horizontal lines if \code{hline} is provided. A vector of line styles
+can be provided to style hlines if multiple hlines have been provided. Permitted values = c("solid", "dotted",
+"dashed", "longdash", "dotdash"). Default = \code{"dashed"}.}
+\item{hline_label}{Text to label the horizontal lines if \code{hline} is provided. A vector of text strings
+can be provided to label individual hlines if multiple hlines have been provided.}
+\item{hline_label_colour}{Colour of the horizontal line labels if \code{hline_label} is provided.
+A vector of colours can be provided to colour individual hline_labels if multiple hline_labels have been
+provided. Default = \code{"black"}.}
+\item{hover_labels}{string, Text to be used in the hover-over labels in a dynamic chart.
+Accepts html, use \code{'\%{x}'} to reference corresponding x-axis values
+and \code{'\%{y}'} to reference y-axis values.}
 }}
-
-\item{...}{Additional arguments passed to \code{geom_line} for static (ggplot2) plots
-or to \code{plot_ly}/\code{add_trace} for dynamic (Plotly) plots, allowing custom
-styling of the lines (e.g., \code{alpha}, \code{size}, \code{marker}, etc.).}
 }
 \value{
-A plotly or ggplot2 object representing the line chart.
+A ggplot or plotly object.
 }
 \description{
-This function generates a line chart from a data frame using specified x and y variables.
-Optionally, the plot can be rendered as an interactive Plotly object. The function also allows
-grouping of data based on a specified grouping variable.
+A function for producing either a static (ggplot) or dynamic (plotly)
+line chart.
 }
 \examples{
-library(dplyr)
+
+\dontrun{
+
+# Example 1: Basic line chart
+
 library(epiviz)
 
-# Import df lab_data from epiviz and do some manipulation before passing for the test
-test_df <- epiviz::lab_data
+# Summarise detections per month
+detections_per_month <- epiviz::lab_data |>
+  group_by(specimen_month = lubridate::floor_date(specimen_date, 'month')) |>
+  summarise(detections = n()) |>
+  ungroup()
 
-# Manipulating date within df
-test_df$specimen_date <- as.Date(test_df$specimen_date)
+# Create static line chart
+chart <- line_chart(
+  params = list(
+    df = detections_per_month,
+    x = "specimen_month",
+    y = "detections",
+    line_colours = "#007C91",
+    chart_title = "Detections per Month",
+    x_axis_title = "Month of detection",
+    y_axis_title = "Number of detections",
+    x_axis_label_angle = 45,
+    x_axis_date_breaks = "2 months"
+  )
+)
 
-# Setting start date and end date for aggregation
-start_date <- as.Date("2023-01-01")
-end_date <- as.Date("2023-12-31")
+chart
 
-# Summarization
-summarised_df <- test_df |>
-  group_by(organism_species_name, specimen_date) |>
-  summarize(count = n(), .groups = 'drop') |>
+
+
+# Example 2: Line chart with grouped data and confidence ribbon
+
+library(epiviz)
+
+# Define detections per month by species with error limits
+species_by_month <- epiviz::lab_data |>
+  group_by(specimen_month = lubridate::floor_date(specimen_date, 'month'),
+           organism_species_name) |>
+  summarise(detections = n()) |>
   ungroup() |>
-  filter(specimen_date >= start_date & specimen_date <= end_date)
+  rowwise() |>
+  mutate(lower_limit = detections - sample(10:50,1),
+         upper_limit = detections + sample(10:50,1)) |>
+  ungroup()
 
-# Ensure that summarised_df is a data frame
-summarised_df <- as.data.frame(summarised_df)
+# Define parameters
+species_params <- list(
+  df = species_by_month,
+  x = "specimen_month",
+  y = "detections",
+  group_var = "organism_species_name",
+  line_colours = c("#007C91", "#8A1B61", "#FF7F32"),
+  line_types = c("solid", "dashed", "dotted"),
+  add_points = TRUE,
+  chart_title = "Detections per Month by Species",
+  x_axis_title = "Month of detection",
+  y_axis_title = "Number of detections",
+  x_axis_label_angle = 45,
+  x_axis_date_breaks = "2 months",
+  ci = "ribbon",
+  ci_lower = "lower_limit",
+  ci_upper = "upper_limit",
+  ci_colours = c("#007C91", "#8A1B61", "#FF7F32"),
+  hline = c(450, 550),
+  hline_colour = c("blue", "red"),
+  hline_label = c("threshold 1", "threshold 2"),
+  hline_label_colour = c("blue", "red")
+)
 
- # Create params list
- params <- list(
-   df = summarised_df,  # Ensure this is correctly referencing the data frame
-   x = "specimen_date", # Ensure this matches the column name exactly
-   y = "count",         # Ensure this matches the column name exactly
-   group_var = "organism_species_name",  # Ensure this matches the column name exactly
-   line_colour = c("blue","green","orange"),
-   line_type = c("solid", "dotted", "dashed")
- )
- # Generate the line chart
-line_chart(params = params, dynamic = FALSE)
+# Create static and dynamic charts
+static_chart <- line_chart(params = species_params, dynamic = FALSE)
+dynamic_chart <- line_chart(params = species_params, dynamic = TRUE)
 
-# Generate the line chart
-result <- epiviz::line_chart(params = params, dynamic = FALSE)
+# View both simultaneously using shiny app
+library(shiny)
+library(plotly)
+ui <- fluidPage(
+  plotOutput('static_chart'),
+  plotlyOutput('dynamic_chart')
+)
+server <- function(input, output, session) {
+  output$static_chart <- renderPlot(static_chart)
+  output$dynamic_chart <- renderPlotly(dynamic_chart)
+}
+shinyApp(ui, server)
 
- # Import df lab_data from epiviz and do some manipulation before passing for the test
- test_df <- epiviz::lab_data
-
- # Manipulating date within df
- test_df$specimen_date <- as.Date(test_df$specimen_date)
-
- # Setting start date and end date for aggregation
- start_date <- as.Date("2023-01-01")
- end_date <- as.Date("2023-12-31")
-
- # Summarization
- summarised_df <- test_df |>
-   group_by(organism_species_name, specimen_date) |>
-   summarize(count = n(), .groups = 'drop') |>
-   ungroup() |>
-   filter(specimen_date >= start_date & specimen_date <= end_date)
-
- # Ensure that summarised_df is a data frame
- summarised_df <- as.data.frame(summarised_df)
-
- # Create params list
- params <- list(
-   df = summarised_df,  # Ensure this is correctly referencing the data frame
-   x = "specimen_date", # Ensure this matches the column name exactly
-   y = "count",         # Ensure this matches the column name exactly
-   group_var = "organism_species_name",  # Ensure this matches the column name exactly
-   line_colour = c("blue","green","orange"),
-   line_type = c("solid", "dotted", "dashed")
- )
-
- # Generate the line chart
- epiviz::line_chart(params = params, dynamic = TRUE)
+}
 
 }
