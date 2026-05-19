@@ -323,6 +323,10 @@ age_sex_pyramid <- function(
   }
 
   # CI checks for pre-grouped data
+  if (!is.null(params$ci) && params$ci == "errorbar" && params$grouped == FALSE) {
+    stop("Confidence intervals (ci = 'errorbar') are only supported when grouped = TRUE. ",
+         "Please provide pre-aggregated data with ci_lower and ci_upper columns.")
+  }
   if (!is.null(params$ci) && params$ci == "errorbar" && params$grouped == TRUE) {
     if (is.null(params$ci_lower))
       stop("Please provide 'ci_lower' when ci is specified and grouped = TRUE.")

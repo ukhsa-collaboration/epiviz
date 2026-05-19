@@ -41,7 +41,7 @@
 #'    Mandatory when \code{ci} is provided.}
 #'    \item{ci_legend}{Logical indicating whether a separate legend should be included
 #'    in the chart for confidence interval parameters. Only applies when \code{group_var}
-#'    is provided. Defaults to \code{FALSE}.}
+#'    is provided. Defaults to \code{TRUE}.}
 #'    \item{ci_legend_title}{Text to use as title for separate legend when \code{ci_legend = TRUE}.
 #'    Default = \code{"Confidence interval"}.}
 #'    \item{ci_colours}{Colour(s) used for plotting confidence intervals. When \code{ci =

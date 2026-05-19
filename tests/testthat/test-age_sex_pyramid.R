@@ -155,52 +155,52 @@ test_that("age_sex_pyramid produces a dynamic chart from pre-grouped data", {
 ### SECTION 3 - CONFIDENCE INTERVALS ############################################
 
 
-
-test_that("age_sex_pyramid produces a static chart with error bars (line list)", {
-
-  # Create params list
-  params <- list(
-    df = lab_data,
-    dob_var = "date_of_birth",
-    sex_var = "sex",
-    age_breakpoints = c(0, 5, 19, 65, Inf),
-    ci = "errorbar",
-    ci_colours = "red",
-    errorbar_width = 0.5,
-    chart_title = "Age-Sex Pyramid with CI"
-  )
-
-  # Create static pyramid
-  result <- age_sex_pyramid(params = params, dynamic = FALSE)
-
-  # Check that the output is a ggplot object
-  expect_true(inherits(result, "ggplot"))
-
-})
-
-
-
-test_that("age_sex_pyramid produces a dynamic chart with error bars (line list)", {
-
-  # Create params list
-  params <- list(
-    df = lab_data,
-    dob_var = "date_of_birth",
-    sex_var = "sex",
-    age_breakpoints = c(0, 5, 19, 65, Inf),
-    ci = "errorbar",
-    ci_colours = "red",
-    errorbar_width = 0.5,
-    chart_title = "Age-Sex Pyramid with CI"
-  )
-
-  # Create dynamic pyramid
-  result <- age_sex_pyramid(params = params, dynamic = TRUE)
-
-  # Check that the output is a plotly object
-  expect_true(inherits(result, "plotly"))
-
-})
+#### REDUNDANT TESTS, CI LIMITS ONLY POSSIBLE WITH PRE-AGGREGATED DATA
+# test_that("age_sex_pyramid produces a static chart with error bars (line list)", {
+#
+#   # Create params list
+#   params <- list(
+#     df = lab_data,
+#     dob_var = "date_of_birth",
+#     sex_var = "sex",
+#     age_breakpoints = c(0, 5, 19, 65, Inf),
+#     ci = "errorbar",
+#     ci_colours = "red",
+#     errorbar_width = 0.5,
+#     chart_title = "Age-Sex Pyramid with CI"
+#   )
+#
+#   # Create static pyramid
+#   result <- age_sex_pyramid(params = params, dynamic = FALSE)
+#
+#   # Check that the output is a ggplot object
+#   expect_true(inherits(result, "ggplot"))
+#
+# })
+#
+#
+#
+# test_that("age_sex_pyramid produces a dynamic chart with error bars (line list)", {
+#
+#   # Create params list
+#   params <- list(
+#     df = lab_data,
+#     dob_var = "date_of_birth",
+#     sex_var = "sex",
+#     age_breakpoints = c(0, 5, 19, 65, Inf),
+#     ci = "errorbar",
+#     ci_colours = "red",
+#     errorbar_width = 0.5,
+#     chart_title = "Age-Sex Pyramid with CI"
+#   )
+#
+#   # Create dynamic pyramid
+#   result <- age_sex_pyramid(params = params, dynamic = TRUE)
+#
+#   # Check that the output is a plotly object
+#   expect_true(inherits(result, "plotly"))
+#
+# })
 
 
 
