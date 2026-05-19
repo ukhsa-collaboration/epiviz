@@ -498,13 +498,17 @@ epi_timeline <- function(
   }
 
   # Event shapes and colours
-  eventplot_shape <- c("Date of death" = 23,
-                       "Date of positive specimen" = 21,
-                       "Date of negative specimen" = 24)
+  event_order <- c("Date of positive specimen",
+                   "Date of negative specimen",
+                   "Date of death")
 
-  eventplot_colour <- c("Date of death" = death_colour,
-                        "Date of positive specimen" = positive_specimen_colour,
-                        "Date of negative specimen" = negative_specimen_colour)
+  eventplot_shape <- c("Date of positive specimen" = 21,
+                       "Date of negative specimen" = 24,
+                       "Date of death" = 23)
+
+  eventplot_colour <- c("Date of positive specimen" = positive_specimen_colour,
+                        "Date of negative specimen" = negative_specimen_colour,
+                        "Date of death" = death_colour)
 
 
   # ============================================================================
@@ -592,7 +596,8 @@ epi_timeline <- function(
   patient_levels <- levels(dftl[[patient]])
   if (!is.null(dftl_events)) {
     dftl_events <- dftl_events |>
-      mutate(!!patient := factor(.data[[patient]], levels = patient_levels))
+      mutate(!!patient := factor(.data[[patient]], levels = patient_levels),
+             event = factor(event, levels = event_order))
   }
   if (!is.null(dftl_sym)) {
     dftl_sym <- dftl_sym |>
@@ -620,12 +625,17 @@ epi_timeline <- function(
                      linewidth = bar_height, na.rm = TRUE) +
         scale_color_manual(values = colplot) +
         ylab("") +
-        guides(colour = guide_legend(nrow = ceiling(nloc / 10))) +
+        guides(colour = guide_legend(order = 1,
+                                     nrow = ceiling(nloc / 10))) +
         theme_bw() +
         theme(
           legend.text = element_text(size = legend_font_size),
           legend.position = "top",
           legend.direction = "horizontal",
+          legend.box = "vertical",
+          legend.spacing.y = grid::unit(0, "pt"),
+          legend.box.spacing = grid::unit(0, "pt"),
+          legend.margin = ggplot2::margin(0, 0, 0, 0),
           legend.title = element_blank(),
           legend.key = element_blank(),
           plot.caption = element_text(size = case_def_font_size, hjust = 0),
@@ -702,7 +712,18 @@ epi_timeline <- function(
                             stroke = 0.5,
                             na.rm = TRUE) +
           scale_shape_manual(values = eventplot_shape) +
-          scale_fill_manual(values = eventplot_colour)
+          scale_fill_manual(values = eventplot_colour) +
+          guides(
+            shape = guide_legend(order = 2,
+                                 breaks = event_order,
+                                 nrow = 1,
+                                 override.aes = list(
+                                   fill = unname(eventplot_colour[event_order]),
+                                   colour = "gray30",
+                                   size = event_size
+                                 )),
+            fill = "none"
+          )
       }
 
       # Add case definition caption
@@ -731,6 +752,50 @@ epi_timeline <- function(
 
     # ==== DYNAMIC (plotly) ====
 
+    # Build a static reference chart to harvest exact measurements
+    gg_ref <- ggplot(data = dftl) +
+      geom_segment(aes(x = .data[[start_date]],
+                       xend = .data[[end_date]],
+                       y = .data[[patient]],
+                       yend = .data[[patient]]),
+                   linewidth = bar_height, na.rm = TRUE)
+    if (!is.null(x_axis_break_labels)) {
+      gg_ref <- gg_ref + scale_x_datetime(
+        breaks = as.POSIXct(as.character(x_axis_break_labels), tz = "UTC"),
+        labels = date_format("%d-%m-%Y"),
+        limits = c(date_range_start, date_range_end),
+        expand = expansion(add = c(xstart_expand * 86400, xend_expand * 86400)))
+    } else {
+      gg_ref <- gg_ref + scale_x_datetime(
+        date_breaks = x_axis_date_breaks,
+        date_minor_breaks = x_axis_minor_date_breaks,
+        labels = date_format("%d-%m-%Y"),
+        limits = c(date_range_start, date_range_end),
+        expand = expansion(add = c(xstart_expand * 86400, xend_expand * 86400)))
+    }
+    gg_built <- ggplot_build(gg_ref)
+
+    # Count patients for dynamic bar-width calculation via onRender
+    n_patients <- length(levels(dftl[[patient]]))
+
+    # Ratio of bar_height to symptom_height for proportional scaling
+    symptom_ratio <- symptom_height / bar_height
+
+    # Convert R colour names to hex for plotly compatibility
+    major_grid_hex <- do.call(rgb, as.list(c(col2rgb(major_gridline_colour) / 255, 1)))
+    minor_grid_hex <- do.call(rgb, as.list(c(col2rgb(minor_gridline_colour) / 255, 1)))
+
+    # Extract x-axis range from the ggplot build for exact parity
+    gg_x_range <- gg_built$layout$panel_params[[1]]$x.range
+    plotly_x_range <- c(as.POSIXct(gg_x_range[1], origin = "1970-01-01", tz = "UTC"),
+                        as.POSIXct(gg_x_range[2], origin = "1970-01-01", tz = "UTC"))
+
+    # Extract major and minor tick positions from the ggplot build
+    gg_major_breaks <- gg_built$layout$panel_params[[1]]$x.sec$breaks
+    gg_major_breaks <- gg_major_breaks[!is.na(gg_major_breaks)]
+    gg_minor_breaks <- gg_built$layout$panel_params[[1]]$x.sec$minor_breaks
+    gg_minor_breaks <- gg_minor_breaks[!is.na(gg_minor_breaks)]
+
     # Build plotly traces for location segments
     p <- plot_ly()
 
@@ -755,13 +820,16 @@ epi_timeline <- function(
                format(row[[end_date]], "%d-%m-%Y"))
       }
 
+      # Add intermediate points so hover triggers across the full segment, not just ends
+      x_hover <- seq(row[[start_date]], row[[end_date]], length.out = 25)
+
       p <- p |>
         add_trace(
-          x = c(row[[start_date]], row[[end_date]]),
-          y = c(pat, pat),
+          x = x_hover,
+          y = rep(pat, length(x_hover)),
           type = "scatter",
           mode = "lines",
-          line = list(width = bar_height * 3, color = loc_colour),
+          line = list(width = bar_height, color = loc_colour),
           legendgroup = loc,
           name = loc,
           showlegend = show_legend,
@@ -777,13 +845,16 @@ epi_timeline <- function(
         row <- dftl_sym[i, ]
         pat <- as.character(row[[patient]])
 
+        # Add intermediate points so hover triggers across the full symptom segment
+        x_hover <- seq(row[[sym_onset_date]], row[[sym_end_date]], length.out = 25)
+
         p <- p |>
           add_trace(
-            x = c(row[[sym_onset_date]], row[[sym_end_date]]),
-            y = c(pat, pat),
+            x = x_hover,
+            y = rep(pat, length(x_hover)),
             type = "scatter",
             mode = "lines",
-            line = list(width = symptom_height * 3, color = symptom_colour),
+            line = list(width = symptom_height, color = symptom_colour),
             legendgroup = "Symptoms",
             name = "Symptoms",
             showlegend = !sym_legend_added,
@@ -798,11 +869,11 @@ epi_timeline <- function(
 
     # Add events
     if (!is.null(dftl_events) && nrow(dftl_events) > 0) {
-      event_types <- unique(dftl_events$event)
+      event_types <- event_order[event_order %in% as.character(unique(dftl_events$event))]
 
-      plotly_event_shapes <- c("Date of death" = "diamond",
-                               "Date of positive specimen" = "circle",
-                               "Date of negative specimen" = "triangle-up")
+      plotly_event_shapes <- c("Date of positive specimen" = "circle",
+                               "Date of negative specimen" = "triangle-up",
+                               "Date of death" = "diamond")
 
       for (evt in event_types) {
         evt_data <- dftl_events |> filter(event == evt)
@@ -822,7 +893,7 @@ epi_timeline <- function(
               symbol = evt_shape,
               line = list(color = "gray30", width = 1)
             ),
-            legendgroup = evt,
+            legend = "legend2",
             name = evt,
             showlegend = TRUE,
             hovertext = paste0("<b>", evt_data[[patient]], "</b><br>",
@@ -831,17 +902,6 @@ epi_timeline <- function(
             hoverinfo = "text"
           )
       }
-    }
-
-    # Determine x-axis dtick for plotly
-    x_dtick <- NULL
-    if (!is.null(x_axis_break_labels)) {
-      x_tickvals <- x_axis_break_labels
-    } else if (!is.null(x_axis_date_breaks)) {
-      x_dtick <- datebreak_to_d3(x_axis_date_breaks)
-      x_tickvals <- NULL
-    } else {
-      x_tickvals <- NULL
     }
 
     # Determine plotly x-axis label angle
@@ -859,22 +919,49 @@ epi_timeline <- function(
     title_font <- list(family = chart_font, size = chart_title_size, color = chart_title_colour)
     footer_font <- list(family = chart_font, size = chart_footer_size, color = chart_footer_colour)
 
+    # Build tick values from ggplot-extracted breaks for exact parity
+    plotly_major_tickvals <- as.POSIXct(gg_major_breaks, origin = "1970-01-01", tz = "UTC")
+    plotly_minor_tickvals <- as.POSIXct(gg_minor_breaks, origin = "1970-01-01", tz = "UTC")
+
     # Layout
     layout_args <- list(
       p = p,
       xaxis = list(
         type = "date",
-        range = c(as.character(date_range_start), as.character(date_range_end)),
+        range = c(as.character(plotly_x_range[1]),
+                  as.character(plotly_x_range[2])),
         tickformat = "%d-%m-%Y",
         tickangle = plotly_xlabang,
         tickfont = list(size = x_axis_label_font_size),
-        gridcolor = major_gridline_colour,
+        tickmode = "array",
+        tickvals = plotly_major_tickvals,
+        gridcolor = major_grid_hex,
+        griddash = "dash",
+        gridwidth = 1,
         showgrid = TRUE,
+        ticks = "outside",
+        ticklen = 5,
+        tickcolor = "black",
+        showline = TRUE,
+        linecolor = "black",
+        linewidth = 1,
+        mirror = TRUE,
         title = ""
       ),
       yaxis = list(
         title = "",
         tickfont = list(size = y_axis_label_font_size),
+        gridcolor = major_grid_hex,
+        griddash = "dash",
+        gridwidth = 1,
+        showgrid = TRUE,
+        showline = TRUE,
+        linecolor = "black",
+        linewidth = 1,
+        mirror = TRUE,
+        ticks = "outside",
+        ticklen = 5,
+        tickcolor = "black",
         categoryorder = "array",
         categoryarray = levels(dftl[[patient]])
       ),
@@ -886,18 +973,18 @@ epi_timeline <- function(
         yanchor = "bottom",
         font = list(size = legend_font_size)
       ),
+      legend2 = list(
+        orientation = "h",
+        x = 0.5,
+        xanchor = "center",
+        y = 1.01,
+        yanchor = "bottom",
+        font = list(size = legend_font_size)
+      ),
       margin = list(t = 80, b = 80),
       plot_bgcolor = "white",
       paper_bgcolor = "white"
     )
-
-    # Add dtick or tickvals
-    if (!is.null(x_dtick)) {
-      layout_args$xaxis$dtick <- x_dtick
-    }
-    if (!is.null(x_tickvals)) {
-      layout_args$xaxis$tickvals <- x_tickvals
-    }
 
     # Add title
     if (!is.null(chart_title)) {
@@ -945,6 +1032,48 @@ epi_timeline <- function(
     }
 
     p <- do.call(layout, layout_args)
+
+    # Add minor x-axis gridlines as explicit shapes (dotted vertical lines)
+    # since plotly's minor axis config may not render reliably across versions
+    if (length(plotly_minor_tickvals) > 0) {
+      minor_shapes <- lapply(plotly_minor_tickvals, function(tv) {
+        list(
+          type = "line",
+          x0 = as.character(tv), x1 = as.character(tv),
+          y0 = 0, y1 = 1,
+          xref = "x", yref = "paper",
+          line = list(color = "#EBEBEB", width = 0.5, dash = "solid"),
+          layer = "below"
+        )
+      })
+      p <- layout(p, shapes = minor_shapes)
+    }
+
+    # Dynamically size bar widths to match static ggplot rendering.
+    # Plotly line width is in pixels and fixed, while ggplot linewidth scales
+    # with the plot area. onRender calculates the correct pixel width from
+    # the actual rendered plot height and number of patients, keeping bar
+    # thickness consistent at any display size and matching the static output.
+    p <- htmlwidgets::onRender(p, sprintf("
+      function(el) {
+        var plotHeight = el._fullLayout._size.h;
+        var nPatients  = %d;
+        var barFrac    = %f;
+        var symFrac    = %f;
+        var barWidth   = barFrac * plotHeight / nPatients;
+        var symWidth   = symFrac * plotHeight / nPatients;
+        var barIdx = []; var symIdx = [];
+        el.data.forEach(function(trace, i) {
+          if (trace.mode === 'lines' && trace.legendgroup === 'Symptoms') {
+            symIdx.push(i);
+          } else if (trace.mode === 'lines') {
+            barIdx.push(i);
+          }
+        });
+        if (barIdx.length > 0) Plotly.restyle(el, {'line.width': barWidth}, barIdx);
+        if (symIdx.length > 0) Plotly.restyle(el, {'line.width': symWidth}, symIdx);
+      }
+    ", n_patients, bar_height / 10, symptom_height / 10))
 
     return(p)
 
