@@ -31,7 +31,7 @@ Before using `llm_interpret()`, set provider-agnostic environment variables. The
 Set these in your `.Renviron` file or R session:
 
 ```r
-# Provider: one of "openai", "gemini", or "anthropic"
+# Provider: one of "openai", "gemini", "anthropic", or "openshiftai"
 Sys.setenv(LLM_PROVIDER = "openai")
 
 # API key for the chosen provider
@@ -52,6 +52,32 @@ if (Sys.getenv("LLM_PROVIDER") != "" && Sys.getenv("LLM_API_KEY") != "" && Sys.g
   cat("Please set LLM_PROVIDER, LLM_API_KEY and LLM_MODEL\n")
 }
 ```
+
+### Self-hosted and internal deployments
+
+Some organisations host their own models rather than sending data to a commercial
+API. This matters when the data is sensitive and must not leave the internal
+network. The `"openshiftai"` provider targets an internally hosted,
+OpenAI-compatible `/v1/completions` endpoint and requires one extra variable,
+`LLM_URL`:
+
+```r
+Sys.setenv(LLM_PROVIDER = "openshiftai")
+Sys.setenv(LLM_URL = "https://your-internal-endpoint")
+Sys.setenv(LLM_MODEL = "your-model-identifier")
+Sys.setenv(LLM_API_KEY = "your-bearer-token")
+```
+
+Obtain the endpoint URL, model identifier, and token from the administrators who
+operate your deployment. Keep them in a `.Renviron` file that is excluded from
+version control rather than hard-coding them into analysis scripts.
+
+Two constraints apply to this provider:
+
+- It reaches the endpoint directly over `httr2`, so it only works from a machine
+  with network access to that endpoint.
+- It accepts data frames only. Passing a ggplot object raises an error, because
+  the completions endpoint is text-only. Pass the underlying data frame instead.
 
 ## Example 1: Interpreting an epidemic curve
 
