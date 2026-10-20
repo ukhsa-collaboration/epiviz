@@ -350,17 +350,21 @@ llm_interpret <- function(input,
           httr2::req_body_json(list(
             model       = model,
             prompt      = full_prompt,
-            max_tokens  = max(300L, ceiling(word_limit * 3L)),
+            # This model reasons at length before answering, and that reasoning
+            # shares the budget, so leave headroom or the answer never arrives.
+            max_tokens  = max(800L, ceiling(word_limit * 6L)),
             temperature = 0.1
           )) |>
           httr2::req_timeout(timeout) |>
           httr2::req_perform()
         choice <- httr2::resp_body_json(resp)$choices[[1]]
-        raw_text <- choice$text
+        # Strip the reasoning preamble first: trimming beforehand can cut back
+        # past the marker and expose it.
+        raw_text <- .parse_openshift_answer(choice$text)
         if (identical(choice$finish_reason, "length")) {
           raw_text <- .trim_incomplete_sentence(raw_text)
         }
-        return(finalise(.parse_openshift_answer(raw_text)))
+        return(finalise(raw_text))
       }, error = function(e) {
         stop(.openshift_error_hint(e, request_url, timeout), call. = FALSE)
       })

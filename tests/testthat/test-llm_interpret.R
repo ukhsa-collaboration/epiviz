@@ -227,6 +227,31 @@ test_that("llm_interpret trims truncated openshiftai responses", {
                "Cases peaked in July.")
 })
 
+test_that("llm_interpret never exposes reasoning when truncation lands mid-answer", {
+  withr::local_envvar(c(
+    LLM_PROVIDER = "openshiftai",
+    LLM_API_KEY  = "fake-bearer-token",
+    LLM_MODEL    = "test-model",
+    LLM_URL      = "https://fake-openshift-endpoint"
+  ))
+
+  # The answer after the marker has no sentence break, so trimming before
+  # parsing would delete the marker and leak the reasoning preamble.
+  fake_body <- list(choices = list(list(
+    text = paste0("We need to interpret the data. Let's analyze.",
+                  "assistantfinalCases rose steadily in the"),
+    finish_reason = "length"
+  )))
+  mockery::stub(llm_interpret, "httr2::req_perform",
+                function(...) structure(list(), class = "httr2_response"))
+  mockery::stub(llm_interpret, "httr2::resp_body_json", function(...) fake_body)
+
+  result <- llm_interpret(data.frame(month = "2023-07", cases = 1))
+  expect_false(grepl("We need to", result))
+  expect_false(grepl("Let's analyze", result))
+  expect_equal(result, "Cases rose steadily in the")
+})
+
 # =============================================================================
 # Data governance guards
 # =============================================================================
