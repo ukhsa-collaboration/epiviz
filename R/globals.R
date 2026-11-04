@@ -66,5 +66,18 @@ utils::globalVariables(c(
   "rolling_average_line_width", "cumulative_sum",
   "cumulative_sum_line_legend_label", "cumulative_sum_line_width",
   "cumulative_sum_line_axis_title", "rolling_average_line_colour",
-  "cumulative_sum_line_colour", "hover_labels"
+  "cumulative_sum_line_colour", "hover_labels",
+
+  # For point_map
+  "lat", "long", "Lat", "Long", "Colour", "Size", "Label", "Popup",
+  "point_colours", "point_opacity", "point_stroke", "point_stroke_colour",
+  "point_stroke_weight", "point_size",
+  "point_size_range", "popup_col", "point_labels",
+  "cluster", "cluster_max_radius", "points_group", "basemaps",
+  "layers_control_pos", "measure_tool", "measure_units", "size_legend",
+  "size_legend_sizes", "size_legend_labels", "size_legend_title",
+  "size_legend_pos", "map_title", "map_title_size", "map_title_colour",
+  "map_footer", "map_footer_size", "map_footer_colour", "legend_title",
+  "legend_pos", "legend_max_height", "map_zoom", "border_shape_name", "border_code_col",
+  "border_areaname", "colour_var", "colour_type", "chart_font"
 ))

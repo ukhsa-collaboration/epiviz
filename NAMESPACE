@@ -7,6 +7,7 @@ export(epi_map)
 export(line_chart)
 export(llm_interpret)
 export(point_chart)
+export(point_map)
 import(ISOweek)
 import(RColorBrewer)
 import(classInt)
@@ -27,13 +28,17 @@ import(stringr)
 import(tidyr)
 importFrom(assertthat,not_empty)
 importFrom(graphics,box)
-importFrom(httr2,req_body_json)
-importFrom(httr2,req_headers)
-importFrom(httr2,req_perform)
-importFrom(httr2,req_timeout)
-importFrom(httr2,request)
-importFrom(httr2,resp_body_json)
+importFrom(httr2,
+  req_body_json,
+  req_headers,
+  req_perform,
+  req_timeout,
+  request,
+  resp_body_json
+)
 importFrom(jsonlite,toJSON)
-importFrom(lifecycle,badge)
-importFrom(lifecycle,signal_stage)
+importFrom(lifecycle,
+  badge,
+  signal_stage
+)
 importFrom(rlang,":=")
