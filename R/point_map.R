@@ -392,9 +392,7 @@ point_map <- function (params = list(
   ##### DEFINE MAP DATA
 
   # Assign 'Lat' and 'Long' columns to dataframe
-  df <- df |>
-    mutate(Lat = get({{lat}}),
-           Long = get({{long}}))
+  df[c("Lat", "Long")] <- list(df[[lat]], df[[long]])
 
   # Assign 'Colour' column if colour_var supplied, and resolve whether it should
   # be treated as continuous or discrete
