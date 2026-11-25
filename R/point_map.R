@@ -569,7 +569,13 @@ point_map <- function (params = list(
       names(group_palette) <- group_levels
     }
 
-    colour_pal <- leaflet::colorFactor(group_palette, domain = df$Colour)
+    if (!all(as.character(group_levels) %in% names(group_palette))) {
+      stop("Named point_colours must include a colour for every observed group in colour_var")
+    }
+    group_palette <- unname(group_palette[as.character(group_levels)])
+    colour_pal <- leaflet::colorFactor(group_palette, domain = df$Colour,
+                                       levels = as.character(group_levels),
+                                       ordered = TRUE)
     point_colour_values <- colour_pal(df$Colour)
 
   } else if (!is.null(colour_var)) {
