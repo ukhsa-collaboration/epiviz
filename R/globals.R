@@ -78,6 +78,6 @@ utils::globalVariables(c(
   "size_legend_sizes", "size_legend_labels", "size_legend_title",
   "size_legend_pos", "map_title", "map_title_size", "map_title_colour",
   "map_footer", "map_footer_size", "map_footer_colour", "legend_title",
-  "legend_pos", "legend_max_height", "map_zoom", "border_shape_name", "border_code_col",
+  "legend_pos", "legend_scrollable", "legend_max_height", "map_zoom", "border_shape_name", "border_code_col",
   "border_areaname", "colour_var", "colour_type", "chart_font"
 ))
