@@ -705,8 +705,8 @@ point_map <- function (params = list(
       paste0(
         "<div style='display:flex;align-items:center;margin-bottom:4px;",
         "font-size:11px;font-family:", chart_font, ";'>",
-        "<div style='width:", sz, "px;height:", sz, "px;background-color:#A9A9A9;",
-        "border-radius:50%;border:1px solid #707070;margin-right:6px;'></div>",
+        "<div style='width:", 2 * sz, "px;height:", 2 * sz, "px;background-color:#A9A9A9;",
+        "box-sizing:content-box;flex-shrink:0;border-radius:50%;border:1px solid #707070;margin-right:6px;'></div>",
         "<span>", lab, "</span></div>"
       )
     }, size_legend_sizes, size_legend_labels)
