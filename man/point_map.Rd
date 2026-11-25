@@ -5,12 +5,13 @@
 \title{Point Map}
 \usage{
 point_map(
+  dynamic = TRUE,
   params = list(df = NULL, lat = NULL, long = NULL, colour_var = NULL, colour_type =
-    "auto", point_colours = NULL, point_opacity = 0.9, point_stroke = TRUE,
-    point_stroke_colour = "black", point_stroke_weight = 0.5, point_size = 6,
-    point_size_range = c(4, 20), popup_col = NULL, point_labels = NULL, cluster = FALSE,
-    cluster_max_radius = NULL, points_group = "Cases", basemaps = c(OpenStreetMap =
-    "OpenStreetMap"), layers_control_pos = "bottomleft", measure_tool = FALSE,
+    "auto", point_colours = NULL, point_opacity = 0.9, point_border = TRUE,
+    point_border_colour = "black", point_border_weight = 0.5, point_size = 6,
+    point_size_range = c(4, 20), click_popups_col = NULL, point_labels = NULL, cluster =
+    FALSE, cluster_max_radius = NULL, points_group = "Cases", basemaps = c(OpenStreetMap
+    = "OpenStreetMap"), layers_control_pos = "bottomleft", measure_tool = FALSE,
     measure_units = "kilometers", size_legend = FALSE, 
      size_legend_sizes = NULL,
     size_legend_labels = NULL, size_legend_title = "", size_legend_pos = "bottomleft",
@@ -21,6 +22,10 @@ point_map(
 )
 }
 \arguments{
+\item{dynamic}{Logical indicating whether to produce a dynamic (leaflet) output.
+Default is \code{TRUE}, which will return an interactive leaflet output.
+Set to \code{FALSE} for a static ggplot output.}
+
 \item{params}{A named list containing arguements used in map.
 \describe{
 \item{df}{\strong{Mandatory.} Data frame containing the point locations
@@ -52,54 +57,68 @@ and automatically expanded to the required number of colours. Defaults to the
 RColorBrewer "Blues" palette when not supplied.}
 \item{point_opacity}{Numeric value between 0 and 1 to determine point opacity.
 Default = \code{0.9}.}
-\item{point_stroke}{Logical to draw a border around each point. Default =
+\item{point_border}{Logical to draw a border around each point. Default =
 \code{TRUE}.}
-\item{point_stroke_colour}{Colour of the point border when \code{point_stroke =
+\item{point_border_colour}{Colour of the point border when \code{point_border =
    TRUE}. Default = \code{"black"}.}
-\item{point_stroke_weight}{Numeric line weight of the point border when
-\code{point_stroke = TRUE}. Default = \code{0.5}.}
-\item{point_size}{Size of the plotted points. If supplied as a number, all
-points will be plotted with this size. If supplied as the name of a numeric
-variable within df, then the size of each point will be scaled relative to
-the value of that variable (a bubble map). Default = \code{6}.}
+\item{point_border_weight}{Numeric line weight of the point border when
+\code{point_border = TRUE}. Default = \code{0.5}.}
+\item{point_size}{Size of the plotted points (leaflet radius in pixels). If
+supplied as a number, all points will be plotted with this size. If supplied
+as the name of a numeric variable within df, then the size of each point will
+be scaled relative to the value of that variable (a bubble map); points with a
+missing size value are plotted at the minimum of \code{point_size_range} with
+a warning. In static maps sizes are halved to approximate the leaflet pixel
+radius. Default = \code{6}.}
 \item{point_size_range}{Numeric vector of length 2, giving the minimum and
 maximum plotted size of points when \code{point_size} is a variable name.
 Default = \code{c(4, 20)}.}
-\item{popup_col}{Name of a variable in df containing pre-built html popup
-content to display when a point is clicked. Default = \code{NULL}.}
-\item{point_labels}{Name of a variable in df containing text labels to apply
-as hover-labels for each point. Accepts html to format the output labels.
-Default = \code{NULL}.}
-\item{cluster}{Logical to cluster nearby points together. Default =
-\code{FALSE}.}
-\item{cluster_max_radius}{Numeric, the maximum radius (in pixels) that a
-cluster's "territory" can be when \code{cluster = TRUE}. Uses the leaflet
-default of 80 if not supplied.}
-\item{points_group}{Name used for the points layer group, used in
-\code{addLayersControl} when more than one basemap is provided. Default =
-\code{"Cases"}.}
-\item{basemaps}{Named character vector of leaflet provider tile IDs to use as
-base layers (e.g. \code{c("Uncluttered" = "Esri.WorldTopoMap", "Detailed" =
-   "OpenStreetMap")}). Names are used as the base layer labels in the layer
-control. When more than one basemap is supplied, a layer control is
-automatically added. Default = \code{c(OpenStreetMap = "OpenStreetMap")}.}
-\item{layers_control_pos}{Position of the basemap layer control. Default =
-\code{"bottomleft"}.}
-\item{measure_tool}{Logical to add a distance-measuring tool to the map.
+\item{click_popups_col}{Dynamic only. Name of a variable in df containing
+pre-built html popup content to display when a point is clicked. Default =
+\code{NULL}.}
+\item{point_labels}{Dynamic only. Name of a variable in df containing text
+labels to apply as hover-labels for each point. Accepts html to format the
+output labels. Default = \code{NULL}.}
+\item{cluster}{Dynamic only. Logical to cluster nearby points together.
 Default = \code{FALSE}.}
-\item{measure_units}{Units used for the measuring tool when \code{measure_tool
-   = TRUE}. Default = \code{"kilometers"}.}
-\item{size_legend}{Logical to add a custom html legend illustrating point
-sizes (e.g. to describe a categorical sizing choice that isn't captured by
-\code{colour_var}). Requires \code{size_legend_sizes} and
-\code{size_legend_labels} to be provided. Default = \code{FALSE}.}
+\item{cluster_max_radius}{Dynamic only. Numeric, the maximum radius (in
+pixels) that a cluster's "territory" can be when \code{cluster = TRUE}. Uses
+the leaflet default of 80 if not supplied.}
+\item{points_group}{Dynamic only. Name used for the points layer group, used
+in \code{addLayersControl} when more than one basemap is provided. Default =
+\code{"Cases"}.}
+\item{basemaps}{Named character vector of provider tile IDs to use as base
+layers (e.g. \code{c("Uncluttered" = "Esri.WorldGrayCanvas", "Detailed" =
+   "OpenStreetMap")}). In dynamic maps, names are used as the base layer labels
+in the layer control, and when more than one basemap is supplied a layer
+control is automatically added. Static maps only use the first basemap, which
+must be one of \code{names(maptiles::get_providers())}; the map is then drawn
+in web mercator (EPSG:3857) with the tile credit in the bottom-right corner.
+\code{"OpenStreetMap"} and \code{"Esri.WorldTopoMap"} work well for static
+maps; \code{CartoDB} providers may show an "API key required" watermark.
+If the tiles can't be downloaded (e.g. offline), the static map is drawn
+without them with a warning. Use \code{basemaps = NULL} for no basemap.
+Default = \code{c(OpenStreetMap = "OpenStreetMap")}.}
+\item{layers_control_pos}{Dynamic only. Position of the basemap layer control.
+Default = \code{"bottomleft"}.}
+\item{measure_tool}{Dynamic only. Logical to add a distance-measuring tool to
+the map. Default = \code{FALSE}.}
+\item{measure_units}{Dynamic only. Units used for the measuring tool when
+\code{measure_tool = TRUE}. Default = \code{"kilometers"}.}
+\item{size_legend}{Dynamic only. Logical to add a custom html legend
+illustrating point sizes (e.g. to describe a categorical sizing choice that
+isn't captured by \code{colour_var}). Requires \code{size_legend_sizes} and
+\code{size_legend_labels} to be provided. In static maps, a size legend is
+added automatically when \code{point_size} is a variable name. Default =
+\code{FALSE}.}
 \item{size_legend_sizes}{\strong{Mandatory if \code{size_legend = TRUE}.}
 Numeric vector of circle pixel sizes to display in the size legend when
 \code{size_legend = TRUE}. Default = \code{NULL}.}
 \item{size_legend_labels}{\strong{Mandatory if \code{size_legend = TRUE}.}
 Character vector of labels corresponding to \code{size_legend_sizes}, must
 be of equal length. Default = \code{NULL}.}
-\item{size_legend_title}{Text used for the size legend title. Default = \code{""}.}
+\item{size_legend_title}{Text used for the size legend title. In static maps,
+used as the title of the automatic size legend. Default = \code{""}.}
 \item{size_legend_pos}{Position of the size legend. Default = \code{"bottomleft"}.}
 \item{map_title}{string to determine map title. Default = \code{""}.}
 \item{map_title_size}{ font size of map title. Default = \code{13}.}
@@ -110,11 +129,11 @@ be of equal length. Default = \code{NULL}.}
 \item{legend_title}{ string to determine legend title. Default = \code{""}.}
 \item{legend_pos}{ string to determine legend position. Permitted values =
 "topright", "bottomright", "bottomleft", or "topleft". Default = \code{"topright"}.}
-\item{legend_scrollable}{ logical, whether the colour legend should become
+\item{legend_scrollable}{ Dynamic only. logical, whether the colour legend should become
 scrollable (rather than grow unbounded) once it exceeds \code{legend_max_height}.
 Only applies to the colour legend (not the custom size legend). Default =
 \code{TRUE}.}
-\item{legend_max_height}{ numeric, the maximum height (in pixels) of the
+\item{legend_max_height}{ Dynamic only. numeric, the maximum height (in pixels) of the
 colour legend before it becomes scrollable. Only applies to the colour
 legend (not the custom size legend), and only when \code{legend_scrollable =
    TRUE}. Default = \code{300}.}
@@ -136,13 +155,17 @@ will be plotted.}
 }}
 }
 \value{
-A leaflet object.
+A leaflet object (dynamic = TRUE, the default) or a ggplot object
+(dynamic = FALSE).
 }
 \description{
-A function for producing dynamic (leaflet) point (bubble) maps, used
-to plot point locations (e.g. case locations, facilities, or area centroids) on a
-map, optionally coloured by group or value, sized by a numeric variable, and
-clustered.
+A function for producing either static (ggplot) or dynamic (leaflet)
+point (bubble) maps, used to plot point locations (e.g. case locations, facilities,
+or area centroids) on a map, optionally coloured by group or value, sized by a
+numeric variable, and (dynamic only) clustered. Static maps draw the first
+\code{basemaps} provider as background tiles (downloaded with the maptiles
+package, so an internet connection is needed); supply \code{border_shape_name}
+to add boundary context.
 }
 \examples{
 
@@ -165,11 +188,12 @@ cases_map <- point_map(
     long = "long",
     colour_var = "organism_species_name",
     cluster = TRUE,
-    basemaps = c("Uncluttered" = "Esri.WorldTopoMap", "Detailed" = "OpenStreetMap"),
+    basemaps = c("Uncluttered" = "Esri.WorldGrayCanvas", "Detailed" = "OpenStreetMap"),
     points_group = "Cases",
     legend_title = "Stratification by selected variable",
     legend_pos = "bottomright"
-  )
+  ),
+  dynamic = TRUE
 )
 
 
@@ -195,7 +219,7 @@ detailed_map <- point_map(
     colour_var = "organism_species_name",
     point_size = "case_size",
     point_size_range = c(6, 13),
-    popup_col = "popup_html",
+    click_popups_col = "popup_html",
     point_labels = "local_authority_name",
     legend_title = "Organism species",
     legend_scrollable = TRUE,
@@ -206,7 +230,32 @@ detailed_map <- point_map(
     size_legend_title = "Lab test type",
     measure_tool = TRUE,
     map_zoom = data.frame(LONG = -2.89479, LAT = 54.793409, zoom = c(5))
-  )
+  ),
+  dynamic = TRUE
+)
+
+
+
+# Example 3: Static (ggplot) bubble map coloured by species, with UK country
+# boundaries for context.
+
+static_map <- point_map(
+  params = list(
+    df = case_points,
+    lat = "lat",
+    long = "long",
+    colour_var = "organism_species_name",
+    point_colours = c("#007C91", "#8A1B61", "#FF7F32"),
+    point_size = "case_size",
+    point_size_range = c(6, 13),
+    size_legend_title = "Lab test type size",
+    legend_title = "Organism species",
+    map_title = "Cases by species",
+    border_shape_name = UK_boundaries_2023,
+    border_code_col = "CTRY23NM",
+    border_areaname = "England"
+  ),
+  dynamic = FALSE
 )
 
 }

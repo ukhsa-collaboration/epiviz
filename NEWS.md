@@ -12,6 +12,14 @@
 
 # epiviz (development version)
 
+* New `point_map()` function for plotting point (bubble) maps from
+  latitude/longitude data. Points can be coloured by a discrete or continuous
+  variable and sized by a numeric variable. Returns an interactive leaflet map
+  by default (`dynamic = TRUE`), which adds clustering, click popups, hover
+  labels, multiple basemaps, a measuring tool and a custom size legend. Set
+  `dynamic = FALSE` for a static ggplot map, which also shows a basemap (via
+  the new maptiles dependency) behind the points.
+
 * `llm_interpret()` gains support for internally hosted, OpenAI-compatible
   completions endpoints via a new `"openshiftai"` provider. Set `LLM_PROVIDER`
   to `"openshiftai"` and supply the endpoint base URL in `LLM_URL`. Image input

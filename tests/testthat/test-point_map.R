@@ -1,5 +1,15 @@
 ### SECTION 1 - FUNCTIONAL OUTPUT #################################
 
+# Avoid downloading basemap tiles in tests: return a small grey raster covering
+# the requested extent
+fake_basemap_tiles <- function(x, ...) {
+  bb <- sf::st_bbox(x)
+  terra::rast(nrows = 2, ncols = 2, nlyrs = 3, crs = "EPSG:3857",
+              extent = terra::ext(bb[["xmin"]], bb[["xmax"]], bb[["ymin"]], bb[["ymax"]]),
+              vals = 200)
+}
+local_mocked_bindings(get_tiles = fake_basemap_tiles, .package = "maptiles")
+
 # test that function returns a leaflet object for a continuous bubble map
 test_that("point_map returns a leaflet object when provided with colour_var (continuous)", {
 
@@ -17,6 +27,7 @@ test_that("point_map returns a leaflet object when provided with colour_var (con
     left_join(region_detections, by = c("phec16nm" = "region"))
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = region_points,
       lat = "lat",
@@ -56,6 +67,7 @@ test_that("point_map returns a leaflet object when provided with colour_var (dis
 
   expect_warning(
     result <- point_map(
+      dynamic = TRUE,
       params = list(
         df = region_points,
         lat = "lat",
@@ -98,6 +110,7 @@ test_that("point_map returns a leaflet object with all optional features enabled
     )
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = region_points,
       lat = "lat",
@@ -106,7 +119,7 @@ test_that("point_map returns a leaflet object with all optional features enabled
       point_colours = c("High" = "#8A1B61", "Low" = "#007C91"),
       cluster = TRUE,
       basemaps = c("Uncluttered" = "Esri.WorldTopoMap", "Detailed" = "OpenStreetMap"),
-      popup_col = "popup_html",
+      click_popups_col = "popup_html",
       size_legend = TRUE,
       size_legend_sizes = c(13, 6),
       size_legend_labels = c("High", "Low"),
@@ -124,15 +137,16 @@ test_that("point_map returns a leaflet object with all optional features enabled
 })
 
 
-# test that function returns a leaflet object when point_stroke is disabled
-test_that("point_map returns a leaflet object when point_stroke = FALSE", {
+# test that function returns a leaflet object when point_border is disabled
+test_that("point_map returns a leaflet object when point_border = FALSE", {
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = data.frame(x = c(1, 2), y = c(1, 2)),
       lat = "y",
       long = "x",
-      point_stroke = FALSE
+      point_border = FALSE
     )
   )
 
@@ -147,6 +161,7 @@ test_that("point_map returns a leaflet object when point_stroke = FALSE", {
 test_that("point_map returns a leaflet object when colour_type forces a numeric colour_var to be discrete", {
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = data.frame(x = c(1, 2, 3), y = c(1, 2, 3), g = c(1, 2, 1)),
       lat = "y",
@@ -167,6 +182,7 @@ test_that("point_map returns a leaflet object when colour_type forces a numeric 
 test_that("point_map returns a leaflet object when an unnamed point_colours vector matches the number of groups", {
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = data.frame(x = c(1, 2), y = c(1, 2), g = c("a", "b")),
       lat = "y",
@@ -186,6 +202,7 @@ test_that("point_map returns a leaflet object when an unnamed point_colours vect
 test_that("point_map returns a leaflet object when point_colours is a single colour and colour_var is absent", {
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = data.frame(x = 1, y = 1),
       lat = "y",
@@ -204,6 +221,7 @@ test_that("point_map returns a leaflet object when point_colours is a single col
 test_that("point_map returns a leaflet object when border_shape_name is filtered by border_code_col/border_areaname", {
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = data.frame(x = 1, y = 1),
       lat = "y",
@@ -224,14 +242,15 @@ test_that("point_map returns a leaflet object when border_shape_name is filtered
 test_that("point_map returns a leaflet object with all cosmetic and layout params set", {
 
   result <- point_map(
+    dynamic = TRUE,
     params = list(
       df = data.frame(x = c(1, 2), y = c(1, 2), g = c("a", "b")),
       lat = "y",
       long = "x",
       colour_var = "g",
       point_opacity = 0.5,
-      point_stroke_colour = "white",
-      point_stroke_weight = 2,
+      point_border_colour = "white",
+      point_border_weight = 2,
       cluster = TRUE,
       cluster_max_radius = 40,
       points_group = "My cases",
@@ -256,6 +275,166 @@ test_that("point_map returns a leaflet object with all cosmetic and layout param
 
   # check that the output is a leaflet object
   expect_true(inherits(result, "leaflet"))
+
+})
+
+
+# test that a named continuous gradient is accepted (named vectors are only
+# treated as group mappings for discrete colour variables)
+test_that("point_map accepts a named point_colours gradient for a continuous colour_var", {
+
+  result <- point_map(
+    dynamic = TRUE,
+    params = list(
+      df = data.frame(x = c(-1, -2, -3), y = c(51, 52, 53), v = c(1, 5, 10)),
+      lat = "y",
+      long = "x",
+      colour_var = "v",
+      point_colours = c(low = "white", high = "red")
+    )
+  )
+
+  expect_true(inherits(result, "leaflet"))
+
+})
+
+
+# test that the colour legend scroll CSS is scoped to each widget
+test_that("point_map scopes legend scroll styling to each map's own legend", {
+
+  df <- data.frame(x = c(-1, -2), y = c(51, 52), g = c("a", "b"))
+
+  get_legend_class <- function(map) {
+    legend_call <- Filter(function(cl) cl$method == "addLegend", map$x$calls)[[1]]
+    sub("^info legend ", "", legend_call$args[[1]]$className)
+  }
+  get_css <- function(map) {
+    title_call <- Filter(function(cl) cl$method == "addControl", map$x$calls)[[1]]
+    as.character(title_call$args[[1]])
+  }
+
+  scroll_map <- point_map(dynamic = TRUE, params = list(
+    df = df, lat = "y", long = "x", colour_var = "g", legend_max_height = 80))
+  other_map <- point_map(dynamic = TRUE, params = list(
+    df = df, lat = "y", long = "x", colour_var = "g", legend_max_height = 200))
+  no_scroll_map <- point_map(dynamic = TRUE, params = list(
+    df = df, lat = "y", long = "x", colour_var = "g", legend_scrollable = FALSE))
+
+  scroll_class <- get_legend_class(scroll_map)
+  expect_false(scroll_class == get_legend_class(other_map))
+  expect_true(grepl(paste0(".leaflet-control.", scroll_class, " {\n    max-height:80px"),
+                    get_css(scroll_map), fixed = TRUE))
+  expect_false(grepl("max-height", get_css(no_scroll_map)))
+  expect_false(grepl("map-legend {", get_css(scroll_map), fixed = TRUE))
+
+})
+
+
+# test that the size legend circles are drawn at the same diameter as the markers
+test_that("point_map draws size legend circles at twice the supplied radius", {
+
+  result <- point_map(dynamic = TRUE, params = list(
+    df = data.frame(x = -1, y = 51), lat = "y", long = "x",
+    size_legend = TRUE, size_legend_sizes = c(13), size_legend_labels = c("Big")))
+
+  size_call <- Filter(function(cl) cl$method == "addControl", result$x$calls)
+  size_html <- as.character(size_call[[length(size_call)]]$args[[1]])
+  expect_true(grepl("width:26px;height:26px", size_html, fixed = TRUE))
+
+})
+
+
+# test that the static map returns a ggplot object for each colour/size mode
+test_that("point_map returns a ggplot object when dynamic = FALSE", {
+
+  library(dplyr)
+  library(epiviz)
+
+  region_detections <- epiviz::lab_data |>
+    group_by(region) |>
+    summarise(detections = n()) |>
+    ungroup() |>
+    mutate(detection_level = ifelse(detections > median(detections), "High", "Low"))
+
+  region_points <- epiviz::PHEC_boundaries_2016 |>
+    sf::st_drop_geometry() |>
+    left_join(region_detections, by = c("phec16nm" = "region"))
+
+  discrete_map <- point_map(dynamic = FALSE, params = list(
+    df = region_points, lat = "lat", long = "long",
+    colour_var = "detection_level",
+    point_colours = c("High" = "#8A1B61", "Low" = "#007C91"),
+    point_size = "detections",
+    size_legend_title = "Detections",
+    border_shape_name = epiviz::UK_boundaries_2023,
+    border_code_col = "CTRY23NM",
+    border_areaname = "England",
+    map_title = "Detections by region",
+    map_footer = "Source: lab_data",
+    legend_pos = "bottomleft"
+  ))
+  continuous_map <- point_map(dynamic = FALSE, params = list(
+    df = region_points, lat = "lat", long = "long",
+    colour_var = "detections", point_colours = "YlOrRd", point_border = FALSE,
+    map_zoom = data.frame(LONG = -2.89479, LAT = 54.793409, zoom = 5)
+  ))
+  single_colour_map <- point_map(dynamic = FALSE, params = list(
+    df = region_points, lat = "lat", long = "long", point_colours = "red"
+  ))
+
+  for (map in list(discrete_map, continuous_map, single_colour_map)) {
+    expect_true(inherits(map, "ggplot"))
+    expect_silent(ggplot2::ggplot_build(map))
+  }
+
+})
+
+
+test_that("point_map draws basemap tiles and their credit on static maps", {
+
+  map <- point_map(dynamic = FALSE, params = list(
+    df = data.frame(x = c(-1, -2), y = c(51, 53)),
+    lat = "y",
+    long = "x",
+    basemaps = c(Topo = "Esri.WorldTopoMap")
+  ))
+
+  layer_geoms <- vapply(map$layers, function(l) class(l$geom)[1], character(1))
+  expect_true(grepl("raster", layer_geoms[1], ignore.case = TRUE))
+  expect_equal(map$coordinates$crs, sf::st_crs(3857))
+  expect_true(any(vapply(map$layers, function(l) identical(l$aes_params$label,
+    stringr::str_wrap(maptiles::get_credit("Esri.WorldTopoMap"), 70)), logical(1))))
+  expect_silent(ggplot2::ggplot_build(map))
+
+})
+
+
+test_that("point_map draws a static map without tiles when basemaps = NULL", {
+
+  map <- point_map(dynamic = FALSE, params = list(
+    df = data.frame(x = c(-1, -2), y = c(51, 53)),
+    lat = "y",
+    long = "x",
+    basemaps = NULL
+  ))
+
+  layer_geoms <- vapply(map$layers, function(l) class(l$geom)[1], character(1))
+  expect_false(any(grepl("raster", layer_geoms, ignore.case = TRUE)))
+  expect_equal(map$coordinates$crs, sf::st_crs(4326))
+
+})
+
+
+test_that("point_map warns and drops the basemap when tiles cannot be downloaded", {
+
+  local_mocked_bindings(get_tiles = function(...) stop("no connection"), .package = "maptiles")
+
+  expect_warning(
+    map <- point_map(dynamic = FALSE, params = list(df = data.frame(x = -1, y = 51), lat = "y", long = "x")),
+    "Basemap tiles could not be downloaded.*no connection"
+  )
+  layer_geoms <- vapply(map$layers, function(l) class(l$geom)[1], character(1))
+  expect_false(any(grepl("raster", layer_geoms, ignore.case = TRUE)))
 
 })
 
@@ -355,7 +534,7 @@ test_that("point_map errors when colour_type is not a permissable value", {
 })
 
 
-test_that("point_map errors when named point_colours length does not match number of groups", {
+test_that("point_map errors when named point_colours do not cover every group", {
 
   expect_error(
     point_map(params = list(
@@ -365,7 +544,77 @@ test_that("point_map errors when named point_colours length does not match numbe
       colour_var = "g",
       point_colours = c("a" = "red")
     )),
-    "point_colours provided must equal the number of unique groups"
+    "Named point_colours must include a colour for every observed group"
+  )
+
+})
+
+
+test_that("point_map errors when lat or long are not numeric", {
+
+  expect_error(
+    point_map(params = list(df = data.frame(x = 1, y = "a"), lat = "y", long = "x")),
+    "lat must be a numeric variable"
+  )
+  expect_error(
+    point_map(params = list(df = data.frame(x = "a", y = 1), lat = "y", long = "x")),
+    "long must be a numeric variable"
+  )
+
+})
+
+
+test_that("point_map errors when point_opacity is not between 0 and 1", {
+
+  expect_error(
+    point_map(params = list(df = data.frame(x = 1, y = 1), lat = "y", long = "x",
+                            point_opacity = 1.5)),
+    "point_opacity must be a single numeric value between 0 and 1"
+  )
+
+})
+
+
+test_that("point_map errors when point_size_range is not an ascending numeric pair", {
+
+  expect_error(
+    point_map(params = list(df = data.frame(x = 1, y = 1), lat = "y", long = "x",
+                            point_size_range = c(20, 4))),
+    "point_size_range must be a numeric vector of length 2"
+  )
+  expect_error(
+    point_map(params = list(df = data.frame(x = 1, y = 1), lat = "y", long = "x",
+                            point_size_range = 4)),
+    "point_size_range must be a numeric vector of length 2"
+  )
+
+})
+
+
+test_that("point_map errors when point_size variable is not numeric", {
+
+  expect_error(
+    point_map(params = list(df = data.frame(x = 1, y = 1, s = "big"), lat = "y",
+                            long = "x", point_size = "s")),
+    "point_size variable must be numeric"
+  )
+
+})
+
+
+test_that("point_map errors when click_popups_col or point_labels are not found in df", {
+
+  expect_error(
+    point_map(dynamic = TRUE,
+              params = list(df = data.frame(x = 1, y = 1), lat = "y", long = "x",
+                            click_popups_col = "missing_col")),
+    "click_popups_col not found within df"
+  )
+  expect_error(
+    point_map(dynamic = TRUE,
+              params = list(df = data.frame(x = 1, y = 1), lat = "y", long = "x",
+                            point_labels = "missing_col")),
+    "point_labels not found within df"
   )
 
 })
@@ -448,6 +697,37 @@ test_that("point_map errors when multiple basemaps are provided unnamed", {
 })
 
 
+test_that("point_map errors when a static basemap is not a maptiles provider", {
+
+  expect_error(
+    point_map(dynamic = FALSE, params = list(
+      df = data.frame(x = 1, y = 1),
+      lat = "y",
+      long = "x",
+      basemaps = "Not.AProvider"
+    )),
+    "basemap \"Not.AProvider\" is not available for static maps"
+  )
+
+})
+
+
+test_that("point_map warns that static maps only use the first basemap", {
+
+  expect_warning(
+    map <- point_map(dynamic = FALSE, params = list(
+      df = data.frame(x = -1, y = 51),
+      lat = "y",
+      long = "x",
+      basemaps = c("Uncluttered" = "Esri.WorldTopoMap", "Detailed" = "OpenStreetMap")
+    )),
+    "only the first \\(\"Esri.WorldTopoMap\"\\) will be used"
+  )
+  expect_true(inherits(map, "ggplot"))
+
+})
+
+
 test_that("point_map errors when map_zoom is missing required variables", {
 
   expect_error(
@@ -523,5 +803,57 @@ test_that("point_map warns when border_areaname is provided without border_shape
     )),
     "border_shape_name not included but border_areaname provided"
   )
+
+})
+
+
+test_that("point_map warns and drops rows with missing lat/long", {
+
+  expect_warning(
+    result <- point_map(dynamic = TRUE, params = list(
+      df = data.frame(x = c(-1, NA, -3), y = c(51, 52, 53)),
+      lat = "y",
+      long = "x"
+    )),
+    "1 row\\(s\\) with missing lat/long have been removed"
+  )
+  marker_call <- Filter(function(cl) cl$method == "addCircleMarkers", result$x$calls)[[1]]
+  expect_equal(marker_call$args[[1]], c(51, 53))
+
+})
+
+
+test_that("point_map warns and plots NA point_size values at the minimum size", {
+
+  expect_warning(
+    result <- point_map(dynamic = TRUE, params = list(
+      df = data.frame(x = c(-1, -2, -3), y = c(51, 52, 53), s = c(1, NA, 10)),
+      lat = "y",
+      long = "x",
+      point_size = "s",
+      point_size_range = c(4, 20)
+    )),
+    "1 point\\(s\\) with a missing point_size value will be plotted at the minimum size"
+  )
+  marker_call <- Filter(function(cl) cl$method == "addCircleMarkers", result$x$calls)[[1]]
+  expect_equal(marker_call$args[[3]], c(4, 4, 20))
+
+})
+
+
+test_that("point_map warns when dynamic-only params are supplied for a static map", {
+
+  expect_warning(
+    result <- point_map(dynamic = FALSE, params = list(
+      df = data.frame(x = -1, y = 51, lab = "A"),
+      lat = "y",
+      long = "x",
+      point_labels = "lab",
+      cluster = TRUE,
+      measure_tool = FALSE
+    )),
+    "only apply when dynamic = TRUE and will be ignored: point_labels, cluster$"
+  )
+  expect_true(inherits(result, "ggplot"))
 
 })

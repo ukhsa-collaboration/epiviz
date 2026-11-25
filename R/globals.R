@@ -69,10 +69,10 @@ utils::globalVariables(c(
   "cumulative_sum_line_colour", "hover_labels",
 
   # For point_map
-  "lat", "long", "Lat", "Long", "Colour", "Size", "Label", "Popup",
-  "point_colours", "point_opacity", "point_stroke", "point_stroke_colour",
-  "point_stroke_weight", "point_size",
-  "point_size_range", "popup_col", "point_labels",
+  "lat", "long", "Lat", "Long", "X", "Y", "Colour", "Size", "Radius", "Label", "Popup",
+  "point_colours", "point_opacity", "point_border", "point_border_colour",
+  "point_border_weight", "point_size",
+  "point_size_range", "click_popups_col", "point_labels",
   "cluster", "cluster_max_radius", "points_group", "basemaps",
   "layers_control_pos", "measure_tool", "measure_units", "size_legend",
   "size_legend_sizes", "size_legend_labels", "size_legend_title",

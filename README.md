@@ -27,6 +27,7 @@ The following visualisation functions are available in the current release of ep
 - `col_chart()`: Creates column charts with options for grouping, dual axes, threshold lines, and confidence limits (as ribbons or error bars).
 - `epi_curve()`: Creates epidemic curves with options for different time periods, rolling averages, cumulative sums, and grouping by categories.
 - `epi_map()`: Creates choropleth maps with customisable colour scales, labels, and boundaries for different administrative levels.
+- `point_map()`: Creates point (bubble) maps from latitude/longitude data, with points coloured by group or value, sized by a numeric variable, and (interactive only) clustering, popups and multiple basemaps. Unlike the other functions, `point_map()` defaults to the interactive (dynamic) output.
 - `age_sex_pyramid()`: Creates age-sex pyramids with customisable age bands and confidence intervals.
 
 All visualisation functions follow a consistent interface:
