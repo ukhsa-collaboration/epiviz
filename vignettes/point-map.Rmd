@@ -1,0 +1,174 @@
+---
+title: "Point maps"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Point maps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+Point maps show where things are: case residences, laboratories, care homes, or
+the centre of each reporting area. The `point_map()` function plots points from
+latitude and longitude columns in a data frame. Points can be coloured by a
+category or a value and sized by a numeric variable to make a bubble map.
+
+Like other epiviz functions, `point_map()` has a static ggplot output, but
+returns an interactive leaflet map by default (set `dynamic = FALSE` for the
+static output). Both static and dynamic maps show an OpenStreetMap basemap by
+default. The interactive map also supports switching between basemaps,
+clustering, click popups, hover labels and a measuring tool.
+
+## Prerequisites
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  fig.width = 8,
+  fig.height = 6,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r load-libraries}
+library(epiviz)
+library(dplyr)
+library(sf)
+```
+
+### Prepare the data
+
+The `PHEC_boundaries_2016` dataset includes a `lat` and `long` column for the
+centre of each region. This example joins regional detection counts from
+`lab_data` onto those centres.
+
+```{r prepare-data}
+region_detections <- lab_data |>
+  filter(!is.na(region)) |>
+  group_by(region) |>
+  summarise(detections = n()) |>
+  ungroup() |>
+  mutate(detection_level = ifelse(detections > median(detections), "High", "Low"))
+
+region_points <- PHEC_boundaries_2016 |>
+  st_drop_geometry() |>
+  inner_join(region_detections, by = c("phec16nm" = "region")) |>
+  mutate(popup_html = paste0("<strong>", phec16nm, "</strong><br>Detections: ", detections))
+```
+
+## Example 1: Static bubble map
+
+Supply the name of a numeric column as `point_size` to scale each point by its
+value. `point_size_range` sets the smallest and largest point sizes. Add
+boundaries for context with `border_shape_name`. Static maps draw the first
+provider in `basemaps` as background tiles, so they need an internet connection.
+Use `basemaps = NULL` for a map without tiles.
+
+```{r static-bubble-map, fig.cap="Detections by region, sized and coloured by count.", fig.alt="Static map of England on a topographic background with a circle at each region centre, sized and coloured by number of detections."}
+point_map(
+  dynamic = FALSE,
+  params = list(
+    df = region_points,
+    lat = "lat",
+    long = "long",
+    colour_var = "detections",
+    point_colours = "YlOrRd",
+    point_size = "detections",
+    point_size_range = c(6, 20),
+    size_legend_title = "Detections",
+    legend_title = "Detections",
+    map_title = "Detections by region",
+    map_footer = "Source: epiviz lab_data",
+    basemaps = "Esri.WorldTopoMap",
+    border_shape_name = UK_boundaries_2023,
+    border_code_col = "CTRY23NM",
+    border_areaname = "England"
+  )
+)
+```
+
+## Example 2: Interactive categorical map
+
+For a categorical `colour_var`, supply a named vector of `point_colours` to set
+the colour of each group. Dynamic maps (the default) support `click_popups_col`,
+which names a column of html shown when a point is clicked, and `point_labels`,
+which names a column shown on hover. Supplying more than one basemap adds a
+layer control.
+
+```{r interactive-map, fig.cap="Interactive map of regions coloured by detection level.", fig.alt="Interactive map with a circle at each region centre coloured by high or low detection level."}
+point_map(
+  params = list(
+    df = region_points,
+    lat = "lat",
+    long = "long",
+    colour_var = "detection_level",
+    point_colours = c("High" = "#8A1B61", "Low" = "#007C91"),
+    point_size = 10,
+    point_border_colour = "white",
+    click_popups_col = "popup_html",
+    point_labels = "phec16nm",
+    basemaps = c("Uncluttered" = "Esri.WorldGrayCanvas", "Detailed" = "OpenStreetMap"),
+    legend_title = "Detection level",
+    map_title = "Detection level by region",
+    measure_tool = TRUE
+  )
+)
+```
+
+## Example 3: Interactive clustered case map
+
+For case-level data, `cluster = TRUE` groups nearby points into clusters that
+split apart as you zoom in. Each case below is placed at a random position
+around its region's centre.
+
+```{r clustered-map, fig.cap="Interactive clustered map of individual detections.", fig.alt="Interactive map of individual detections grouped into numbered clusters."}
+set.seed(1)
+
+case_points <- lab_data |>
+  filter(!is.na(region)) |>
+  inner_join(st_drop_geometry(PHEC_boundaries_2016), by = c("region" = "phec16nm")) |>
+  mutate(
+    lat = lat + rnorm(n(), sd = 0.2),
+    long = long + rnorm(n(), sd = 0.3)
+  )
+
+point_map(
+  params = list(
+    df = case_points,
+    lat = "lat",
+    long = "long",
+    colour_var = "organism_species_name",
+    point_colours = c("#007C91", "#8A1B61", "#FF7F32"),
+    cluster = TRUE,
+    legend_title = "Organism species",
+    legend_pos = "bottomright",
+    map_zoom = data.frame(LONG = -2.5, LAT = 53.5, zoom = 6)
+  )
+)
+```
+
+## Static and dynamic differences
+
+| Feature | Static (`dynamic = FALSE`) | Dynamic (`dynamic = TRUE`, the default) |
+|---|---|---|
+| Colour and size by variable | Yes | Yes |
+| Boundary overlay (`border_shape_name`) | Yes | Yes |
+| Basemap tiles (`basemaps`) | First basemap only | Yes, with a layer control for several |
+| Clustering, popups, hover labels | No | Yes |
+| Measuring tool | No | Yes |
+| Size legend | Added automatically when sizing by a variable | Custom legend via `size_legend` |
+
+If you supply a dynamic-only parameter when `dynamic = FALSE`, `point_map()`
+warns that it will be ignored.
+
+## Data checks
+
+`point_map()` removes rows with a missing `lat` or `long` and warns you how many
+it removed. Points with a missing value in the `point_size` column are drawn at
+the smallest size in `point_size_range`, also with a warning.

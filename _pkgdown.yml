@@ -16,6 +16,7 @@ reference:
       - epi_map
       - line_chart
       - point_chart
+      - point_map
   - title: "LLM-assisted narrative"
     contents:
       - llm_interpret

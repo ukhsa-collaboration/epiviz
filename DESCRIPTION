@@ -21,7 +21,6 @@ Description: Tools for making epidemiological reporting easier with consistent s
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 LazyData: true
 LazyDataCompression: xz
 Suggests: 
@@ -43,6 +42,8 @@ Imports:
     plotly,
     sf,
     leaflet,
+    maptiles,
+    terra,
     htmltools,
     htmlwidgets,
     stringr,
@@ -62,3 +63,4 @@ Depends:
 VignetteBuilder: knitr
 URL: https://github.com/ukhsa-collaboration/epiviz
 BugReports: https://github.com/ukhsa-collaboration/epiviz/issues
+Config/roxygen2/version: 8.1.1
